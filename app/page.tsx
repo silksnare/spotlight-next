@@ -213,9 +213,9 @@ export default function HomePage() {
 
             {/* Video Upload Button */}
             <div className="hidden md:block">
-              <button className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white text-sm font-semibold py-2 px-4 rounded uppercase tracking-wide transition-colors">
+              <a href="/upload" className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white text-sm font-semibold py-2 px-4 rounded uppercase tracking-wide transition-colors inline-block">
                 Video Upload
-              </button>
+              </a>
             </div>
 
             {/* Mobile menu button */}
@@ -242,9 +242,9 @@ export default function HomePage() {
                 <a href="#demo" className="text-sm text-gray-600 hover:text-gray-900 uppercase tracking-wide">Demo</a>
                 <a href="#overview" className="text-sm text-gray-600 hover:text-gray-900 uppercase tracking-wide">Overview</a>
                 <a href="#resources" className="text-sm text-gray-600 hover:text-gray-900 uppercase tracking-wide">Resources</a>
-                <button className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-semibold py-2 px-4 rounded uppercase tracking-wide w-full mt-2">
+                <a href="/upload" className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-semibold py-2 px-4 rounded uppercase tracking-wide w-full mt-2 text-center block">
                   Video Upload
-                </button>
+                </a>
               </nav>
             </div>
           )}
