@@ -1,7 +1,7 @@
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-600 via-purple-600 via-pink-500 to-orange-500">
-      {/* Login Card */}
+      {/* Register Card */}
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
         {/* Logo */}
         <div className="text-center mb-10">
@@ -15,15 +15,15 @@ export default function LoginPage() {
           </h1>
         </div>
 
-        {/* Login Form */}
+        {/* Register Form */}
         <form className="space-y-5">
-          {/* Username Field */}
+          {/* Email Field */}
           <div>
             <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email"
               className="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
             />
           </div>
@@ -39,25 +39,23 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Sign In Button */}
+          {/* Sign Up Button */}
           <div className="pt-4">
             <button
               type="submit"
               className="w-full max-w-[200px] mx-auto block bg-black hover:bg-gray-800 text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 uppercase tracking-wider text-sm"
             >
-              Sign In
+              Sign Up
             </button>
           </div>
         </form>
 
         {/* Footer Links */}
         <div className="text-center mt-8">
-          <a href="#" className="text-gray-600 hover:text-gray-800 text-sm">
-            Forgot Your Password
-          </a>
-          <span className="text-gray-400 mx-3">|</span>
-          <a href="/register" className="text-gray-600 hover:text-gray-800 text-sm">
-            Sign Up
+          <span className="text-gray-600 text-sm">Already have an account?</span>
+          <span className="text-gray-400 mx-2">|</span>
+          <a href="/login" className="text-gray-600 hover:text-gray-800 text-sm">
+            Sign In
           </a>
         </div>
       </div>
