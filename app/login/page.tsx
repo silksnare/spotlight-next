@@ -1,4 +1,44 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function LoginPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Login failed. Please try again.');
+      } else {
+        router.push('/upload');
+      }
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-600 via-purple-600 via-pink-500 to-orange-500">
       {/* Login Card */}
@@ -16,14 +56,18 @@ export default function LoginPage() {
         </div>
 
         {/* Login Form */}
-        <form className="space-y-5">
-          {/* Username Field */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email Field */}
           <div>
             <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email Address"
+              required
+              autoComplete="email"
               className="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
             />
           </div>
@@ -34,25 +78,37 @@ export default function LoginPage() {
               type="password"
               id="password"
               name="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Password"
+              required
+              autoComplete="current-password"
               className="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
             />
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-600 text-sm">
+              {error}
+            </div>
+          )}
 
           {/* Sign In Button */}
           <div className="pt-4">
             <button
               type="submit"
-              className="w-full max-w-[200px] mx-auto block bg-black hover:bg-gray-800 text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 uppercase tracking-wider text-sm"
+              disabled={loading}
+              className="w-full max-w-[200px] mx-auto block bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 uppercase tracking-wider text-sm"
             >
-              Sign In
+              {loading ? 'Signing In…' : 'Sign In'}
             </button>
           </div>
         </form>
 
         {/* Footer Links */}
         <div className="text-center mt-8">
-          <a href="#" className="text-gray-600 hover:text-gray-800 text-sm">
+          <a href="/forgot-password" className="text-gray-600 hover:text-gray-800 text-sm">
             Forgot Your Password
           </a>
           <span className="text-gray-400 mx-3">|</span>
@@ -62,5 +118,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
