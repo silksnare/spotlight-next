@@ -1,50 +1,40 @@
 # Spotlight
 
-A secure, web-based video competition platform designed to support:
-
-- User video submissions
-- Multi-phase judging workflows
-- Peer voting
-- Administrative dashboards and reporting
-- Scalable media handling
+A secure, web-based video competition platform.
 
 ## Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: Auth.js (NextAuth)
-- **Storage**: AWS S3
-- **Hosting**: AWS Lightsail
+- **Database**: PostgreSQL
+- **Email**: SMTP (strongmail2.biperf.com:25)
 
-## Getting Started
+## Authentication Flow Implemented
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+- Registration with `first_name`, `last_name`, `email`, and password.
+- Verification email with:
+  - verification link back to `/verify-email`
+  - verification code (must be entered on verification page)
+- Login blocked until email is verified.
+- Password reset flow (`/forgot-password` -> email link -> `/reset-password`).
+- Automatic account disable after **3 consecutive failed password attempts**.
 
-2. Run the development server:
-   ```bash
-   npm run dev
-   ```
+## Environment Setup
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+1. Copy `.env.example` to `.env.local`.
+2. Fill in the password/secrets values.
+3. Install dependencies and run:
 
-## Project Structure
-
-```
-├── app/                # Next.js App Router pages
-│   ├── api/           # API route handlers
-│   ├── login/         # Login page
-│   └── page.tsx       # Home page
-├── components/        # Reusable React components
-├── lib/               # Utility functions and configurations
-├── prisma/            # Database schema and migrations
-└── public/            # Static assets
+```bash
+npm install
+npm run dev
 ```
 
-## License
+## Database Notes
 
-MIT
+This implementation uses your existing tables and also creates this support table automatically if missing:
+
+- `login_failures` (`user_id`, `failed_attempts`, `updated_at`)
+
+The table is used to track consecutive failed login attempts and disable accounts after 3 failures.
