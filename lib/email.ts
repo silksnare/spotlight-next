@@ -1,14 +1,29 @@
-import nodemailer from 'nodemailer'
+type MailPayload = {
+  from: string
+  to: string
+  subject: string
+  text: string
+}
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST ?? 'strongmail2.biperf.com',
-  port: Number(process.env.SMTP_PORT ?? 25),
-  secure: false,
-  auth: process.env.SMTP_USER && process.env.SMTP_PASS ? {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  } : undefined,
-})
+async function sendMail(payload: MailPayload) {
+  const webhookUrl = process.env.MAIL_WEBHOOK_URL
+
+  if (webhookUrl) {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Mail webhook returned HTTP ${response.status}`)
+    }
+
+    return
+  }
+
+  console.info('[mail] MAIL_WEBHOOK_URL is not configured; email delivery skipped.', payload)
+}
 
 const fromAddress = process.env.MAIL_FROM ?? 'no-reply@spotlight.local'
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
@@ -16,7 +31,7 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 export async function sendVerificationEmail(email: string, firstName: string | null, urlToken: string, code: string) {
   const verifyLink = `${appUrl}/verify-email?token=${encodeURIComponent(urlToken)}&email=${encodeURIComponent(email)}`
 
-  await transporter.sendMail({
+  await sendMail({
     from: fromAddress,
     to: email,
     subject: 'Verify your Spotlight account',
@@ -27,7 +42,7 @@ export async function sendVerificationEmail(email: string, firstName: string | n
 export async function sendPasswordResetEmail(email: string, firstName: string | null, urlToken: string) {
   const resetLink = `${appUrl}/reset-password?token=${encodeURIComponent(urlToken)}`
 
-  await transporter.sendMail({
+  await sendMail({
     from: fromAddress,
     to: email,
     subject: 'Reset your Spotlight password',
