@@ -1,0 +1,51 @@
+'use client'
+
+import { FormEvent, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+
+export default function ResetPasswordPage() {
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token') ?? ''
+
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setMessage('')
+    setError('')
+
+    const formData = new FormData(event.currentTarget)
+
+    const response = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token,
+        password: formData.get('password'),
+      }),
+    })
+
+    const data = await response.json()
+    if (!response.ok) {
+      setError(data.error ?? 'Unable to reset password.')
+      return
+    }
+
+    setMessage(data.message)
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow p-8">
+        <h1 className="text-2xl font-semibold mb-3">Reset Password</h1>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <input type="password" name="password" minLength={8} required placeholder="New password" className="w-full px-4 py-3 border rounded-lg" />
+          <button type="submit" className="w-full bg-black text-white py-3 rounded-lg">Reset password</button>
+        </form>
+        {message && <p className="text-green-600 text-sm mt-4">{message}</p>}
+        {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
+      </div>
+    </div>
+  )
+}
