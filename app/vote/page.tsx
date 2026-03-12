@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
+import CountdownTimer from '@/components/CountdownTimer'
 
 interface VideoEntry {
   id: number
@@ -160,6 +161,8 @@ export default function VotePage() {
               <span className="text-gray-300">|</span>
               <Link href="/#resources" className="text-sm text-gray-600 hover:text-gray-900 uppercase tracking-wide">Resources</Link>
             </nav>
+
+            <CountdownTimer />
 
             {/* Vote Button (highlighted as current page) */}
             <div className="hidden md:block">

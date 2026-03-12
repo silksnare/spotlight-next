@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import CountdownTimer from './CountdownTimer'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -34,6 +35,8 @@ export default function Header() {
             <span className="text-gray-300">|</span>
             <Link href="/#resources" className="text-sm text-gray-600 hover:text-gray-900 uppercase tracking-wide">Resources</Link>
           </nav>
+
+          <CountdownTimer />
 
           {/* Video Upload Button */}
           <div className="hidden md:block">
