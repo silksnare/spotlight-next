@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import CountdownTimer from '@/components/CountdownTimer'
 
 // Carousel Component
 function Carousel({
@@ -210,6 +211,8 @@ export default function HomePage() {
               <a href="#overview" className="text-sm text-gray-600 hover:text-gray-900 uppercase tracking-wide">Overview</a>
               <a href="#resources" className="text-sm text-gray-600 hover:text-gray-900 uppercase tracking-wide">Resources</a>
             </nav>
+
+            <CountdownTimer />
 
             {/* Video Upload Button */}
             <div className="hidden md:block">
