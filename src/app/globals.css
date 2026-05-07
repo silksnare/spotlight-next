@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-white text-slate-900 antialiased;
+}
+
+@layer components {
+  p {
+    @apply text-[16px] leading-[1.8] text-[#161624];
+  }
+
+  .page-container {
+    @apply w-full mx-auto max-w-7xl px-6 pt-16 pb-6;
+  }
+
+  .page-title {
+    @apply mb-14 text-[42px] font-light uppercase leading-none tracking-[0.02em] text-[#161624];
+  }
+
+  .agreement-box {
+    @apply bg-[#d9d9db] px-8 py-14 max-h-[300px] overflow-y-auto;
+  }
+
+  .primary-button {
+    @apply px-[90px] py-[10px] text-[24px] font-extrabold uppercase tracking-[0.04em] text-white;
+  }
+
+  .slider {
+    accent-color: #1d4383;
+  }
+
+}

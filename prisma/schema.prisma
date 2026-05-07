@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  employeeId  String       @unique
+  email       String
+  firstName   String
+  lastName    String
+  displayName String
+  homeArea    Int?
+  district    Int?
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  loginEvents LoginEvent[]
+  videoSubmissions VideoSubmission[]
+  judgeRound1Scores JudgeRound1Score[] @relation("JudgeRound1Scores")
+  judgeRound2Scores JudgeRound2Score[] @relation("JudgeRound2Scores")
+}
+
+model LoginEvent {
+  id         String   @id @default(cuid())
+  userId     String
+  loggedInAt DateTime @default(now())
+  provider   String
+  success    Boolean
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, loggedInAt])
+}
+
+model Phase {
+  id       String   @id @default(cuid())
+  key      String   @unique
+  label    String
+  startsAt DateTime?
+  endsAt   DateTime?
+  isActive Boolean  @default(false)
+}
+
+model VideoSubmission {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  originalFileName  String
+  storedFileName    String
+  rawS3Key          String   @unique
+  processedS3Key    String?
+  uploadStatus      String
+  processingStatus  String
+  mediaConvertJobId String?
+  isQualified       Boolean?
+  qualifiedAt       DateTime?
+  qualifiedBy       String?
+  homeArea          Int?
+  district          Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  judgeRound1Scores JudgeRound1Score[]
+  judgeRound2Scores JudgeRound2Score[]
+  disqualificationReasons String[] @default([])
+  disqualificationOther   String?
+  disqualifiedAt          DateTime?
+  disqualifiedBy          String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([uploadStatus])
+  @@index([processingStatus])
+  @@index([isQualified])
+  @@index([homeArea])
+  @@index([district])
+}
+
+model JudgeRound1Score {
+  id                String          @id @default(cuid())
+  videoSubmissionId String
+  judgeUserId       String
+
+  introductionGuestContext         Decimal @db.Decimal(4, 2)
+  explanationOfInspectionFindings  Decimal @db.Decimal(4, 2)
+  serviceRecommendationUrgency     Decimal @db.Decimal(4, 2)
+  communicationClarityProfessionalism Decimal @db.Decimal(4, 2)
+  organizationVideoFlow            Decimal @db.Decimal(4, 2)
+  accuracyOfRecommendations        Decimal @db.Decimal(4, 2)
+
+  totalScore         Decimal        @db.Decimal(5, 2)
+
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  videoSubmission    VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
+  judgeUser          User            @relation("JudgeRound1Scores", fields: [judgeUserId], references: [id], onDelete: Cascade)
+
+  @@unique([videoSubmissionId, judgeUserId])
+  @@index([judgeUserId])
+  @@index([videoSubmissionId])
+}
+
+model UserDistrictLookup {
+  email      String   @id
+  district   Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model JudgeRound2RegionAssignment {
+  judgeRegion  Int      @id
+  targetRegion Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model JudgeRound2Score {
+  id                String   @id @default(cuid())
+  videoSubmissionId String
+  judgeUserId       String
+
+  introductionGuestContext            Decimal @db.Decimal(4, 2)
+  explanationOfInspectionFindings     Decimal @db.Decimal(4, 2)
+  serviceRecommendationUrgency        Decimal @db.Decimal(4, 2)
+  communicationClarityProfessionalism Decimal @db.Decimal(4, 2)
+  organizationVideoFlow               Decimal @db.Decimal(4, 2)
+  accuracyOfRecommendations           Decimal @db.Decimal(4, 2)
+
+  totalScore         Decimal  @db.Decimal(5, 2)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  videoSubmission    VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
+  judgeUser          User            @relation("JudgeRound2Scores", fields: [judgeUserId], references: [id], onDelete: Cascade)
+
+  @@unique([videoSubmissionId, judgeUserId])
+  @@index([judgeUserId])
+  @@index([videoSubmissionId])
+}
+
+
+
+
+
+
