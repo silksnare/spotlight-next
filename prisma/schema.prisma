@@ -23,7 +23,29 @@ model User {
   videoSubmissions VideoSubmission[]
   judgeRound1Scores JudgeRound1Score[] @relation("JudgeRound1Scores")
   judgeRound2Scores JudgeRound2Score[] @relation("JudgeRound2Scores")
+  localAuthCredential LocalAuthCredential?
 }
+
+model LocalAuthCredential {
+  id                          String   @id @default(cuid())
+  userId                      String   @unique
+  user                        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email                       String   @unique
+  passwordHash                String
+  emailVerified               Boolean  @default(false)
+  emailVerifiedAt             DateTime?
+  verificationCodeHash        String?
+  verificationCodeExpiresAt   DateTime?
+  verificationCodeSentAt      DateTime?
+  passwordResetCodeHash       String?
+  passwordResetCodeExpiresAt  DateTime?
+  passwordResetCodeSentAt     DateTime?
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+  @@index([email])
+}
+
 
 model LoginEvent {
   id         String   @id @default(cuid())
