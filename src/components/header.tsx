@@ -69,7 +69,12 @@ const navLinks: NavLink[] = [
 export async function Header() {
   const session = await getCurrentSession()
   const role = session?.user?.role as AppRole | undefined
-  const roles = (session?.user?.roles as AppRole[] | undefined) ?? (role ? [role] : [])
+  const roles =
+  session?.user && 'roles' in session.user && Array.isArray(session.user.roles)
+    ? (session.user.roles as AppRole[])
+    : role
+      ? [role]
+      : []
   const nextPhaseEvent = await getNextPhaseEventFromDb()
 
   const phases = await prisma.phase.findMany({
