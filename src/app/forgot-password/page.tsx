@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
 
           setMsg('If the account exists, a reset code has been sent.');
 
-          router.push(`/reset-password?email=${encodeURIComponent(email)}`);
+          router.push(`/reset-password?email=${encodeURIComponent(email)}&sent=1`);
         }}
       >
         <input
