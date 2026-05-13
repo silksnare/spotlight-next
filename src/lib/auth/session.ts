@@ -75,6 +75,23 @@ export function clearSessionCookie(response: NextResponse) {
 }
 
 export const getCurrentSession = cache(async () => {
+  if (
+    process.env.AUTH_MODE === 'dev' &&
+    process.env.AUTH_DEV_BYPASS === 'true'
+  ) {
+    return {
+      user: {
+        id: 'dev-user',
+        employeeId: 'DEV001',
+        name: 'Dev User',
+        email: 'dev@example.com',
+        role: 'admin',
+        homeArea: 31,
+        district: 1,
+      },
+    };
+  }
+
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
 

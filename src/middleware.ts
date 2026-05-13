@@ -3,10 +3,28 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { hasAnyRole, requiredRolesForPath } from '@/lib/auth/access';
 import { SESSION_COOKIE, readSessionToken } from '@/lib/auth/session';
 
-const PUBLIC_PATHS = ['/', '/login', '/unauthorized', '/api/auth/saml/metadata', '/api/auth/saml/acs', '/api/auth/saml/callback','/api/judge/round-1/score'];
+const PUBLIC_PATHS = [
+  '/',
+  '/login',
+  '/unauthorized',
+  '/api/auth/saml/metadata',
+  '/api/auth/saml/acs',
+  '/api/auth/saml/callback',
+  '/api/judge/round-1/score',
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  const isDevBypass =
+    process.env.AUTH_MODE === 'dev' &&
+    process.env.AUTH_DEV_BYPASS === 'true';
+
+  if (isDevBypass) {
+    const response = NextResponse.next();
+    response.headers.set('x-spotlight-middleware', 'dev-bypass');
+    return response;
+  }
 
   if (
     pathname.startsWith('/_next') ||
