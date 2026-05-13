@@ -1,22 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db/prisma';
-import { getCurrentSession } from '@/lib/auth/session';
-import { getSessionRoles } from '@/lib/auth/access';
 
-const ALLOWED = ['uploader', 'qualifier', 'judge1', 'judge2', 'admin', 'client'];
+import { getSessionRoles } from '@/lib/auth/access';
+import { getCurrentSession } from '@/lib/auth/session';
+import { prisma } from '@/lib/db/prisma';
+
+const ALLOWED = ['uploader', 'qualifier', 'judge1', 'judge2', 'admin', 'client'] as const;
+
+type AppRole = (typeof ALLOWED)[number];
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getCurrentSession();
-  if (!session || !getSessionRoles(session.user).includes('admin')) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  if (!session || !getSessionRoles(session.user).includes('admin')) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
   const { id } = await params;
   const body = await request.json();
-  
-  type AppRole = (typeof ALLOWED)[number];
 
   const incoming = Array.isArray(body.roles) ? body.roles : [];
 
   let nextRoles: AppRole[] = incoming.filter(
-    (role): role is AppRole =>
+    (role: unknown): role is AppRole =>
       typeof role === 'string' && ALLOWED.includes(role as AppRole),
   );
 
@@ -26,19 +31,39 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     nextRoles = ['uploader'];
   }
 
-  const target = await prisma.user.findUnique({ where: { id }, include: { userRoles: true } });
-  if (!target) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  const target = await prisma.user.findUnique({
+    where: { id },
+    include: { userRoles: true },
+  });
 
-  const hadAdmin = target.userRoles.some((r) => r.role === 'admin');
+  if (!target) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  }
+
+  const hadAdmin = target.userRoles.some((role) => role.role === 'admin');
   const willHaveAdmin = nextRoles.includes('admin');
+
   if (hadAdmin && !willHaveAdmin) {
     const adminCount = await prisma.userRole.count({ where: { role: 'admin' } });
-    if (adminCount <= 1) return NextResponse.json({ error: 'Cannot remove final admin role' }, { status: 400 });
+
+    if (adminCount <= 1) {
+      return NextResponse.json({ error: 'Cannot remove final admin role' }, { status: 400 });
+    }
   }
 
   await prisma.$transaction([
-    prisma.userRole.deleteMany({ where: { userId: id, role: { notIn: nextRoles } } }),
-    prisma.userRole.createMany({ data: nextRoles.map((role) => ({ userId: id, role })), skipDuplicates: true }),
+    prisma.userRole.deleteMany({
+      where: {
+        userId: id,
+        role: {
+          notIn: nextRoles,
+        },
+      },
+    }),
+    prisma.userRole.createMany({
+      data: nextRoles.map((role) => ({ userId: id, role })),
+      skipDuplicates: true,
+    }),
   ]);
 
   return NextResponse.json({ ok: true, roles: nextRoles });
