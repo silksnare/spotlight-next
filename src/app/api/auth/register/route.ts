@@ -15,8 +15,9 @@ export async function POST(request: NextRequest) {
   const existing = await prisma.localAuthCredential.findUnique({ where: { email: e } });
   if (existing) {
     await prisma.localAuthCredential.update({ where: { id: existing.id }, data: { passwordHash, verificationCodeHash: codeHash, verificationCodeExpiresAt: expiresAt, verificationCodeSentAt: new Date(), emailVerified: false, emailVerifiedAt: null } });
+    await prisma.userRole.createMany({ data: [{ userId: existing.userId, role: 'uploader' }], skipDuplicates: true });
   } else {
-    await prisma.localAuthCredential.create({ data: { email: e, passwordHash, verificationCodeHash: codeHash, verificationCodeExpiresAt: expiresAt, verificationCodeSentAt: new Date(), user: { create: { employeeId: makeLocalEmployeeId(), email: e, firstName: e.split('@')[0], lastName: 'User', displayName: e.split('@')[0] } } } });
+    await prisma.localAuthCredential.create({ data: { email: e, passwordHash, verificationCodeHash: codeHash, verificationCodeExpiresAt: expiresAt, verificationCodeSentAt: new Date(), user: { create: { employeeId: makeLocalEmployeeId(), email: e, firstName: e.split('@')[0], lastName: 'User', displayName: e.split('@')[0], userRoles: { create: [{ role: 'uploader' }] } } } } });
   }
   await sendEmail({ to: e, ...verificationCodeEmailTemplate(code) });
   return NextResponse.json({ ok: true });

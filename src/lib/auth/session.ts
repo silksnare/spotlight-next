@@ -14,6 +14,7 @@ export type SpotlightUser = {
   name: string;
   email: string;
   role: AppRole;
+  roles?: AppRole[];
   homeArea: number | null;
   district: number | null;
 };

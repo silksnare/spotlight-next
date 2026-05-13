@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-import { hasAnyRole, requiredRolesForPath } from '@/lib/auth/access';
+import { getSessionRoles, hasAnyRole, requiredRolesForPath } from '@/lib/auth/access';
 import { SESSION_COOKIE, readSessionToken } from '@/lib/auth/session';
 
 const PUBLIC_PATHS = ['/', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/unauthorized', '/api/auth/saml/metadata', '/api/auth/saml/acs', '/api/auth/saml/callback','/api/judge/round-1/score'];
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const requiredRoles = requiredRolesForPath(pathname);
-  const allowed = hasAnyRole([session.user.role], requiredRoles);
+  const allowed = hasAnyRole(getSessionRoles(session.user), requiredRoles);
 
   if (!allowed) {
     const response = NextResponse.redirect(new URL('/unauthorized', request.url));
