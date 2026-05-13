@@ -1,8 +1,11 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [msg, setMsg] = useState('');
 
@@ -22,6 +25,8 @@ export default function ForgotPasswordPage() {
           });
 
           setMsg('If the account exists, a reset code has been sent.');
+
+          router.push(`/reset-password?email=${encodeURIComponent(email)}`);
         }}
       >
         <input
