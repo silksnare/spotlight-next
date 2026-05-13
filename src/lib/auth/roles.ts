@@ -1,4 +1,4 @@
-export const APP_ROLES = ['uploader', 'qualifier', 'judge1', 'judge2', 'admin'] as const;
+export const APP_ROLES = ['uploader', 'qualifier', 'judge1', 'judge2', 'admin', 'client'] as const;
 
 export type AppRole = (typeof APP_ROLES)[number];
 
@@ -8,6 +8,7 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   judge1: 'Judge 1',
   judge2: 'Judge 2',
   admin: 'Admin',
+  client: 'Client',
 };
 
 const ROLE_ALIASES: Record<string, AppRole> = {
@@ -22,6 +23,7 @@ const ROLE_ALIASES: Record<string, AppRole> = {
   admin: 'admin',
   client_admin: 'admin',
   super_admin: 'admin',
+  client: 'client',
 };
 
 export function normalizeRole(input: unknown): AppRole | null {

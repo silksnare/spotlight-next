@@ -105,6 +105,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.redirect(new URL('/unauthorized', baseUrl), { status: 303 });
     }
 
+    
+    await prisma.userRole.createMany({
+      data: [{ userId: user.id, role: identity.role }],
+      skipDuplicates: true,
+    });
+
+    const userWithRoles = await prisma.user.findUniqueOrThrow({
+      where: { id: user.id },
+      include: { userRoles: true },
+    });
+    const sessionRoles = Array.from(new Set(userWithRoles.userRoles.map((r) => r.role)));
+
     console.info('SAML ACS success', {
       employeeId: identity.employeeId,
       role: identity.role,
@@ -127,6 +139,7 @@ export async function POST(request: NextRequest) {
         name: identity.name,
         email: normalizedEmail,
         role: identity.role,
+        roles: sessionRoles as typeof identity.role[],
         homeArea: identity.homeArea,
         district: resolvedDistrict,
       },

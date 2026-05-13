@@ -8,7 +8,7 @@ import { prisma } from '@/lib/prisma'
 
 import { HeaderNavClient } from '@/components/HeaderNavClient'
 
-type AppRole = 'uploader' | 'qualifier' | 'judge1' | 'judge2' | 'admin'
+type AppRole = 'uploader' | 'qualifier' | 'judge1' | 'judge2' | 'admin' | 'client'
 
 type NavLink = {
   href: string
@@ -59,11 +59,17 @@ const navLinks: NavLink[] = [
     label: 'Admin',
     roles: ['admin'],
   },
+  {
+    href: '/platform-admin',
+    label: 'Platform Admin',
+    roles: ['admin'],
+  },
 ]
 
 export async function Header() {
   const session = await getCurrentSession()
   const role = session?.user?.role as AppRole | undefined
+  const roles = (session?.user?.roles as AppRole[] | undefined) ?? (role ? [role] : [])
   const nextPhaseEvent = await getNextPhaseEventFromDb()
 
   const phases = await prisma.phase.findMany({
@@ -78,7 +84,7 @@ export async function Header() {
 
   const visibleLinks = navLinks.filter((link) => {
     if (!role) return false
-    if (!link.roles.includes(role)) return false
+    if (!roles.some((r) => link.roles.includes(r))) return false
 
     if (!link.phaseKey) return true
 
