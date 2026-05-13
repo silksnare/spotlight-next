@@ -3,15 +3,23 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { hasAnyRole, requiredRolesForPath } from '@/lib/auth/access';
 import { SESSION_COOKIE, readSessionToken } from '@/lib/auth/session';
 
+<<<<<<< HEAD
 const PUBLIC_PATHS = [
   '/',
   '/login',
+  '/register',
+  '/verify-email',
+  '/forgot-password',
+  '/reset-password',
   '/unauthorized',
   '/api/auth/saml/metadata',
   '/api/auth/saml/acs',
   '/api/auth/saml/callback',
   '/api/judge/round-1/score',
 ];
+=======
+const PUBLIC_PATHS = ['/', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/unauthorized', '/api/auth/saml/metadata', '/api/auth/saml/acs', '/api/auth/saml/callback','/api/judge/round-1/score'];
+>>>>>>> origin/server-auth-build-fixes
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
