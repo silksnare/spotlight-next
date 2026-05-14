@@ -8,8 +8,8 @@ export const routeRoleRequirements: Array<{ prefix: string; roles: AppRole[] }> 
   { prefix: '/vote', roles: ['__disabled__' as AppRole] },
   { prefix: '/platform-admin', roles: ['admin'] },
   { prefix: '/api/platform-admin', roles: ['admin'] },
-  { prefix: '/admin', roles: ['admin'] },
-  { prefix: '/api/admin', roles: ['admin'] },
+  { prefix: '/admin', roles: ['client'] },
+  { prefix: '/api/admin', roles: ['client'] },
   { prefix: '/api/qualify', roles: ['qualifier'] },
   { prefix: '/api/qualify/', roles: ['qualifier'] },
 ];
