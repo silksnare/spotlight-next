@@ -12,86 +12,47 @@ export default function LoginPage() {
   const [error, setError] = useState('');
 
   return (
-    <main className="relative flex min-h-screen flex-1 overflow-hidden bg-[#f8f8fc] px-4 py-10 sm:px-6 lg:px-10">
+    <main className="relative flex min-h-screen flex-1 items-center justify-center overflow-hidden bg-[#f8f8fc] px-4 py-10 sm:px-6 lg:px-10">
       <div className="pointer-events-none absolute -left-20 top-32 h-72 w-72 rounded-full bg-[#ff8f5c]/20 blur-3xl" />
       <div className="pointer-events-none absolute bottom-16 right-10 h-80 w-80 rounded-full bg-[#7f56ff]/20 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 bg-gradient-to-tr from-[#f15a2b]/25 via-[#cf6fe6]/20 to-[#7f56ff]/20 [clip-path:polygon(100%_0,0_100%,100%_100%)]" />
-      <div className="pointer-events-none absolute right-[22%] top-32 hidden h-48 w-48 rounded-full bg-[#cf6fe6]/10 blur-2xl lg:block" />
 
-      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-        <section className="space-y-8 lg:pr-8">
-          <div className="space-y-4">
-            <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
-              Welcome back
-            </p>
+      <div className="relative grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[#ececf4] bg-white shadow-[0_30px_90px_rgba(78,57,154,0.16)] lg:grid-cols-2">
+        <section className="relative min-h-[540px] overflow-hidden bg-white p-8 sm:p-10 lg:p-12">
+          <div className="relative z-10">
+            <div className="mb-16">
+              <div className="text-2xl font-extrabold tracking-tight text-[#111322]">
+                Spotlight Next
+              </div>
+              <div className="mt-1 text-xs font-bold uppercase tracking-[0.22em] text-[#8b8fa3]">
+                BI WORLDWIDE
+              </div>
+            </div>
 
-            <h1 className="max-w-2xl text-5xl font-extrabold leading-[1.02] tracking-tight text-[#171827] sm:text-6xl">
-              <span className="block bg-gradient-to-r from-[#f2692f] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
+            <h1 className="max-w-md text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+              <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
                 Inspiring people.
               </span>
-              <span className="block bg-gradient-to-r from-[#f2692f] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
                 Delivering results.
               </span>
             </h1>
-
-            <p className="max-w-xl text-base leading-7 text-[#55586b]">
-              Sign in to access the Spotlight Next platform and continue driving
-              meaningful impact across teams.
-            </p>
           </div>
 
-          <div className="relative max-w-2xl overflow-hidden rounded-[2rem] border border-white/80 bg-white/60 p-8 shadow-[0_30px_90px_rgba(78,57,154,0.14)] backdrop-blur-md">
-            <div className="pointer-events-none absolute -right-16 -top-12 h-48 w-48 rounded-full bg-[#8e6bff]/20 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-20 -left-16 h-52 w-52 rounded-full bg-[#ff8f5c]/25 blur-3xl" />
-            <div className="pointer-events-none absolute bottom-0 right-0 h-48 w-64 bg-gradient-to-tr from-[#f15a2b]/25 via-[#cf6fe6]/20 to-[#7f56ff]/20 [clip-path:polygon(100%_0,15%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 left-0 right-0 h-[300px]">
+            <div className="absolute bottom-0 left-0 h-56 w-72 bg-gradient-to-tr from-[#ff6a13]/80 via-[#d14fc7]/50 to-[#7f56ff]/70 [clip-path:polygon(0_38%,100%_0,72%_100%,0_100%)]" />
+            <div className="absolute bottom-0 right-8 h-64 w-72 bg-gradient-to-tr from-[#7f56ff]/70 via-[#d14fc7]/35 to-transparent [clip-path:polygon(0_42%,100%_8%,100%_100%,0_100%)]" />
 
-            <div className="relative">
-              <p className="text-xl font-bold text-[#1f2130]">Spotlight Next</p>
-              <p className="mt-1 text-xs font-bold uppercase tracking-[0.22em] text-[#7a7d8f]">
-                BI WORLDWIDE
-              </p>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-2xl border border-white/80 bg-white/75 p-4 shadow-sm">
-                  <div className="mb-4 h-10 w-10 rounded-full bg-[#ff6a13]/15 text-center text-2xl leading-10">
-                    ▶
-                  </div>
-                  <p className="text-sm font-bold text-[#202235]">Participate</p>
-                  <p className="mt-1 text-xs leading-5 text-[#666a7d]">
-                    Submit quality videos with ease.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-white/80 bg-white/75 p-4 shadow-sm">
-                  <div className="mb-4 h-10 w-10 rounded-full bg-[#7f56ff]/15 text-center text-2xl leading-10">
-                    ★
-                  </div>
-                  <p className="text-sm font-bold text-[#202235]">Judge</p>
-                  <p className="mt-1 text-xs leading-5 text-[#666a7d]">
-                    Score submissions across phases.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-white/80 bg-white/75 p-4 shadow-sm">
-                  <div className="mb-4 h-10 w-10 rounded-full bg-[#d14fc7]/15 text-center text-2xl leading-10">
-                    ↑
-                  </div>
-                  <p className="text-sm font-bold text-[#202235]">Recognize</p>
-                  <p className="mt-1 text-xs leading-5 text-[#666a7d]">
-                    Surface winners and results.
-                  </p>
-                </div>
-              </div>
+            <div className="absolute bottom-10 left-1/2 flex h-56 w-[360px] -translate-x-1/2 items-center justify-center rounded-[2rem] border border-dashed border-[#cfd2df] bg-white/70 text-center text-sm font-semibold uppercase tracking-[0.18em] text-[#8b8fa3] shadow-[0_20px_60px_rgba(78,57,154,0.12)] backdrop-blur-sm">
+              Placeholder Image
             </div>
           </div>
         </section>
 
-        <section className="flex items-center lg:justify-end">
-          <div className="w-full max-w-md rounded-2xl border border-[#ececf4] bg-white p-6 shadow-[0_24px_60px_rgba(22,16,47,0.14)] sm:p-8">
+        <section className="flex items-center justify-center bg-white p-8 sm:p-10 lg:p-12">
+          <div className="w-full max-w-md rounded-2xl border border-[#ececf4] bg-white p-6 shadow-[0_24px_60px_rgba(22,16,47,0.12)] sm:p-8">
             <div className="mb-6 space-y-2">
-              <h2 className="text-3xl font-semibold text-[#181a2a]">
-                Welcome back
-              </h2>
+              <h2 className="text-3xl font-semibold text-[#181a2a]">Welcome back</h2>
               <p className="text-sm text-[#676b80]">Sign in to your account</p>
             </div>
 
@@ -174,9 +135,7 @@ export default function LoginPage() {
 
             <div className="my-5 flex items-center gap-3">
               <div className="h-px flex-1 bg-[#e4e5ef]" />
-              <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#8b8ea1]">
-                OR
-              </span>
+              <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#8b8ea1]">OR</span>
               <div className="h-px flex-1 bg-[#e4e5ef]" />
             </div>
 
