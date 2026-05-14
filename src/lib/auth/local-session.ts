@@ -12,12 +12,12 @@ function isAppRole(role: string): role is AppRole {
   return VALID_ROLES.includes(role as AppRole);
 }
 
-function highestPriorityRole(roles: AppRole[]): AppRole {
+function highestPriorityRole(roles: AppRole[]): AppRole | null {
   for (const role of ROLE_PRIORITY) {
     if (roles.includes(role)) return role;
   }
 
-  return 'uploader';
+  return null;
 }
 
 export function buildLocalSession(user: User & { userRoles?: UserRole[] }): AppSession {
@@ -25,9 +25,7 @@ export function buildLocalSession(user: User & { userRoles?: UserRole[] }): AppS
     .map((r) => r.role)
     .filter(isAppRole);
 
-  const uniqueRoles: AppRole[] = Array.from(new Set(roles));
-
-  const resolvedRoles: AppRole[] = uniqueRoles.length ? uniqueRoles : ['uploader'];
+  const resolvedRoles: AppRole[] = Array.from(new Set(roles));
 
   return {
     user: {
