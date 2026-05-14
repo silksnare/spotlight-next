@@ -12,12 +12,12 @@ function isAppRole(role: string): role is AppRole {
   return VALID_ROLES.includes(role as AppRole);
 }
 
-function highestPriorityRole(roles: AppRole[]): AppRole | null {
+function highestPriorityRole(roles: AppRole[]): AppRole | undefined {
   for (const role of ROLE_PRIORITY) {
     if (roles.includes(role)) return role;
   }
 
-  return null;
+  return undefined;
 }
 
 export function buildLocalSession(user: User & { userRoles?: UserRole[] }): AppSession {
