@@ -56,8 +56,8 @@ const navLinks: NavLink[] = [
     : []),
   {
     href: '/admin',
-    label: 'Admin',
-    roles: ['admin'],
+    label: 'Client',
+    roles: ['client'],
   },
   {
     href: '/platform-admin',
