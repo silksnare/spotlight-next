@@ -55,7 +55,7 @@ export default async function DashboardPage() {
           name: session.user.name,
           email: session.user.email,
           employeeId: session.user.employeeId,
-          role: session.user.role,
+          role: session.user.role ?? null,
           homeArea: session.user.homeArea,
         }}
       />
