@@ -13,7 +13,7 @@ export type SpotlightUser = {
   employeeId: string;
   name: string;
   email: string;
-  role: AppRole;
+  role?: AppRole;
   roles?: AppRole[];
   homeArea: number | null;
   district: number | null;
@@ -87,6 +87,7 @@ export const getCurrentSession = cache(async () => {
         name: 'Dev User',
         email: 'dev@example.com',
         role: 'admin',
+        roles: ['admin'],
         homeArea: 31,
         district: 1,
       },
