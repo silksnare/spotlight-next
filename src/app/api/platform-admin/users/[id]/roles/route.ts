@@ -27,10 +27,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   nextRoles = Array.from(new Set(nextRoles));
 
-  if (nextRoles.length === 0) {
-    nextRoles = ['uploader'];
-  }
-
   const target = await prisma.user.findUnique({
     where: { id },
     include: { userRoles: true },
