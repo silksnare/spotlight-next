@@ -4,12 +4,13 @@ import Script from 'next/script'
 import './globals.css'
 
 import { Header } from '@/components/header'
+import { HeaderGate } from '@/components/HeaderGate'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://underthehoodheroes.com'),
+  metadataBase: new URL('https://spotlightnext.io'),
 
-  title: 'Lexus Under The Hood Heroes',
-  description: 'Technician Video MPI Contest Platform',
+  title: 'Spotlight Next',
+  description: 'Video MPI Contest Platform',
 
   icons: {
     icon: [
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
     siteName: 'Spotlight NEXT',
     images: [
       {
-        url: '/images/share-image.jpg', // <-- make this relative now
+        url: '/images/share-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Spotlight NEXT',
@@ -57,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="min-h-screen">
-        {GA_ID && (
+        {/*{GA_ID && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
@@ -72,10 +73,13 @@ export default function RootLayout({
               `}
             </Script>
           </>
-        )}
+        )}*/}
 
         <div className="flex min-h-screen w-full flex-col">
-          <Header />
+          <HeaderGate>
+            <Header />
+          </HeaderGate>
+
           <div className="flex w-full flex-1 flex-col">
             {children}
           </div>
