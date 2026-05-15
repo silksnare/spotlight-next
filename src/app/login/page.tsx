@@ -21,16 +21,27 @@ export default function LoginPage() {
       <div className="relative grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[#ececf4] bg-white shadow-[0_30px_90px_rgba(78,57,154,0.16)] lg:grid-cols-2">
         <section className="relative min-h-[540px] overflow-hidden bg-white p-8 sm:p-10 lg:p-12">
           <div className="relative z-10">
-            <div className="mb-16">
-              <div className="text-2xl font-extrabold tracking-tight text-[#111322]">
-                Spotlight Next
-              </div>
-              <div className="mt-1 text-xs font-bold uppercase tracking-[0.22em] text-[#8b8fa3]">
-                BI WORLDWIDE
+            <div className="mb-16 flex items-center gap-3">
+              <Image
+                src="/icons/icon-192x192-sharp.png"
+                alt=""
+                width={42}
+                height={42}
+                className="h-10 w-10 object-contain"
+                priority
+              />
+
+              <div>
+                <div className="text-2xl font-extrabold leading-none tracking-tight text-[#111322]">
+                  Spotlight Next
+                </div>
+                <div className="mt-1 text-xs font-bold uppercase tracking-[0.22em] text-[#8b8fa3]">
+                  BI WORLDWIDE
+                </div>
               </div>
             </div>
 
-            <h1 className="max-w-md text-4xl font-extrabold leading-[1.15] tracking-tight sm:text-5xl">
+            <h1 className="max-w-md pb-2 text-4xl font-extrabold leading-[1.25] tracking-tight sm:text-5xl">
               <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
                 Inspiring people.
               </span>
