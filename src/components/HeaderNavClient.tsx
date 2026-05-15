@@ -106,7 +106,7 @@ export function HeaderNavClient({
             <Link
               key={link.href}
               href={link.href}
-              className="inline-flex h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[#ff6a13] px-7 text-center text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_10px_30px_rgba(255,106,19,0.28)] transition hover:translate-y-[-1px] hover:bg-[#f05f0f] hover:shadow-[0_14px_34px_rgba(255,106,19,0.34)]"
+              className="inline-flex h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-7 text-center text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(255,140,32,0.32)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(255,140,32,0.4)]"
             >
               {link.label}
             </Link>
