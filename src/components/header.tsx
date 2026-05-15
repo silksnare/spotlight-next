@@ -98,20 +98,27 @@ export async function Header() {
   })
 
   return (
-    <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 min-[1200px]:grid min-[1200px]:gap-6 min-[1200px]:grid-cols-[250px_1fr_380px]">
-        <div className="flex items-center">
-          <Link href="/" className="shrink-0" aria-label="Lexus home">
-            <Image
-              src="/images/logo.jpg"
-              alt="logo"
-              width={564}
-              height={60}
-              className="h-auto w-[150px] sm:w-[250px]"
-              priority
-            />
-          </Link>
-        </div>
+    <header className="sticky top-0 z-50 border-b border-[#ece8f4] bg-white/90 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-6 py-5">
+        <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Spotlight Next home">
+          <Image
+            src="/icons/icon-192x192-sharp.png"
+            alt=""
+            width={42}
+            height={42}
+            className="h-10 w-10 object-contain"
+            priority
+          />
+
+          <div>
+            <div className="text-2xl font-extrabold leading-none tracking-tight text-[#111322]">
+              Spotlight Next
+            </div>
+            <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.24em] text-[#8b8fa3]">
+              BI WORLDWIDE
+            </div>
+          </div>
+        </Link>
 
         <HeaderNavClient
           visibleLinks={visibleLinks}
