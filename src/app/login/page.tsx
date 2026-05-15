@@ -46,7 +46,7 @@ export default function LoginPage() {
 
             <div className="absolute bottom-0 left-1/2 w-[430px] -translate-x-1/2">
               <Image
-                src="/images/login-main.png"
+                src="/images/login-main2.png"
                 alt="Team collaborating"
                 width={430}
                 height={320}
