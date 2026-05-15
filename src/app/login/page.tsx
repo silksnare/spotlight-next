@@ -41,11 +41,11 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <h1 className="max-w-md pb-2 text-4xl font-extrabold leading-[1.25] tracking-tight sm:text-5xl">
-              <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
+            <h1 className="max-w-md py-2 text-4xl font-extrabold leading-[1.3] tracking-tight sm:text-5xl">
+              <span className="block [-webkit-box-decoration-break:clone] bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text pb-1 text-transparent">
                 Inspiring people.
               </span>
-              <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
+              <span className="block [-webkit-box-decoration-break:clone] bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text pb-1 text-transparent">
                 Delivering results.
               </span>
             </h1>
