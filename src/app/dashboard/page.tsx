@@ -62,44 +62,104 @@ export default async function DashboardPage() {
 
       <div className="space-y-0 bg-white">
         <section className="overflow-hidden bg-white">
-          <div className="relative min-h-[640px]">
-            <Image
-              src="/images/background.jpg"
-              alt=""
-              fill
-              priority
-              className="object-cover"
-            />
+          <div className="relative overflow-hidden rounded-[2rem] border border-[#ececf4] bg-white shadow-[0_30px_90px_rgba(78,57,154,0.14)]">
+          <div className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full bg-[#ff8f5c]/20 blur-3xl" />
+          <div className="pointer-events-none absolute -right-20 bottom-8 h-80 w-80 rounded-full bg-[#7f56ff]/20 blur-3xl" />
 
-            <div className="relative flex min-h-[640px] flex-col items-center justify-center px-6 py-16 text-center">
-              <Image
-                src="/images/hood.png"
-                alt="Under the Hood Heroes"
-                width={360}
-                height={220}
-                priority
-                className="mb-8 h-auto w-[280px] md:w-[360px]"
-              />
+          <div className="pointer-events-none absolute bottom-0 right-0 h-full w-[55%] bg-gradient-to-tr from-[#ff6a13]/20 via-[#d14fc7]/20 to-[#7f56ff]/25 [clip-path:polygon(28%_100%,100%_12%,100%_100%)]" />
+          <div className="pointer-events-none absolute bottom-0 left-[45%] h-[260px] w-[420px] bg-gradient-to-tr from-[#7f56ff]/25 via-[#d14fc7]/15 to-transparent [clip-path:polygon(0_100%,100%_28%,72%_100%)]" />
 
-              <h1 className="max-w-[1100px] text-[44px] font-semibold leading-[1.05] text-[#231f20] md:text-[72px]">
-                Lights. Camera. Inspection.
-              </h1>
+          <div className="pointer-events-none absolute right-16 top-1/2 hidden -translate-y-1/2 grid-cols-4 gap-3 opacity-45 lg:grid">
+            {Array.from({ length: 32 }).map((_, index) => (
+              <span key={index} className="h-1.5 w-1.5 rounded-full bg-[#d14fc7]" />
+            ))}
+          </div>
 
-              <p className="mt-6 max-w-[980px] text-[22px] leading-[1.5] text-[#231f20] md:text-[28px]">
-                Showcase your expertise with a Lexus Multipoint Inspection (MPI)
-                video and win!
+          <div className="relative grid min-h-[520px] items-center gap-10 px-8 py-16 md:px-12 lg:grid-cols-[1.1fr_0.9fr] lg:px-16">
+            <div>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
+                Spotlight Platform
               </p>
 
-              <div className="mt-10">
+              <h1 className="max-w-2xl text-5xl font-extrabold leading-[1.05] tracking-tight text-[#111322] md:text-7xl">
+                Spotlight Next
+                <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text pb-2 text-transparent">
+                  Inspiring participation.
+                </span>
+                <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text pb-2 text-transparent">
+                  Delivering results.
+                </span>
+              </h1>
+
+              <p className="mt-6 max-w-xl text-base leading-7 text-[#55586b] md:text-lg">
+                A phase-based video competition platform designed to engage participants,
+                streamline judging, and deliver measurable business impact.
+              </p>
+
+              <div className="mt-8">
                 <a
                   href="#contest-details"
-                  className="inline-flex min-h-[58px] items-center justify-center bg-[#231f20] px-10 text-[16px] font-semibold uppercase tracking-[0.02em] text-white transition hover:opacity-90"
+                  className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
                 >
                   View Contest Details
+                  <span className="ml-3 text-lg leading-none">→</span>
                 </a>
               </div>
             </div>
+
+            <div className="relative hidden lg:block">
+              <div className="ml-auto grid max-w-[280px] gap-5">
+                <div className="rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#7f56ff]/12 text-[#7f56ff]">
+                      👥
+                    </div>
+                    <div>
+                      <div className="text-2xl font-extrabold leading-none text-[#111322]">
+                        1,248
+                      </div>
+                      <div className="mt-1 text-xs font-medium text-[#676b80]">
+                        Total Submissions
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="ml-8 rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ff6a13]/12 text-[#ff6a13]">
+                      ▶
+                    </div>
+                    <div>
+                      <div className="text-2xl font-extrabold leading-none text-[#111322]">
+                        86%
+                      </div>
+                      <div className="mt-1 text-xs font-medium text-[#676b80]">
+                        Judge Completion
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d14fc7]/12 text-[#d14fc7]">
+                      ↗
+                    </div>
+                    <div>
+                      <div className="text-2xl font-extrabold leading-none text-[#111322]">
+                        312
+                      </div>
+                      <div className="mt-1 text-xs font-medium text-[#676b80]">
+                        Active Participants
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
         </section>
 
         <section className="bg-white page-container">
