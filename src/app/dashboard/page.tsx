@@ -113,7 +113,7 @@ export default async function DashboardPage() {
               </div>
 
               <div className="relative hidden lg:block">
-                <div className="ml-auto grid max-w-[280px] gap-5">
+                <div className="ml-auto grid w-full max-w-[320px] gap-5">
                   <div className="rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
                     <div className="flex items-center gap-4">
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#7f56ff]/12 text-[#7f56ff]">
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="ml-8 rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
+                  <div className="translate-x-8 rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
                     <div className="flex items-center gap-4">
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ff6a13]/12 text-[#ff6a13]">
                         ▶
