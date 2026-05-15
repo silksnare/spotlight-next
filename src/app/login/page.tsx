@@ -3,6 +3,7 @@
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,9 +44,17 @@ export default function LoginPage() {
             <div className="absolute bottom-0 left-0 h-56 w-72 bg-gradient-to-tr from-[#ff6a13]/80 via-[#d14fc7]/50 to-[#7f56ff]/70 [clip-path:polygon(0_38%,100%_0,72%_100%,0_100%)]" />
             <div className="absolute bottom-0 right-8 h-64 w-72 bg-gradient-to-tr from-[#7f56ff]/70 via-[#d14fc7]/35 to-transparent [clip-path:polygon(0_42%,100%_8%,100%_100%,0_100%)]" />
 
-            <div className="absolute bottom-10 left-1/2 flex h-56 w-[360px] -translate-x-1/2 items-center justify-center rounded-[2rem] border border-dashed border-[#cfd2df] bg-white/70 text-center text-sm font-semibold uppercase tracking-[0.18em] text-[#8b8fa3] shadow-[0_20px_60px_rgba(78,57,154,0.12)] backdrop-blur-sm">
-              Placeholder Image
+            <div className="absolute bottom-0 left-1/2 w-[430px] -translate-x-1/2">
+              <Image
+                src="/images/login-main.png"
+                alt="Team collaborating"
+                width={430}
+                height={320}
+                className="h-auto w-full object-contain"
+                priority
+              />
             </div>
+
           </div>
         </section>
 

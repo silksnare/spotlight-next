@@ -30,16 +30,16 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: 'Lexus Under The Hood Heroes',
-    description: 'Technician Video MPI Contest Platform',
+    title: 'Spotlight NEXT',
+    description: 'Video MPI Contest Platform Powered by BI WORLDWIDE',
     url: '/',
-    siteName: 'Lexus Under The Hood Heroes',
+    siteName: 'Spotlight NEXT',
     images: [
       {
         url: '/images/share-image.jpg', // <-- make this relative now
         width: 1200,
         height: 630,
-        alt: 'Lexus Under The Hood Heroes',
+        alt: 'Spotlight NEXT',
       },
     ],
     locale: 'en_US',
