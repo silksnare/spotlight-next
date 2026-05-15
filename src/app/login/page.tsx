@@ -30,7 +30,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <h1 className="max-w-md text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+            <h1 className="max-w-md text-4xl font-extrabold leading-[1.15] tracking-tight sm:text-5xl">
               <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text text-transparent">
                 Inspiring people.
               </span>
@@ -38,6 +38,13 @@ export default function LoginPage() {
                 Delivering results.
               </span>
             </h1>
+
+            <p className="mt-6 max-w-md text-base leading-7 text-[#676b80]">
+              A modern competition platform designed to engage participants, streamline judging,
+              and deliver measurable business impact across every phase.
+            </p>
+
+            
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 h-[300px]">
