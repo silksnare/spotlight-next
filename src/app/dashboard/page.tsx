@@ -10,6 +10,10 @@ import {
   ClipboardList,
   PencilLine,
   Download,
+  Upload,
+  Clock,
+  Users,
+  Trophy,
 } from 'lucide-react'
 
 const keyDates = [
@@ -183,40 +187,18 @@ export default async function DashboardPage() {
               <div className="page-title">Key Dates</div>
 
               <div className="relative mt-12 mb-10">
-                {/* Desktop timeline line */}
-                <div className="absolute left-0 right-0 top-[46px] hidden h-px bg-[#e4e5ef] lg:block" />
+                <div className="absolute left-0 right-0 top-7 hidden h-px bg-[#dfe1ea] lg:block" />
 
                 <div className="grid gap-8 lg:grid-cols-4">
                   {keyDates.map((item, index) => {
+                    const icons = [Upload, Clock, Users, Trophy]
+                    const Icon = icons[index]
+
                     const accents = [
-                      {
-                        icon: '↥',
-                        color: '#ff6a13',
-                        bg: 'bg-[#ff6a13]/10',
-                        border: 'border-[#ff6a13]',
-                        text: 'text-[#ff6a13]',
-                      },
-                      {
-                        icon: '◷',
-                        color: '#7f56ff',
-                        bg: 'bg-[#7f56ff]/10',
-                        border: 'border-[#7f56ff]',
-                        text: 'text-[#7f56ff]',
-                      },
-                      {
-                        icon: '👥',
-                        color: '#d14fc7',
-                        bg: 'bg-[#d14fc7]/10',
-                        border: 'border-[#d14fc7]',
-                        text: 'text-[#d14fc7]',
-                      },
-                      {
-                        icon: '🏆',
-                        color: '#ff6a13',
-                        bg: 'bg-[#ff6a13]/10',
-                        border: 'border-[#ff6a13]',
-                        text: 'text-[#ff6a13]',
-                      },
+                      { bg: 'bg-[#ff6a13]/10', border: 'border-[#ff6a13]', text: 'text-[#ff6a13]' },
+                      { bg: 'bg-[#7f56ff]/10', border: 'border-[#7f56ff]', text: 'text-[#7f56ff]' },
+                      { bg: 'bg-[#d14fc7]/10', border: 'border-[#d14fc7]', text: 'text-[#d14fc7]' },
+                      { bg: 'bg-[#ff6a13]/10', border: 'border-[#ff6a13]', text: 'text-[#ff6a13]' },
                     ]
 
                     const accent = accents[index]
@@ -226,15 +208,14 @@ export default async function DashboardPage() {
                         key={item.title}
                         className="relative rounded-2xl border border-[#ececf4] bg-white p-6 text-center shadow-[0_18px_50px_rgba(78,57,154,0.08)] lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
                       >
-                        {/* Mobile vertical connector */}
                         {index < keyDates.length - 1 ? (
                           <div className="absolute left-1/2 top-full h-8 w-px -translate-x-1/2 bg-[#e4e5ef] lg:hidden" />
                         ) : null}
 
                         <div
-                          className={`relative z-10 mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 ${accent.border} ${accent.bg} ${accent.text} text-xl shadow-[0_10px_30px_rgba(78,57,154,0.12)]`}
+                          className={`relative z-10 mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 ${accent.border} ${accent.bg} ${accent.text} shadow-[0_10px_30px_rgba(78,57,154,0.12)]`}
                         >
-                          {accent.icon}
+                          <Icon className="h-7 w-7" strokeWidth={2.4} />
                         </div>
 
                         <div className="mt-5 text-[12px] font-bold uppercase leading-[1.4] tracking-[0.12em] text-[#171327]">
