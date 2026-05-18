@@ -17,7 +17,7 @@ import {
   Medal,
   Award,
   Sparkles,
-  BrakeDisc,
+  Disc3,
   CircleGauge,
   BatteryCharging,
   Wind,
@@ -399,7 +399,7 @@ export default async function DashboardPage() {
                   {
                     title: 'Brake Pad Wear Inspection',
                     text: 'Help guests clearly understand their brake pad condition and future needs.',
-                    icon: BrakeDisc,
+                    icon: Disc3,
                     color: 'text-[#7f56ff]',
                     bg: 'bg-[#7f56ff]/10',
                   },
