@@ -173,29 +173,86 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section className="bg-white page-container">
-          <div className="mx-auto max-w-[1600px]">
-            <div className="page-title">Key Dates</div>
+        <section className="bg-white">
+          <div className="page-container">
+            <div className="mx-auto max-w-[1600px]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
+                Program Timeline
+              </p>
 
-            <div className="mt-10 mb-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              {keyDates.map((item) => (
-                <div
-                  key={item.title}
-                  className="flex min-h-[200px] flex-col items-center justify-center rounded-[20px] bg-[#2c4f88] px-6 py-8 text-center text-white"
-                >
-                  <div className="max-w-[220px] text-[14px] font-semibold uppercase leading-[1.4] tracking-[0.04em]">
-                    {item.title}
-                  </div>
+              <div className="page-title">Key Dates</div>
 
-                  <div className="mt-6 text-[22px] font-semibold tracking-[0.08em]">
-                    {item.month}
-                  </div>
+              <div className="relative mt-12 mb-10">
+                {/* Desktop timeline line */}
+                <div className="absolute left-0 right-0 top-[46px] hidden h-px bg-[#e4e5ef] lg:block" />
 
-                  <div className="text-[64px] font-semibold leading-none tracking-[0.02em]">
-                    {item.day}
-                  </div>
+                <div className="grid gap-8 lg:grid-cols-4">
+                  {keyDates.map((item, index) => {
+                    const accents = [
+                      {
+                        icon: '↥',
+                        color: '#ff6a13',
+                        bg: 'bg-[#ff6a13]/10',
+                        border: 'border-[#ff6a13]',
+                        text: 'text-[#ff6a13]',
+                      },
+                      {
+                        icon: '◷',
+                        color: '#7f56ff',
+                        bg: 'bg-[#7f56ff]/10',
+                        border: 'border-[#7f56ff]',
+                        text: 'text-[#7f56ff]',
+                      },
+                      {
+                        icon: '👥',
+                        color: '#d14fc7',
+                        bg: 'bg-[#d14fc7]/10',
+                        border: 'border-[#d14fc7]',
+                        text: 'text-[#d14fc7]',
+                      },
+                      {
+                        icon: '🏆',
+                        color: '#ff6a13',
+                        bg: 'bg-[#ff6a13]/10',
+                        border: 'border-[#ff6a13]',
+                        text: 'text-[#ff6a13]',
+                      },
+                    ]
+
+                    const accent = accents[index]
+
+                    return (
+                      <div
+                        key={item.title}
+                        className="relative rounded-2xl border border-[#ececf4] bg-white p-6 text-center shadow-[0_18px_50px_rgba(78,57,154,0.08)] lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
+                      >
+                        {/* Mobile vertical connector */}
+                        {index < keyDates.length - 1 ? (
+                          <div className="absolute left-1/2 top-full h-8 w-px -translate-x-1/2 bg-[#e4e5ef] lg:hidden" />
+                        ) : null}
+
+                        <div
+                          className={`relative z-10 mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 ${accent.border} ${accent.bg} ${accent.text} text-xl shadow-[0_10px_30px_rgba(78,57,154,0.12)]`}
+                        >
+                          {accent.icon}
+                        </div>
+
+                        <div className="mt-5 text-[12px] font-bold uppercase leading-[1.4] tracking-[0.12em] text-[#171327]">
+                          {item.title}
+                        </div>
+
+                        <div className={`mt-5 text-[18px] font-extrabold uppercase tracking-[0.08em] ${accent.text}`}>
+                          {item.month}
+                        </div>
+
+                        <div className={`text-[54px] font-extrabold leading-none tracking-tight ${accent.text}`}>
+                          {item.day}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </section>
