@@ -14,11 +14,14 @@ import {
   Clock,
   Users,
   Trophy,
+  Medal,
+  Award,
+  Sparkles,
 } from 'lucide-react'
 
 const keyDates = [
   {
-    title: 'FIRST DAY TO UPLOAD VIDEO SUBMISSIONS',
+    title: 'VIDEO SUBMISSIONS BEGIN',
     month: 'MAY',
     day: '04',
   },
@@ -238,73 +241,108 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section id="award" className="bg-[#f3f3f3] pb-[40px]">
+        <section id="award" className="relative overflow-hidden bg-[#f8f8fc] py-20">
+          <div className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full bg-[#ff8f5c]/20 blur-3xl" />
+          <div className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#7f56ff]/20 blur-3xl" />
 
-          <div className="page-container">
-            {/* Title */}
+          <div className="page-container relative">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
+              Awards Experience
+            </p>
+
             <div className="page-title">Awards</div>
 
-            {/* Video Placeholder */}
-            <div className="mt-10 flex justify-center">
-              <div className="w-full max-w-[900px] overflow-hidden rounded-[16px] border border-[#cfd8dc] bg-black">
-                <video
-                  className="w-full h-auto"
-                  controls
-                  preload="metadata"
-                  poster="/images/video-poster.jpg"
-                >
-                  <source src="https://actdev.biworldwide.com/lexus/prize.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+            <div className="mt-10 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+              <div className="rounded-[2rem] border border-[#ececf4] bg-white p-8 shadow-[0_24px_70px_rgba(78,57,154,0.10)]">
+                <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] text-white shadow-[0_14px_34px_rgba(255,140,32,0.35)]">
+                  <Trophy className="h-7 w-7" strokeWidth={2.4} />
+                </div>
+
+                <h3 className="max-w-xl text-3xl font-extrabold leading-tight text-[#111322] md:text-4xl">
+                  More than rewards, this is a celebration like no other.
+                </h3>
+
+                <p className="mt-5 text-base leading-7 text-[#55586b]">
+                  Contest winners don’t just earn recognition — they gain access to a
+                  high-energy reward experience where performance pays off in real time.
+                </p>
+
+                <p className="mt-5 text-base leading-7 text-[#55586b]">
+                  Winners race through the Windfall Warehouse, grabbing as many rewards
+                  as they can before time runs out.
+                </p>
+
+                <div className="mt-8">
+                  <a
+                    href="https://actdevpprd.biworldwide.com/lexus/26MPI_Brochure.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
+                  >
+                    View Award Details
+                    <span className="ml-3 text-lg leading-none">→</span>
+                  </a>
+                </div>
               </div>
-            </div>
 
-            {/* Content */}
-            <div className="">
-              <h3 className="text-[24px] font-semibold leading-[1.3] text-[#231f20] md:text-[30px] pt-[40px]">
-                More than rewards, this is a celebration like no other!
-              </h3>
+              <div className="grid gap-5">
+                {[
+                  {
+                    title: 'District Winners',
+                    time: '60 seconds',
+                    detail: 'One winner from each district earns a fast-paced warehouse run.',
+                    icon: Medal,
+                    color: 'text-[#7f56ff]',
+                    bg: 'bg-[#7f56ff]/10',
+                  },
+                  {
+                    title: 'Area Winners',
+                    time: '75 seconds',
+                    detail: 'Selected from district-level winners for an extended reward run.',
+                    icon: Award,
+                    color: 'text-[#d14fc7]',
+                    bg: 'bg-[#d14fc7]/10',
+                  },
+                  {
+                    title: 'National Winner',
+                    time: '90 seconds',
+                    detail: 'The top finalist earns the longest uninterrupted warehouse experience.',
+                    icon: Sparkles,
+                    color: 'text-[#ff6a13]',
+                    bg: 'bg-[#ff6a13]/10',
+                  },
+                ].map((award) => {
+                  const Icon = award.icon
 
-              <p className="mt-4 text-[18px] leading-[1.7]">
-                Contest winners don’t just earn recognition — they gain access
-                to a Warehouse Windfall, a high-energy reward experience where
-                performance pays off in real time.
-              </p>
+                  return (
+                    <div
+                      key={award.title}
+                      className="group relative overflow-hidden rounded-[1.5rem] border border-[#ececf4] bg-white p-6 shadow-[0_18px_50px_rgba(78,57,154,0.08)] transition hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(78,57,154,0.14)]"
+                    >
+                      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-[#ff6a13]/10 via-[#d14fc7]/10 to-[#7f56ff]/10 blur-2xl" />
 
-              <p className="mt-6 text-[18px] leading-[1.7]">
-                The Warehouse Windfall is a fast-paced, time-clocked prize run inside the
-                Windfall Warehouse. Winners race through the aisles, grabbing as many
-                rewards as they can before time runs out.
-              </p>
+                      <div className="relative flex items-start gap-5">
+                        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${award.bg} ${award.color}`}>
+                          <Icon className="h-8 w-8" strokeWidth={2.2} />
+                        </div>
 
-              <ul className="mt-6 list-disc space-y-2 pl-6 text-[18px] leading-[1.7]">
-                <li>
-                  <span className="font-semibold">District Winners:</span> One winner from each Lexus District will be selected from all qualified District entries. District Winners earn a full <strong>60 second</strong> run through the Windfall Warehouse to collect as much merchandise as possible.
+                        <div>
+                          <div className="text-sm font-bold uppercase tracking-[0.14em] text-[#8b8fa3]">
+                            {award.title}
+                          </div>
 
-                </li>
-                <li>
-                  <span className="font-semibold">Area Winner:</span> Selected from District-Level Winners in accordance with Official Contest Rules. Area Winners earn a <strong>75 second</strong> warehouse run.
-                </li>
-                <li>
-                  <span className="font-semibold">National Winner:</span> One National Winner will be selected from the four Area Winners. The National Winner earns a full <strong>90 seconds</strong> of uninterrupted Warehouse Windfall action.
+                          <div className={`mt-2 text-4xl font-extrabold leading-none ${award.color}`}>
+                            {award.time}
+                          </div>
 
-                </li>
-              </ul>
-
-              <p className="mt-8 font-semibold leading-[1.4]">
-                Bring your MPI expertise. Deliver the Lexus guest experience. And earn
-                your opportunity to run!
-              </p>
-
-              {/* CTA Row */}
-              <div className="mt-10 flex justify-center">
-                <a
-                  href="https://actdevpprd.biworldwide.com/lexus/26MPI_Brochure.pdf"
-                  target="_blank" 
-                  className="inline-flex min-h-[58px] items-center justify-center bg-[#231f20] px-10 text-[16px] font-semibold uppercase tracking-[0.02em] text-white transition hover:opacity-90"
-                >
-                  View the Contest Brochure for Complete Award Details
-                </a>
+                          <p className="mt-3 text-base leading-7 text-[#55586b]">
+                            {award.detail}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
