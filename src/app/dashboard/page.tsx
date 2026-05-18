@@ -17,6 +17,12 @@ import {
   Medal,
   Award,
   Sparkles,
+  BrakeDisc,
+  CircleGauge,
+  BatteryCharging,
+  Wind,
+  CheckCircle2,
+  FileCheck2,
 } from 'lucide-react'
 
 const keyDates = [
@@ -348,164 +354,159 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section id="contest-details" className="">
-          <div className="page-container">
-            <h2 className="page-title">
+        <section id="contest-details" className="relative overflow-hidden bg-white py-20">
+          <div className="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-[#7f56ff]/10 blur-3xl" />
+          <div className="pointer-events-none absolute -left-24 bottom-24 h-72 w-72 rounded-full bg-[#ff6a13]/10 blur-3xl" />
+
+          <div className="page-container relative">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
               Contest Details
-            </h2>
-
-            <h3 className="mb-2 text-2xl font-semibold text-slate-900">
-              Demonstrate Your MPI Expertise
-            </h3>
-
-            <p className="mb-4 max-w-5xl text-[16px] leading-[1.8] text-slate-900">
-              Multipoint Inspections are more than a walkthrough — they’re one of the most
-              effective ways to build guests’ <strong>trust</strong>. Demonstrate your
-              expertise by submitting a Lexus MPI video that reflects how you work every
-              day: your inspection process, communication style, and guest-first mindset.
-              By sharing test results and measurements — and clearly explaining what they
-              mean — you help guests make informed service decisions and plan for future
-              maintenance.
             </p>
 
-            <p className="mb-10 text-[16px] leading-[1.8] text-slate-900">
-              Your video should represent a{' '}
-              <strong>complete, real-world Lexus MPI experience</strong>, such as:
-            </p>
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+              <div>
+                <h2 className="max-w-xl text-4xl font-extrabold leading-tight tracking-tight text-[#111322] md:text-5xl">
+                  Demonstrate your MPI expertise.
+                </h2>
 
-            <div className="mb-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-[28px] bg-[#f3f3f5] p-8">
-                <h4 className="mb-6 text-[20px] font-semibold leading-[1.2] text-[#1f1b20]">
-                  Brake Pad Wear
-                  <br />
-                  Inspection
-                </h4>
-                <p className="text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  Help guests clearly understand their brake pad condition and future
-                  needs.
+                <p className="mt-6 text-base leading-7 text-[#55586b] md:text-lg">
+                  Multipoint inspections are more than a walkthrough — they’re one of the
+                  most effective ways to build guest trust. Submit a Lexus MPI video that
+                  reflects your inspection process, communication style, and guest-first
+                  mindset.
                 </p>
+
+                <p className="mt-5 text-base leading-7 text-[#55586b] md:text-lg">
+                  Your video should represent a complete, real-world Lexus MPI experience
+                  with clear explanations, accurate findings, and helpful next steps.
+                </p>
+
+                <div className="mt-8">
+                  <a
+                    href="https://actdevpprd.biworldwide.com/lexus/26MPI_BestPractices.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
+                  >
+                    View Video MPI Best Practices
+                    <span className="ml-3 text-lg leading-none">→</span>
+                  </a>
+                </div>
               </div>
 
-              <div className="rounded-[28px] bg-[#f3f3f5] p-8">
-                <h4 className="mb-6 text-[20px] font-semibold leading-[1.2] text-[#1f1b20]">
-                  Tire Wear Inspection
-                </h4>
-                <p className="text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  Use visual evidence to explain condition, specifications, and next
-                  steps.
-                </p>
-              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                {[
+                  {
+                    title: 'Brake Pad Wear Inspection',
+                    text: 'Help guests clearly understand their brake pad condition and future needs.',
+                    icon: BrakeDisc,
+                    color: 'text-[#7f56ff]',
+                    bg: 'bg-[#7f56ff]/10',
+                  },
+                  {
+                    title: 'Tire Wear Inspection',
+                    text: 'Use visual evidence to explain condition, specifications, and next steps.',
+                    icon: CircleGauge,
+                    color: 'text-[#d14fc7]',
+                    bg: 'bg-[#d14fc7]/10',
+                  },
+                  {
+                    title: 'Battery Health Test',
+                    text: 'Share test results and explain how proactive testing prevents unexpected issues.',
+                    icon: BatteryCharging,
+                    color: 'text-[#ff6a13]',
+                    bg: 'bg-[#ff6a13]/10',
+                  },
+                  {
+                    title: 'Filters & Wiper Blade Inspection',
+                    text: 'Highlight guest comfort and safety through quick, clear inspections.',
+                    icon: Wind,
+                    color: 'text-[#7f56ff]',
+                    bg: 'bg-[#7f56ff]/10',
+                  },
+                ].map((item) => {
+                  const Icon = item.icon
 
-              <div className="rounded-[28px] bg-[#f3f3f5] p-8">
-                <h4 className="mb-6 text-[20px] font-semibold leading-[1.2] text-[#1f1b20]">
-                  Battery Health Test
-                </h4>
-                <p className="text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  Share test results and explain how proactive testing helps prevent
-                  unexpected issues.
-                </p>
-              </div>
+                  return (
+                    <div
+                      key={item.title}
+                      className="rounded-[1.5rem] border border-[#ececf4] bg-white p-6 shadow-[0_18px_50px_rgba(78,57,154,0.08)]"
+                    >
+                      <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg} ${item.color}`}>
+                        <Icon className="h-8 w-8" strokeWidth={2.3} />
+                      </div>
 
-              <div className="rounded-[28px] bg-[#f3f3f5] p-8">
-                <h4 className="mb-6 text-[20px] font-semibold leading-[1.2] text-[#1f1b20]">
-                  Filters &amp; Wiper Blade
-                  <br />
-                  Inspection
-                </h4>
-                <p className="text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  Highlight guest comfort and safety through quick, clear inspections.
-                </p>
+                      <h3 className="text-xl font-extrabold leading-tight text-[#111322]">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-3 text-base leading-7 text-[#55586b]">
+                        {item.text}
+                      </p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
-            <div className="mb-12 mt-12 flex flex-col items-center gap-4">
-              <a
-                href="https://actdevpprd.biworldwide.com/lexus/26MPI_BestPractices.pdf"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-[56px] min-w-[320px] items-center justify-center bg-black px-8 text-center text-[18px] font-medium uppercase tracking-[0.02em] text-white transition hover:bg-gray-800"
-              >
-                View Video MPI Best Practices
-              </a>
-            </div>
+            <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_1fr]">
+              <div className="rounded-[1.5rem] border border-[#ececf4] bg-[#f8f8fc] p-8">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7f56ff]/10 text-[#7f56ff]">
+                  <FileCheck2 className="h-7 w-7" strokeWidth={2.3} />
+                </div>
 
-
-            <h3 className="mb-8 mt-10 text-2xl font-semibold text-slate-900">
-              Attention Diagnostic Specialists
-            </h3>
-            <div className="rounded-[28px] bg-[#f3f3f5] p-8">
-              <p className="pb-4 text-[16px] leading-[1.8] text-slate-900">
-                Support early Technician Video MPI
-                submissions (May 4 – May 11) for a chance to win <strong>Fast Start Incentive</strong> rewards. See the <strong>Official Contest Rules</strong> for details.
-              </p>
-
-              <div className="flex flex-col items-center gap-4">
-                <a
-                  href="https://actdevpprd.biworldwide.com/lexus/26MPI_Rules.pdf"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-[56px] min-w-[320px] items-center justify-center bg-black px-8 text-center text-[18px] font-medium uppercase tracking-[0.02em] text-white transition hover:bg-gray-800 mt-4"
-                >
-                  View Official Contest Rules
-                </a>
-              </div>
-
-            </div>
-
-            <h3 className="mb-3 text-[22px] font-semibold text-slate-900 pt-[40px]">
-              What You Need to Do to Participate
-            </h3>
-            <p className="mb-8 text-[16px] leading-[1.8] text-slate-900">
-              During the Video Submission Period, review the <strong>Official Contest Rules</strong> and upload an
-              example of the work you do every day — captured as a clear, guest-focused MPI video.
-            </p>
-
-            <div className="pb-6 grid gap-6 md:grid-cols-2">
-
-              {/* Video Requirements */}
-              <div className="rounded-2xl bg-[#f3f3f5] p-8 shadow-sm">
-                <h3 className="mb-4 text-[24px] font-semibold text-slate-900">
+                <h3 className="text-2xl font-extrabold text-[#111322]">
                   Video Requirements
                 </h3>
 
-                <ul className="space-y-2 text-[16px] leading-[1.8] text-slate-900">
-                  <li><strong>Length:</strong> Up to <strong>2 minutes</strong></li>
+                <ul className="mt-5 space-y-3 text-base leading-7 text-[#55586b]">
+                  <li><strong>Length:</strong> Up to 2 minutes</li>
                   <li><strong>File formats:</strong> .mp4 or .mov</li>
                   <li><strong>Maximum file size:</strong> 500 MB</li>
-                  <li>
-                    <strong>Language:</strong> English (subtitles recommended if audio clarity is limited)
-                  </li>
+                  <li><strong>Language:</strong> English</li>
                 </ul>
               </div>
 
-              {/* Judging Criteria */}
-              <div className="rounded-2xl bg-[#f3f3f5] p-8 shadow-sm">
-                <h3 className="mb-4 text-[24px] font-semibold text-slate-900">
+              <div className="rounded-[1.5rem] border border-[#ececf4] bg-[#f8f8fc] p-8">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ff6a13]/10 text-[#ff6a13]">
+                  <CheckCircle2 className="h-7 w-7" strokeWidth={2.3} />
+                </div>
+
+                <h3 className="text-2xl font-extrabold text-[#111322]">
                   Judging Criteria
                 </h3>
 
-                <p className="mb-4 text-[16px] leading-[1.8] text-slate-900">
-                  Your video will be evaluated from the perspective of a Lexus guest using a
-                  standardized scoring rubric, across six key areas:
-                </p>
-
-                <ol className="list-decimal space-y-2 pl-5 text-[16px] leading-[1.8] text-slate-900">
-                  <li>Introduction & guest context</li>
-                  <li>Explanation of inspection findings</li>
-                  <li>Service recommendations & urgency</li>
-                  <li>Communication clarity & professionalism</li>
-                  <li>Organization & video flow</li>
-                  <li>Accuracy of recommendations</li>
+                <ol className="mt-5 grid gap-3 text-base leading-7 text-[#55586b] sm:grid-cols-2">
+                  <li>1. Guest context</li>
+                  <li>2. Inspection findings</li>
+                  <li>3. Recommendations</li>
+                  <li>4. Communication clarity</li>
+                  <li>5. Video organization</li>
+                  <li>6. Accuracy</li>
                 </ol>
               </div>
-
             </div>
 
-            <p className="text-[16px] leading-[1.8] text-slate-900">
-              The strongest videos combine technical confidence, clear presentation, and
-              guest-friendly explanations of vehicle condition (e.g., Green/Yellow/Red as guided by Lexus). Together,
-              these elements help guests understand both service needs and next steps.
-            </p>
+            <div className="mt-8 rounded-[1.5rem] border border-[#ececf4] bg-white p-6 shadow-[0_18px_50px_rgba(78,57,154,0.08)] md:flex md:items-center md:justify-between md:gap-8">
+              <div>
+                <h3 className="text-xl font-extrabold text-[#111322]">
+                  Attention Diagnostic Specialists
+                </h3>
+                <p className="mt-2 text-base leading-7 text-[#55586b]">
+                  Support early Technician Video MPI submissions for a chance to win
+                  Fast Start Incentive rewards.
+                </p>
+              </div>
+
+              <a
+                href="https://actdevpprd.biworldwide.com/lexus/26MPI_Rules.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-xl border border-[#7f56ff]/30 px-6 text-[13px] font-bold uppercase tracking-[0.08em] text-[#7f56ff] transition hover:bg-[#7f56ff]/5 md:mt-0"
+              >
+                View Official Rules
+              </a>
+            </div>
           </div>
         </section>
 
