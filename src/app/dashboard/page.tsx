@@ -280,7 +280,7 @@ export default async function DashboardPage() {
 
                 <div className="mt-8">
                   <a
-                    href="https://actdevpprd.biworldwide.com/lexus/26MPI_Brochure.pdf"
+                    href="#"
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
@@ -545,7 +545,7 @@ export default async function DashboardPage() {
                   href: '#',
                 },
                 {
-                  title: 'Lexus Release Agreement',
+                  title: 'Release Agreement',
                   description:
                     'Required participant and guest release agreements for anyone appearing or contributing to submitted videos.',
                   icon: PencilLine,

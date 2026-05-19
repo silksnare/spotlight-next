@@ -70,11 +70,12 @@ export async function Header() {
   const session = await getCurrentSession()
   const role = session?.user?.role as AppRole | undefined
   const roles =
-  session?.user && 'roles' in session.user && Array.isArray(session.user.roles)
-    ? (session.user.roles as AppRole[])
-    : role
-      ? [role]
-      : []
+    session?.user && 'roles' in session.user && Array.isArray(session.user.roles)
+      ? (session.user.roles as AppRole[])
+      : role
+        ? [role]
+        : []
+
   const nextPhaseEvent = await getNextPhaseEventFromDb()
 
   const phases = await prisma.phase.findMany({
@@ -88,7 +89,7 @@ export async function Header() {
   const phaseMap = Object.fromEntries(phases.map((phase) => [phase.key, phase]))
 
   const visibleLinks = navLinks.filter((link) => {
-    if (!role) return false
+    if (!roles.length) return false
     if (!roles.some((r) => link.roles.includes(r))) return false
 
     if (!link.phaseKey) return true
@@ -98,9 +99,13 @@ export async function Header() {
   })
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#ece8f4] bg-white/90 backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-6 py-5">
-        <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Spotlight Next home">
+    <header className="sticky top-0 z-50 w-full border-b border-[#ece8f4] bg-white/90 backdrop-blur-md">
+      <div className="flex w-full items-center justify-between gap-6 px-6 py-5 lg:px-10">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-3"
+          aria-label="Spotlight Next home"
+        >
           <Image
             src="/icons/icon-192x192-sharp.png"
             alt=""

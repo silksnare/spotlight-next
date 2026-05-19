@@ -17,17 +17,29 @@ type HeaderNavClientProps = {
   countdownTargetDate: string | null
 }
 
+const dashboardAnchorLinks: VisibleLink[] = [
+  { href: '/dashboard#award', label: 'Awards' },
+  { href: '/dashboard#contest-details', label: 'Contest Details' },
+  { href: '/dashboard#resources', label: 'Resources' },
+]
+
 export function HeaderNavClient({
   visibleLinks,
   countdownMessage,
   countdownTargetDate,
 }: HeaderNavClientProps) {
   const pathname = usePathname()
+  const isDashboard = pathname === '/dashboard'
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     setMenuOpen(false)
   }, [pathname])
+
+  const menuLinks = [
+    ...(isDashboard ? dashboardAnchorLinks : []),
+    ...visibleLinks,
+  ]
 
   return (
     <>
@@ -40,10 +52,7 @@ export function HeaderNavClient({
             </div>
 
             <div className="shrink-0 text-[16px] font-bold text-[#171327]">
-              <PhaseCountdown
-                message=""
-                targetDate={countdownTargetDate}
-              />
+              <PhaseCountdown message="" targetDate={countdownTargetDate} />
             </div>
           </div>
         ) : null}
@@ -68,16 +77,26 @@ export function HeaderNavClient({
           {menuOpen ? (
             <div className="absolute right-0 top-[calc(100%+12px)] z-50 w-[320px] max-w-[calc(100vw-32px)] overflow-hidden rounded-2xl border border-[#ece8f4] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
               <nav className="flex flex-col">
-                {visibleLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="border-b border-[#ece8f4] px-5 py-4 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#171327] transition hover:bg-[#f8f8fc]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {menuLinks.map((link) => {
+                  const isPrimaryAction = visibleLinks.some(
+                    (visibleLink) => visibleLink.href === link.href,
+                  )
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className={
+                        isPrimaryAction
+                          ? 'border-b border-[#ece8f4] bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-5 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-white transition hover:opacity-90'
+                          : 'border-b border-[#ece8f4] px-5 py-4 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#171327] transition hover:bg-[#f8f8fc]'
+                      }
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                })}
               </nav>
             </div>
           ) : null}
@@ -85,7 +104,21 @@ export function HeaderNavClient({
       </div>
 
       {/* Desktop */}
-      <div className="hidden min-[1200px]:flex items-center justify-end gap-6">
+      <div className="hidden min-[1200px]:flex flex-1 items-center justify-end gap-8">
+        {isDashboard ? (
+          <nav className="flex items-center gap-6">
+            {dashboardAnchorLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.14em] text-[#8b8fa3] transition hover:text-[#7f56ff]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        ) : null}
+
         {countdownTargetDate && countdownMessage ? (
           <div className="flex flex-col items-start gap-[2px] leading-none">
             <div className="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
@@ -93,10 +126,7 @@ export function HeaderNavClient({
             </div>
 
             <div className="shrink-0 text-[34px] font-bold leading-none tracking-tight text-[#171327]">
-              <PhaseCountdown
-                message=""
-                targetDate={countdownTargetDate}
-              />
+              <PhaseCountdown message="" targetDate={countdownTargetDate} />
             </div>
           </div>
         ) : null}
