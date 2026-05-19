@@ -371,19 +371,19 @@ export default async function DashboardPage() {
 
                 <p className="mt-6 text-base leading-7 text-[#55586b] md:text-lg">
                   Multipoint inspections are more than a walkthrough — they’re one of the
-                  most effective ways to build guest trust. Submit a Lexus MPI video that
+                  most effective ways to build guest trust. Submit a MPI video that
                   reflects your inspection process, communication style, and guest-first
                   mindset.
                 </p>
 
                 <p className="mt-5 text-base leading-7 text-[#55586b] md:text-lg">
-                  Your video should represent a complete, real-world Lexus MPI experience
+                  Your video should represent a complete, real-world MPI experience
                   with clear explanations, accurate findings, and helpful next steps.
                 </p>
 
                 <div className="mt-8">
                   <a
-                    href="https://actdevpprd.biworldwide.com/lexus/26MPI_BestPractices.pdf"
+                    href="#"
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
@@ -499,7 +499,7 @@ export default async function DashboardPage() {
               </div>
 
               <a
-                href="https://actdevpprd.biworldwide.com/lexus/26MPI_Rules.pdf"
+                href="#"
                 target="_blank"
                 rel="noreferrer"
                 className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-xl border border-[#7f56ff]/30 px-6 text-[13px] font-bold uppercase tracking-[0.08em] text-[#7f56ff] transition hover:bg-[#7f56ff]/5 md:mt-0"
@@ -510,103 +510,90 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section id="resources" className="bg-[#f3f3f3] pb-[40px]">
-          <div className="page-container">
-            <h2 className="page-title mb-12">Resources</h2>
+        <section
+          id="resources"
+          className="relative overflow-hidden bg-[#f8f8fc] py-20"
+        >
+          <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#ff6a13]/10 blur-3xl" />
+          <div className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#7f56ff]/10 blur-3xl" />
+
+          <div className="page-container relative">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
+              Downloads & Guides
+            </p>
+
+            <h2 className="page-title mb-14">Resources</h2>
 
             <div className="grid gap-8 lg:grid-cols-3">
-              <a
-                href="https://actdevpprd.biworldwide.com/lexus/26MPI_Rules.pdf"
-                target="_blank"
-                rel="noreferrer"
-                className="group flex min-h-[540px] flex-col rounded-[12px] bg-[#FFFFFF] px-10 py-10 transition hover:shadow-sm"
-              >
-                <FileText className="mb-8 h-16 w-16 text-[#201c21]" strokeWidth={2.2} />
+              {[
+                {
+                  title: 'Contest Rules',
+                  description:
+                    'Complete contest details including eligibility requirements, submission guidelines, key dates, and award information.',
+                  icon: FileText,
+                  iconColor: 'text-[#7f56ff]',
+                  iconBg: 'bg-[#7f56ff]/10',
+                  href: '#',
+                },
+                {
+                  title: 'Video Best Practices',
+                  description:
+                    'Practical guidance for recording strong MPI videos, improving presentation quality, and avoiding common submission issues.',
+                  icon: ClipboardList,
+                  iconColor: 'text-[#ff6a13]',
+                  iconBg: 'bg-[#ff6a13]/10',
+                  href: '#',
+                },
+                {
+                  title: 'Lexus Release Agreement',
+                  description:
+                    'Required participant and guest release agreements for anyone appearing or contributing to submitted videos.',
+                  icon: PencilLine,
+                  iconColor: 'text-[#d14fc7]',
+                  iconBg: 'bg-[#d14fc7]/10',
+                  href: '#',
+                },
+              ].map((resource) => {
+                const Icon = resource.icon
 
-                <h3 className="mb-6 text-[24px] font-semibold leading-[1.15] text-[#201c21]">
-                  Contest Rules
-                </h3>
+                return (
+                  <a
+                    key={resource.title}
+                    href={resource.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group relative overflow-hidden rounded-[2rem] border border-[#ececf4] bg-white p-8 shadow-[0_18px_50px_rgba(78,57,154,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(78,57,154,0.14)]"
+                  >
+                    <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-[#ff6a13]/10 via-[#d14fc7]/10 to-[#7f56ff]/10 blur-2xl transition duration-500 group-hover:scale-125" />
 
-                <p className="mb-10 text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  Your complete source for Contest details, including eligibility
-                  requirements, video guidelines, key dates, award information, and more.
-                </p>
+                    <div
+                      className={`relative mb-8 flex h-16 w-16 items-center justify-center rounded-2xl ${resource.iconBg} ${resource.iconColor}`}
+                    >
+                      <Icon className="h-9 w-9" strokeWidth={2.2} />
+                    </div>
 
-                <div className="mt-auto">
-                  <div className="flex justify-end">
-                    <Download
-                      className="h-12 w-12 text-[#201c21] transition group-hover:translate-y-[1px]"
-                      strokeWidth={2.2}
-                    />
-                  </div>
-                </div>
-              </a>
+                    <div className="relative">
+                      <h3 className="text-[28px] font-extrabold leading-tight text-[#111322]">
+                        {resource.title}
+                      </h3>
 
-              <a
-                href="https://actdevpprd.biworldwide.com/lexus/26MPI_BestPractices.pdf"
-                target="_blank"
-                rel="noreferrer"
-                className="group flex min-h-[540px] flex-col rounded-[12px] bg-[#FFFFFF] px-10 py-10 transition hover:shadow-sm"
-              >
-                <ClipboardList
-                  className="mb-8 h-16 w-16 text-[#201c21]"
-                  strokeWidth={2.2}
-                />
+                      <p className="mt-5 text-[17px] leading-8 text-[#55586b]">
+                        {resource.description}
+                      </p>
+                    </div>
 
-                <h3 className="mb-6 text-[24px] font-semibold leading-[1.15] text-[#201c21]">
-                  Video Best Practices
-                </h3>
+                    <div className="relative mt-10 flex items-center justify-between">
+                      <div className="inline-flex items-center rounded-full border border-[#ececf4] px-4 py-2 text-[12px] font-bold uppercase tracking-[0.12em] text-[#8b8fa3]">
+                        PDF Download
+                      </div>
 
-                <p className="mb-10 text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  Practical guidance for selecting and submitting a strong MPI video — from presentation tips to what technically makes a good recording, and avoiding copyrighted audio and visuals, etc.
-                </p>
-
-                <div className="mt-auto">
-                  <div className="flex justify-end">
-                    <Download
-                      className="h-12 w-12 text-[#201c21] transition group-hover:translate-y-[1px]"
-                      strokeWidth={2.2}
-                    />
-                  </div>
-                </div>
-              </a>
-
-              <a
-                href="https://actdevpprd.biworldwide.com/lexus/26MPI_Release.pdf"
-                target="_blank"
-                rel="noreferrer"
-                className="group flex min-h-[540px] flex-col rounded-[12px] bg-[#FFFFFF] px-10 py-10 transition hover:shadow-sm"
-              >
-                <PencilLine
-                  className="mb-8 h-16 w-16 text-[#201c21]"
-                  strokeWidth={2.2}
-                />
-
-                <h3 className="mb-6 text-[24px] font-semibold leading-[1.15] text-[#201c21]">
-                  Lexus Release Agreement
-                </h3>
-
-                <p className="mb-10 text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  Before uploading your video, you will be asked to review and agree to
-                  the terms of the <strong>Participant Opt-In Agreement</strong> seen on
-                  the Upload Video page.
-                </p>
-
-                <p className="mb-10 text-[16px] leading-[1.8] text-[#2d2a2f]">
-                  If any other person is identifiable in your video, either visually or
-                  by voice, or has aided in the recording, developing, or creating the video submission, they must also read, agree to, and sign the{' '}
-                  <strong>Lexus Release Agreement</strong>.
-                </p>
-
-                <div className="mt-auto">
-                  <div className="flex justify-end">
-                    <Download
-                      className="h-12 w-12 text-[#201c21] transition group-hover:translate-y-[1px]"
-                      strokeWidth={2.2}
-                    />
-                  </div>
-                </div>
-              </a>
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#111322] text-white transition duration-300 group-hover:translate-y-[2px] group-hover:bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)]">
+                        <Download className="h-6 w-6" strokeWidth={2.4} />
+                      </div>
+                    </div>
+                  </a>
+                )
+              })}
             </div>
           </div>
         </section>
