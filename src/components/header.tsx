@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from 'next/cache'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -67,6 +68,8 @@ const navLinks: NavLink[] = [
 ]
 
 export async function Header() {
+  noStore()
+
   const session = await getCurrentSession()
   const role = session?.user?.role as AppRole | undefined
   const roles =
@@ -100,7 +103,7 @@ export async function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#ece8f4] bg-white/90 backdrop-blur-md">
-      <div className="flex w-full items-center justify-between gap-6 px-6 py-5 lg:px-10">
+      <div className="relative flex w-full items-center justify-between gap-6 px-6 py-5 lg:px-10">
         <Link
           href="/"
           className="flex shrink-0 items-center gap-3"
