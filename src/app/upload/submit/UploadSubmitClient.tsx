@@ -256,7 +256,7 @@ export default function UploadSubmitClient() {
           Don’t forget to download the <strong> <a href="https://actdevpprd.biworldwide.com/lexus/26MPI_Release.pdf" target="_blank" className="underline">Lexus Release Agreement</a></strong>. Any person who appears in the video submission either visually or by voice, or has aided in the recording, developing, or creating the video submission, must read, agree to, and sign it.
         </p>*/}
 
-        <form onSubmit={handleSubmit} className="mt-6 w-full">
+        <form onSubmit={handleSubmit} className="w-full">
           <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             {/* LEFT PANEL */}
             <section className="overflow-hidden rounded-[28px] border border-[#ece8f4] bg-white shadow-[0_18px_60px_rgba(17,19,34,0.06)]">
