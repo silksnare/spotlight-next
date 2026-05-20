@@ -104,11 +104,9 @@ export function HeaderNavClient({
       </div>
 
       {/* Desktop */}
-      <div className="hidden min-[1200px]:grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-8">
-        <div />
-
+      <div className="hidden min-[1200px]:contents">
         {isDashboard ? (
-          <nav className="flex items-center justify-center gap-6">
+          <nav className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-8">
             {dashboardAnchorLinks.map((link) => (
               <Link
                 key={link.href}
@@ -119,11 +117,9 @@ export function HeaderNavClient({
               </Link>
             ))}
           </nav>
-        ) : (
-          <div />
-        )}
+        ) : null}
 
-        <div className="flex items-center justify-end gap-8">
+        <div className="ml-auto flex items-center justify-end gap-8">
           {countdownTargetDate && countdownMessage ? (
             <div className="flex flex-col items-start gap-[2px] leading-none">
               <div className="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
