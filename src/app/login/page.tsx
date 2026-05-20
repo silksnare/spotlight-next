@@ -99,7 +99,8 @@ export default function LoginPage() {
                   return;
                 }
 
-                router.push('/dashboard');
+                // router.push('/dashboard');
+                window.location.href = '/dashboard';
               }}
               className="space-y-4"
             >

@@ -34,7 +34,8 @@ function VerifyEmailForm() {
             return;
           }
 
-          router.push('/dashboard');
+          // router.push('/dashboard');
+          window.location.href = '/dashboard';
         }}
       >
         <input
