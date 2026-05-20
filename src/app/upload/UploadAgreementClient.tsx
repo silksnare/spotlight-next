@@ -74,31 +74,31 @@ export default function UploadAgreementClient() {
 
           <div className="max-h-[460px] overflow-y-auto px-8 py-8 scrollbar-thin">
             <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              By clicking below, I acknowledge that I have read the Lexus Under The Hood Heroes Video Multi-Point Inspection (MPI) Contest Official Rules (the “CONTEST RULES”) and agree to abide by the CONTEST RULES and the following terms:
+              By clicking below, I acknowledge that I have read the Official Contest Rules (the “CONTEST RULES”) and agree to abide by the CONTEST RULES and the following terms:
             </p>
 
             <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              I hereby attest that I am a Lexus certified Service Technician (“Technician”) employed by an authorized U.S. Lexus Dealership (excluding Hawaii and Puerto Rico) (the “DEALERSHIP”) and that I have obtained the consent of the DEALERSHIP to participate in the Lexus Under The Hood Heroes Video MPI Contest (the “CONTEST“) on the terms set forth in this agreement and the CONTEST RULES.
+              I hereby attest that I am authorized to participate in this contest and that I have obtained any necessary permissions or approvals required by my employer, organization, or affiliated entity to participate in the CONTEST on the terms set forth in this agreement and the CONTEST RULES.
             </p>
 
             <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              Toyota Motors North America (“TMNA”) and Lexus reserve the right at any time during the CONTEST to disqualify any entry that they believe, in their sole discretion, does not meet the requirements of the Contest and/or the CONTEST RULES.
+              The contest organizers reserve the right at any time during the CONTEST to disqualify any entry that they believe, in their sole discretion, does not meet the requirements of the CONTEST and/or the CONTEST RULES.
             </p>
 
             <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              I hereby represent and warrant that I am the sole owner of the video and all content included in the video that has been submitted to TMNA and Lexus; that I have not used any trademarks, music, art, photos, characters/personalities, or content that belong to any third party.
+              I hereby represent and warrant that I am the sole owner of the video and all content included in the video submission; that I have not used any trademarks, music, artwork, photographs, characters, personalities, or other content belonging to any third party without proper authorization; and that my submission does not violate the rights of any third party.
             </p>
 
             <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              By submitting a video for the CONTEST, I understand and agree that I retain ownership of my video and that I am granting TMNA, Lexus, and their affiliates a non-exclusive, royalty-free, worldwide, perpetual license to use the video.
+              By submitting a video for the CONTEST, I understand and agree that I retain ownership of my video while granting the contest organizers and their affiliates a non-exclusive, royalty-free, worldwide, perpetual license to use, reproduce, distribute, display, publish, and promote the video and portions of the video in any media format now known or later developed.
             </p>
 
             <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              I confirm that I have read the CONTEST RULES and this statement. I represent and warrant to Lexus that I am eligible and qualified to enter the CONTEST.
+              I confirm that I have read the CONTEST RULES and this agreement. I represent and warrant that I am eligible and qualified to participate in the CONTEST and that I have the legal authority to agree to these terms.
             </p>
 
             <p className="text-[16px] leading-[1.85] text-[#161624]">
-              I have read this document in its entirety. I am fully aware of its contents. I fully understand its contents. I am uploading my video and agreeing to this document voluntarily.
+              I have read this document in its entirety. I fully understand its contents and acknowledge that I am submitting my video and agreeing to these terms voluntarily.
             </p>
           </div>
         </div>

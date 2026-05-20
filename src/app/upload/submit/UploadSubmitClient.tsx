@@ -256,118 +256,202 @@ export default function UploadSubmitClient() {
           Don’t forget to download the <strong> <a href="https://actdevpprd.biworldwide.com/lexus/26MPI_Release.pdf" target="_blank" className="underline">Lexus Release Agreement</a></strong>. Any person who appears in the video submission either visually or by voice, or has aided in the recording, developing, or creating the video submission, must read, agree to, and sign it.
         </p>
 
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
-            <section className="w-full">
-              <ol className="mb-10 space-y-4 text-[16px] leading-[1.8] text-[#161624] list-decimal pl-10">
-                <li>
-                  Select (or record) your Lexus MPI video and confirm the final video file is saved and available on your device.
-                </li>
-                <li>
-                  Select <strong>Choose File</strong> and then select your video.
-                </li>
-                <li>
-                  Once you have previewed your video, select the <strong>Submit</strong> button. You will receive a confirmation message once your video has uploaded successfully. Be patient. Upload times will vary, depending on the size of your video, the speed of your internet connection, etc.
-
-                </li>
-              </ol>
-
-              <p className="mb-12 text-[16px] leading-[1.8] text-[#161624]">
-                NOTICE: Videos containing any copyrighted materials (including music) will be disqualified.
-              </p>
-
-              <div className="mb-6">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="video/*"
-                  onChange={handleFileSelect}
-                  disabled={isLocked}
-                  className="hidden"
-                />
-
-                <div className="flex flex-col gap-3 md:flex-row">
-                  <button
-                    type="button"
-                    onClick={handleChooseFile}
-                    disabled={isLocked}
-                    className={`min-h-[48px] px-8 py-3 text-[16px] font-semibold ${
-                      isLocked
-                        ? 'cursor-not-allowed bg-gray-300 text-gray-500'
-                        : 'bg-black text-white'
-                    }`}
-                  >
-                    Choose File
-                  </button>
-
-                  <div className="flex min-h-[48px] flex-1 items-center rounded border border-slate-300 px-4 py-3 text-[16px] text-gray-600">
-                    {selectedFile ? selectedFile.name : 'No file selected'}
-                  </div>
+        <form onSubmit={handleSubmit} className="mt-10 w-full">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+            {/* LEFT PANEL */}
+            <section className="overflow-hidden rounded-[28px] border border-[#ece8f4] bg-white shadow-[0_18px_60px_rgba(17,19,34,0.06)]">
+              <div className="border-b border-[#ece8f4] px-8 py-6">
+                <div className="text-[12px] font-bold uppercase tracking-[0.28em] text-[#8f5cff]">
+                  Submission Instructions
                 </div>
+
+                <h2 className="mt-2 text-[28px] font-extrabold tracking-[-0.03em] text-[#111322]">
+                  Upload Your Video
+                </h2>
               </div>
 
-              <div className="w-full">
-                <label className="mb-3 block text-[16px] font-semibold text-[#161624]">
-                  Upload Status
-                </label>
-
-                <div className="h-4 w-full overflow-hidden rounded-full bg-gray-200">
-                  <div
-                    className="h-full bg-brand-700 transition-all duration-200"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
+              <div className="space-y-8 px-8 py-8">
+                <div className="rounded-2xl border border-[#ece8f4] bg-[#faf9ff] p-6">
+                  <p className="text-[15px] leading-[1.8] text-[#4f5565]">
+                    Don’t forget to download the{' '}
+                    <a
+                      href="https://actdevpprd.biworldwide.com/lexus/26MPI_Release.pdf"
+                      target="_blank"
+                      className="font-bold text-[#7f56ff] underline underline-offset-4"
+                    >
+                      Participant Release Agreement
+                    </a>
+                    . Any individual appearing in the submission, visually or by voice,
+                    should review and sign the agreement prior to submission.
+                  </p>
                 </div>
 
-                <div className="mt-3 text-[16px] leading-[1.8] text-[#161624]">
-                  {!selectedFile && !hasSubmitted && <span>No upload started.</span>}
-                  {selectedFile && !isUploading && !isUploaded && !errorMessage && !hasSubmitted && (
-                    <span>Ready to upload.</span>
-                  )}
-                  {isUploading && <span>Uploading... {uploadProgress}%</span>}
-                  {!isUploading && isUploaded && !hasSubmitted && <span>Upload complete.</span>}
-                  {hasSubmitted && <span>Submission already received.</span>}
-                  {!isUploading && errorMessage && (
-                    <span className="text-red-600">{errorMessage}</span>
-                  )}
+                <ol className="space-y-5">
+                  {[
+                    'Record or select your finalized video file and ensure it is available on your device.',
+                    'Select “Choose File” and pick your video submission.',
+                    'Preview your video before selecting Submit. Upload times may vary depending on file size and internet speed.',
+                  ].map((step, index) => (
+                    <li key={index} className="flex gap-4">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] text-[15px] font-extrabold text-white shadow-lg">
+                        {index + 1}
+                      </div>
+
+                      <div className="pt-1 text-[16px] leading-[1.75] text-[#161624]">
+                        {step}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-6 py-5">
+                  <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.2em] text-amber-700">
+                    Important Notice
+                  </div>
+
+                  <p className="text-[15px] leading-[1.75] text-amber-900">
+                    Videos containing copyrighted materials, including music,
+                    may be disqualified.
+                  </p>
+                </div>
+
+                {/* FILE PICKER */}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="video/*"
+                    onChange={handleFileSelect}
+                    disabled={isLocked}
+                    className="hidden"
+                  />
+
+                  <div className="flex flex-col gap-4 md:flex-row">
+                    <button
+                      type="button"
+                      onClick={handleChooseFile}
+                      disabled={isLocked}
+                      className={`inline-flex h-[58px] items-center justify-center rounded-2xl px-8 text-[14px] font-extrabold uppercase tracking-[0.12em] transition ${
+                        isLocked
+                          ? 'cursor-not-allowed bg-[#d7dbe4] text-[#7f8595]'
+                          : 'bg-[linear-gradient(135deg,#111322_0%,#27293a_100%)] text-white shadow-[0_16px_36px_rgba(17,19,34,0.25)] hover:translate-y-[-1px]'
+                      }`}
+                    >
+                      Choose File
+                    </button>
+
+                    <div className="flex min-h-[58px] flex-1 items-center rounded-2xl border border-[#d9dcea] bg-[#fafbff] px-5 text-[15px] text-[#5f6475]">
+                      {selectedFile ? selectedFile.name : 'No file selected'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* PROGRESS */}
+                <div>
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="text-[14px] font-bold uppercase tracking-[0.12em] text-[#161624]">
+                      Upload Status
+                    </label>
+
+                    <span className="text-[14px] font-semibold text-[#7f56ff]">
+                      {uploadProgress}%
+                    </span>
+                  </div>
+
+                  <div className="h-3 overflow-hidden rounded-full bg-[#e8eaf2]">
+                    <div
+                      className="h-full rounded-full bg-[linear-gradient(90deg,#7f56ff_0%,#ff6a13_100%)] transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+
+                  <div className="mt-4 text-[15px] text-[#5f6475]">
+                    {!selectedFile && !hasSubmitted && <span>No upload started.</span>}
+
+                    {selectedFile &&
+                      !isUploading &&
+                      !isUploaded &&
+                      !errorMessage &&
+                      !hasSubmitted && <span>Ready to upload.</span>}
+
+                    {isUploading && (
+                      <span className="font-semibold text-[#7f56ff]">
+                        Uploading... {uploadProgress}%
+                      </span>
+                    )}
+
+                    {!isUploading && isUploaded && !hasSubmitted && (
+                      <span className="font-semibold text-green-600">
+                        Upload complete.
+                      </span>
+                    )}
+
+                    {hasSubmitted && (
+                      <span className="font-semibold text-[#111322]">
+                        Submission already received.
+                      </span>
+                    )}
+
+                    {!isUploading && errorMessage && (
+                      <span className="font-semibold text-red-600">
+                        {errorMessage}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </section>
 
-            <section className="w-full">
-              <div className="w-full lg:ml-auto">
-                <fieldset className="border border-slate-200 p-4">
-                  <legend className="px-2 text-[16px] font-semibold text-[#161624]">
-                    Video Preview
-                  </legend>
+            {/* RIGHT PANEL */}
+            <section className="flex flex-col overflow-hidden rounded-[28px] border border-[#ece8f4] bg-white shadow-[0_18px_60px_rgba(17,19,34,0.06)]">
+              <div className="border-b border-[#ece8f4] px-8 py-6">
+                <div className="text-[12px] font-bold uppercase tracking-[0.28em] text-[#ff6a13]">
+                  Preview
+                </div>
 
-                  <div className="aspect-video w-full overflow-hidden rounded bg-gray-100">
-                    {videoUrl ? (
-                      <video
-                        src={videoUrl}
-                        controls
-                        className="h-full w-full bg-black object-contain"
-                      >
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-[16px] text-gray-400">
-                        {hasSubmitted ? 'Video uploads are locked for this user' : 'No video selected'}
+                <h2 className="mt-2 text-[28px] font-extrabold tracking-[-0.03em] text-[#111322]">
+                  Video Preview
+                </h2>
+              </div>
+
+              <div className="flex flex-1 flex-col px-8 py-8">
+                <div className="aspect-video overflow-hidden rounded-[24px] border border-[#ece8f4] bg-[#f5f6fb] shadow-inner">
+                  {videoUrl ? (
+                    <video
+                      src={videoUrl}
+                      controls
+                      className="h-full w-full bg-black object-contain"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <div className="flex h-full flex-col items-center justify-center text-center">
+                      <div className="mb-4 text-[54px] opacity-20">▶</div>
+
+                      <div className="text-[18px] font-bold text-[#7a8091]">
+                        {hasSubmitted
+                          ? 'Uploads Locked'
+                          : 'No Video Selected'}
                       </div>
-                    )}
-                  </div>
-                </fieldset>
+
+                      <div className="mt-2 max-w-[280px] text-[14px] leading-[1.7] text-[#9aa0af]">
+                        Choose a video file to preview your submission before uploading.
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <div className="mt-8 flex justify-end">
                   <button
                     type="submit"
                     disabled={!canSubmit}
-                    className={`px-10 py-4 text-[24px] font-extrabold uppercase tracking-[0.04em] text-white ${
+                    className={`inline-flex h-[64px] items-center justify-center rounded-2xl px-10 text-[15px] font-extrabold uppercase tracking-[0.16em] transition ${
                       canSubmit
-                        ? 'bg-[linear-gradient(90deg,#171723_0%,#231b1b_100%)] hover:opacity-95'
-                        : 'cursor-not-allowed bg-[#c9ced6]'
+                        ? 'bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] text-white shadow-[0_18px_40px_rgba(255,140,32,0.35)] hover:translate-y-[-1px]'
+                        : 'cursor-not-allowed bg-[#c9ced6] text-white'
                     }`}
                   >
-                    {isUploading ? 'Uploading...' : 'Submit'}
+                    {isUploading ? 'Uploading...' : 'Submit Video'}
                   </button>
                 </div>
               </div>
