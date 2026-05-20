@@ -232,7 +232,7 @@ export default function UploadSubmitClient() {
   return (
     <>
       <div className="page-container">
-        <h1 className="page-title">Video Upload</h1>
+        {/*<h1 className="page-title">Video Upload</h1>*/}
 
         {hasSubmitted && !showSuccessModal && (
           <div className="mb-8 rounded border border-amber-300 bg-amber-50 px-6 py-5 text-amber-900">
@@ -252,9 +252,9 @@ export default function UploadSubmitClient() {
           </div>
         )}
 
-        <p className="mb-12 text-[16px] leading-[1.8] text-[#161624]">
+        {/*<p className="mb-12 text-[16px] leading-[1.8] text-[#161624]">
           Don’t forget to download the <strong> <a href="https://actdevpprd.biworldwide.com/lexus/26MPI_Release.pdf" target="_blank" className="underline">Lexus Release Agreement</a></strong>. Any person who appears in the video submission either visually or by voice, or has aided in the recording, developing, or creating the video submission, must read, agree to, and sign it.
-        </p>
+        </p>*/}
 
         <form onSubmit={handleSubmit} className="mt-10 w-full">
           <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
