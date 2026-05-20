@@ -1,154 +1,136 @@
-'use client'
-
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
-import { PhaseCountdown } from '@/components/phase-countdown'
+import { getCurrentSession } from '@/lib/auth/session'
+import { getNextPhaseEventFromDb } from '@/lib/phases/get-next-phase-event-from-db'
+import { isPhaseActive } from '@/lib/phases/is-phase-active'
+import { prisma } from '@/lib/prisma'
 
-type VisibleLink = {
+import { HeaderNavClient } from '@/components/HeaderNavClient'
+
+type AppRole = 'uploader' | 'qualifier' | 'judge1' | 'judge2' | 'admin' | 'client'
+
+type NavLink = {
   href: string
   label: string
+  roles: AppRole[]
+  phaseKey?: string
 }
 
-type HeaderNavClientProps = {
-  visibleLinks: VisibleLink[]
-  countdownMessage: string | null
-  countdownTargetDate: string | null
-}
+const ENABLE_VOTING = false
 
-const dashboardAnchorLinks: VisibleLink[] = [
-  { href: '/dashboard#award', label: 'Awards' },
-  { href: '/dashboard#contest-details', label: 'Contest Details' },
-  { href: '/dashboard#resources', label: 'Resources' },
+const navLinks: NavLink[] = [
+  {
+    href: '/upload',
+    label: 'Video Upload',
+    roles: ['uploader'],
+    phaseKey: 'upload',
+  },
+  {
+    href: '/qualify',
+    label: 'Qualify',
+    roles: ['qualifier'],
+    phaseKey: 'upload',
+  },
+  {
+    href: '/judge/round-1',
+    label: 'Judge 1',
+    roles: ['qualifier', 'judge1'],
+    phaseKey: 'judge_round_1',
+  },
+  {
+    href: '/judge/round-2',
+    label: 'Judge',
+    roles: ['judge2'],
+    phaseKey: 'judge_round_2',
+  },
+  ...(ENABLE_VOTING
+    ? [
+        {
+          href: '/vote',
+          label: 'Vote',
+          roles: ['uploader', 'qualifier', 'judge1', 'judge2', 'admin'] as AppRole[],
+          phaseKey: 'vote',
+        },
+      ]
+    : []),
+  {
+    href: '/admin',
+    label: 'Client',
+    roles: ['client'],
+  },
+  {
+    href: '/platform-admin',
+    label: 'Platform Admin',
+    roles: ['admin'],
+  },
 ]
 
-export function HeaderNavClient({
-  visibleLinks,
-  countdownMessage,
-  countdownTargetDate,
-}: HeaderNavClientProps) {
-  const pathname = usePathname()
-  const isDashboard = pathname === '/dashboard'
-  const [menuOpen, setMenuOpen] = useState(false)
+export async function Header() {
+  const session = await getCurrentSession()
+  const role = session?.user?.role as AppRole | undefined
+  const roles =
+    session?.user && 'roles' in session.user && Array.isArray(session.user.roles)
+      ? (session.user.roles as AppRole[])
+      : role
+        ? [role]
+        : []
 
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [pathname])
+  const nextPhaseEvent = await getNextPhaseEventFromDb()
 
-  const menuLinks = [
-    ...(isDashboard ? dashboardAnchorLinks : []),
-    ...visibleLinks,
-  ]
+  const phases = await prisma.phase.findMany({
+    select: {
+      key: true,
+      startsAt: true,
+      endsAt: true,
+    },
+  })
+
+  const phaseMap = Object.fromEntries(phases.map((phase) => [phase.key, phase]))
+
+  const visibleLinks = navLinks.filter((link) => {
+    if (!roles.length) return false
+    if (!roles.some((r) => link.roles.includes(r))) return false
+
+    if (!link.phaseKey) return true
+
+    const phase = phaseMap[link.phaseKey]
+    return isPhaseActive(phase)
+  })
 
   return (
-    <>
-      {/* Mobile */}
-      <div className="flex items-center gap-4 min-[1200px]:hidden">
-        {countdownTargetDate && countdownMessage ? (
-          <div className="flex flex-col items-end gap-[2px] leading-none">
-            <div className="text-right text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
-              {countdownMessage}
-            </div>
+    <header className="sticky top-0 z-50 w-full border-b border-[#ece8f4] bg-white/90 backdrop-blur-md">
+      <div className="flex w-full items-center justify-between gap-6 px-6 py-5 lg:px-10">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-3"
+          aria-label="Spotlight Next home"
+        >
+          <Image
+            src="/icons/icon-192x192-sharp.png"
+            alt=""
+            width={42}
+            height={42}
+            className="h-10 w-10 object-contain"
+            priority
+          />
 
-            <div className="shrink-0 text-[16px] font-bold text-[#171327]">
-              <PhaseCountdown message="" targetDate={countdownTargetDate} />
+          <div>
+            <div className="text-2xl font-extrabold leading-none tracking-tight text-[#111322]">
+              Spotlight Next
+            </div>
+            <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.24em] text-[#8b8fa3]">
+              BI WORLDWIDE
             </div>
           </div>
-        ) : null}
+        </Link>
 
-        <div className="relative">
-          <button
-            type="button"
-            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((prev) => !prev)}
-            className="inline-flex h-[48px] w-[48px] items-center justify-center rounded-xl border border-[#d8dbe7] bg-white text-[#161624] transition hover:bg-[#f8f8fc]"
-          >
-            <span className="sr-only">Menu</span>
-
-            <span className="flex h-[18px] w-[22px] flex-col justify-between">
-              <span className="block h-[2px] w-full bg-current" />
-              <span className="block h-[2px] w-full bg-current" />
-              <span className="block h-[2px] w-full bg-current" />
-            </span>
-          </button>
-
-          {menuOpen ? (
-            <div className="absolute right-0 top-[calc(100%+12px)] z-50 w-[320px] max-w-[calc(100vw-32px)] overflow-hidden rounded-2xl border border-[#ece8f4] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
-              <nav className="flex flex-col">
-                {menuLinks.map((link) => {
-                  const isPrimaryAction = visibleLinks.some(
-                    (visibleLink) => visibleLink.href === link.href,
-                  )
-
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMenuOpen(false)}
-                      className={
-                        isPrimaryAction
-                          ? 'border-b border-[#ece8f4] bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-5 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-white transition hover:opacity-90'
-                          : 'border-b border-[#ece8f4] px-5 py-4 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#171327] transition hover:bg-[#f8f8fc]'
-                      }
-                    >
-                      {link.label}
-                    </Link>
-                  )
-                })}
-              </nav>
-            </div>
-          ) : null}
-        </div>
+        <HeaderNavClient
+          visibleLinks={visibleLinks}
+          countdownMessage={nextPhaseEvent?.message ?? null}
+          countdownTargetDate={nextPhaseEvent?.targetDate.toISOString() ?? null}
+        />
       </div>
-
-      {/* Desktop */}
-      <div className="hidden min-[1200px]:grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-8">
-        <div />
-
-        {isDashboard ? (
-          <nav className="flex items-center justify-center gap-6">
-            {dashboardAnchorLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.14em] text-[#8b8fa3] transition hover:text-[#7f56ff]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        ) : (
-          <div />
-        )}
-
-        <div className="flex items-center justify-end gap-8">
-          {countdownTargetDate && countdownMessage ? (
-            <div className="flex flex-col items-start gap-[2px] leading-none">
-              <div className="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
-                {countdownMessage}
-              </div>
-
-              <div className="shrink-0 text-[34px] font-bold leading-none tracking-tight text-[#171327]">
-                <PhaseCountdown message="" targetDate={countdownTargetDate} />
-              </div>
-            </div>
-          ) : null}
-
-          <nav className="flex items-center gap-3">
-            {visibleLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="inline-flex h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-7 text-center text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(255,140,32,0.32)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(255,140,32,0.4)]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </div>
-    </>
+    </header>
   )
 }

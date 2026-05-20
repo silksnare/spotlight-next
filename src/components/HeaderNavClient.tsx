@@ -104,9 +104,11 @@ export function HeaderNavClient({
       </div>
 
       {/* Desktop */}
-      <div className="hidden min-[1200px]:flex flex-1 items-center justify-end gap-8">
+      <div className="hidden min-[1200px]:grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-8">
+        <div />
+
         {isDashboard ? (
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center justify-center gap-6">
             {dashboardAnchorLinks.map((link) => (
               <Link
                 key={link.href}
@@ -117,31 +119,35 @@ export function HeaderNavClient({
               </Link>
             ))}
           </nav>
-        ) : null}
+        ) : (
+          <div />
+        )}
 
-        {countdownTargetDate && countdownMessage ? (
-          <div className="flex flex-col items-start gap-[2px] leading-none">
-            <div className="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
-              {countdownMessage}
+        <div className="flex items-center justify-end gap-8">
+          {countdownTargetDate && countdownMessage ? (
+            <div className="flex flex-col items-start gap-[2px] leading-none">
+              <div className="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
+                {countdownMessage}
+              </div>
+
+              <div className="shrink-0 text-[34px] font-bold leading-none tracking-tight text-[#171327]">
+                <PhaseCountdown message="" targetDate={countdownTargetDate} />
+              </div>
             </div>
+          ) : null}
 
-            <div className="shrink-0 text-[34px] font-bold leading-none tracking-tight text-[#171327]">
-              <PhaseCountdown message="" targetDate={countdownTargetDate} />
-            </div>
-          </div>
-        ) : null}
-
-        <nav className="flex items-center gap-3">
-          {visibleLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="inline-flex h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-7 text-center text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(255,140,32,0.32)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(255,140,32,0.4)]"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+          <nav className="flex items-center gap-3">
+            {visibleLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="inline-flex h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-7 text-center text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(255,140,32,0.32)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(255,140,32,0.4)]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </>
   )
