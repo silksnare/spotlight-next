@@ -9,6 +9,7 @@ export default async function Footer() {
   return (
     <footer className="relative overflow-hidden bg-[#0d1020] text-white">
       <div className="pointer-events-none absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-[#7f56ff]/20 blur-3xl" />
+
       <div className="pointer-events-none absolute right-0 top-0 hidden grid-cols-8 gap-4 opacity-70 md:grid">
         {Array.from({ length: 80 }).map((_, index) => (
           <span
@@ -19,8 +20,14 @@ export default async function Footer() {
       </div>
 
       <div className="page-container relative py-12">
-        <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
-          <Link href="/" className="flex items-center gap-4" aria-label="Spotlight Next home">
+        <div className="grid gap-10 md:grid-cols-[1fr_auto_1fr] md:items-center">
+          
+          {/* Left */}
+          <Link
+            href="/"
+            className="flex items-center gap-4 md:justify-self-start"
+            aria-label="Spotlight Next home"
+          >
             <Image
               src="/icons/icon-192x192-sharp.png"
               alt=""
@@ -33,20 +40,26 @@ export default async function Footer() {
               <div className="text-3xl font-extrabold leading-none tracking-tight">
                 Spotlight Next
               </div>
+
               <div className="mt-2 text-sm font-medium text-white/70">
                 Powered by BI WORLDWIDE
               </div>
             </div>
           </Link>
 
-          <div className="flex flex-wrap items-center gap-5 text-base font-semibold text-white/80">
+          {/* Center */}
+          <div className="flex flex-wrap items-center justify-center gap-5 text-center text-base font-semibold text-white/80">
             {session ? (
               <>
                 <form action="/api/auth/logout" method="post" className="inline">
-                  <button type="submit" className="transition hover:text-white">
+                  <button
+                    type="submit"
+                    className="transition hover:text-white"
+                  >
                     Logout
                   </button>
                 </form>
+
                 <span className="text-white/35">|</span>
               </>
             ) : null}
@@ -73,6 +86,10 @@ export default async function Footer() {
 
             <span>© 2026 BI WORLDWIDE</span>
           </div>
+
+          {/* Right Spacer */}
+          <div className="hidden md:block" />
+
         </div>
       </div>
     </footer>
