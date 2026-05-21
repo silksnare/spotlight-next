@@ -362,6 +362,7 @@ export default async function DashboardPage() {
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
               Contest Details
             </p>
+            <div className="page-title">Program Details</div>
 
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
               <div>
