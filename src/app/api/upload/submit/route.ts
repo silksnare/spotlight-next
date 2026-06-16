@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
     const lastDotIndex = fileName.lastIndexOf('.')
     const baseName =
       lastDotIndex >= 0 ? fileName.slice(0, lastDotIndex) : fileName
-    const processedS3Key = `videos/${baseName}_processed.mp4`
+    const outputPrefix = process.env.AWS_VIDEO_OUTPUT_PREFIX ?? 'videos'
+    const processedS3Key = `${outputPrefix}/${baseName}_processed.mp4`
 
     await prisma.videoSubmission.upsert({
       where: {
