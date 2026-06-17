@@ -1,3 +1,5 @@
+require('@next/env').loadEnvConfig(process.cwd());
+
 const {
   BedrockRuntimeClient,
   ConverseCommand,
