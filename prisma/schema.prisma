@@ -91,6 +91,7 @@ model VideoSubmission {
   disqualificationOther   String?
   disqualifiedAt          DateTime?
   disqualifiedBy          String?
+  aiJudgeScores AiJudgeScore[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -166,12 +167,6 @@ model JudgeRound2Score {
 }
 
 
-
-
-
-
-
-
 model UserRole {
   id        String   @id @default(cuid())
   userId    String
@@ -184,4 +179,36 @@ model UserRole {
   @@unique([userId, role])
   @@index([userId])
   @@index([role])
+}
+
+
+model AiJudgeScore {
+  id                String   @id @default(cuid())
+
+  videoSubmissionId String
+  videoSubmission   VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
+
+  status            String   @default("pending")
+  errorMessage      String?
+
+  storyboard        String?
+  transcript        String?
+
+  criterion1Score   Decimal? @db.Decimal(4, 2)
+  criterion2Score   Decimal? @db.Decimal(4, 2)
+  criterion3Score   Decimal? @db.Decimal(4, 2)
+  criterion4Score   Decimal? @db.Decimal(4, 2)
+  criterion5Score   Decimal? @db.Decimal(4, 2)
+  criterion6Score   Decimal? @db.Decimal(4, 2)
+  totalScore        Decimal? @db.Decimal(5, 2)
+
+  overallComment    String?
+  improvementNotes  String?
+
+  rawResponse        Json?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([videoSubmissionId])
 }
