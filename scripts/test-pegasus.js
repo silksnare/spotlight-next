@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 async function main() {
   const region = process.env.AWS_REGION || 'us-east-1';
   const modelId =
-    process.env.AWS_BEDROCK_PEGASUS_MODEL_ID || 'twelvelabs.pegasus-1-2-v1:0';
+    process.env.AWS_BEDROCK_PEGASUS_MODEL_ID || 'arn:aws:bedrock:us-east-1::foundation-model/twelvelabs.pegasus-1-2-v1:0';
 
   const aiScore = await prisma.aiJudgeScore.findFirst({
     where: {
