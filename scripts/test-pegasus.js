@@ -84,6 +84,15 @@ async function main() {
 
   console.log('\n--- PEGASUS MESSAGE ---\n');
   console.log(parsed.message || '(No message returned)');
+
+  await prisma.aiJudgeScore.update({
+    where: { id: aiScore.id },
+    data: {
+      status: 'video_analyzed',
+      storyboard: parsed.message,
+      rawResponse: parsed,
+    },
+  });
 }
 
 main()
