@@ -34,7 +34,11 @@ async function main() {
   }
 
   const bucket = process.env.AWS_VIDEO_OUTPUT_BUCKET;
-  const bucketOwner = process.env.AWS_ACCOUNT_ID || '533267160660';
+  const bucketOwner = process.env.AWS_ACCOUNT_ID;
+
+  if (!bucketOwner) {
+    throw new Error("Missing AWS_ACCOUNT_ID");
+  }
 
   if (!bucket) {
     throw new Error('Missing AWS_VIDEO_OUTPUT_BUCKET.');
