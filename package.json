@@ -12,7 +12,8 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:seed": "tsx prisma/seed.ts",
     "phase": "tsx scripts/phase.ts",
-    "deploy": "npm run build && pm2 restart spotlightnext --update-env"
+    "deploy": "npm run build && pm2 restart spotlightnext --update-env",
+    "ai:test-pegasus": "tsx scripts/test-pegasus.mjs"
   },
   "dependencies": {
     "@authenio/samlify-node-xmllint": "^2.0.0",
@@ -44,7 +45,7 @@
     "postcss": "^8.4.49",
     "prisma": "^6.0.0",
     "tailwindcss": "^3.4.17",
-    "tsx": "^4.19.2",
+    "tsx": "^4.22.4",
     "typescript": "^5.7.2"
   },
   "prisma": {
