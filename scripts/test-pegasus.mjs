@@ -1,11 +1,12 @@
 import 'dotenv/config'
+
 import { runAiJudge } from '../src/lib/ai/run-ai-judge.ts'
 
 async function main() {
   const submissionId = process.argv[2]
 
   if (!submissionId) {
-    throw new Error('Usage: node scripts/test-pegasus.mjs <submissionId>')
+    throw new Error('Usage: npm run ai:test-pegasus -- <submissionId>')
   }
 
   const result = await runAiJudge({ submissionId })
