@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
 import { runPegasus } from './pegasus'
+import { runClaudeJudge } from './claude'
 
 type RunAiJudgeParams = {
   submissionId: string
@@ -32,38 +33,57 @@ export async function runAiJudge({ submissionId }: RunAiJudgeParams) {
 
   const videoS3Uri = `s3://${outputBucket}/${submission.processedS3Key}`
 
-  try {
-    const pegasusResult = await runPegasus({ videoS3Uri })
+    try {
+      const pegasusResult = await runPegasus({ videoS3Uri })
 
-    const updated = await prisma.aiJudgeScore.update({
-      where: { id: aiScore.id },
-      data: {
-        status: 'video_analyzed',
-        storyboard: pegasusResult.storyboard,
-        transcript: null,
-        rawResponse: {
-          pegasus: pegasusResult.rawResponse,
-          pegasusModel: pegasusResult.modelId,
+      await prisma.aiJudgeScore.update({
+        where: { id: aiScore.id },
+        data: {
+          status: 'video_analyzed',
+          storyboard: pegasusResult.storyboard,
+          transcript: null,
+          rawResponse: {
+            pegasus: pegasusResult.rawResponse,
+            pegasusModel: pegasusResult.modelId,
+          },
         },
-      },
-    })
+      })
 
-    return {
-      aiJudgeScoreId: updated.id,
-      submissionId: submission.id,
-      videoS3Uri,
-      storyboard: updated.storyboard,
-      status: updated.status,
-    }
-  } catch (error) {
-    await prisma.aiJudgeScore.update({
-      where: { id: aiScore.id },
-      data: {
-        status: 'failed',
-        errorMessage: error instanceof Error ? error.message : String(error),
-      },
-    })
+      const claudeResult = await runClaudeJudge({
+        pegasusOutput: pegasusResult.storyboard,
+      })
 
-    throw error
-  }
-}
+      const result = claudeResult.result
+
+      const updated = await prisma.aiJudgeScore.update({
+        where: { id: aiScore.id },
+        data: {
+          status: 'completed',
+          criterion1Score: result.criterion1Score,
+          criterion2Score: result.criterion2Score,
+          criterion3Score: result.criterion3Score,
+          criterion4Score: result.criterion4Score,
+          criterion5Score: result.criterion5Score,
+          criterion6Score: result.criterion6Score,
+          totalScore: result.totalScore,
+          overallComment: result.overallComment,
+          improvementNotes: result.improvementNotes,
+          rawResponse: {
+            pegasus: pegasusResult.rawResponse,
+            pegasusModel: pegasusResult.modelId,
+            claude: claudeResult.rawResponse,
+            claudeModel: claudeResult.modelId,
+            claudeParsed: result,
+          },
+        },
+      })
+
+      return {
+        aiJudgeScoreId: updated.id,
+        submissionId: submission.id,
+        videoS3Uri,
+        storyboard: updated.storyboard,
+        totalScore: updated.totalScore?.toString(),
+        status: updated.status,
+      }
+    } catch (error) {
