@@ -480,7 +480,6 @@ ${pegasusOutput}
       ],
       inferenceConfig: {
         maxTokens: 8192,
-        temperature: 0.2,
       },
     })
   )
