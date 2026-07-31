@@ -37,7 +37,14 @@ export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
   )
 
   const responseText = Buffer.from(response.body).toString('utf8')
+
+  console.log('RAW PEGASUS RESPONSE:')
+  console.log(responseText)
+
   const parsed = JSON.parse(responseText)
+
+  console.log('PARSED PEGASUS RESPONSE:')
+  console.log(JSON.stringify(parsed, null, 2))
 
   return {
     storyboard: parsed.message as string,
