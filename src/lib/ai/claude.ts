@@ -1,7 +1,10 @@
 import {
   BedrockRuntimeClient,
-  InvokeModelCommand,
+  ConverseCommand,
+  type ContentBlock,
 } from '@aws-sdk/client-bedrock-runtime'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 
 type RunClaudeJudgeParams = {
   pegasusOutput: string
@@ -50,6 +53,39 @@ type ClaudeJudgeResult = {
   improvementNotes: string
 }
 
+type ClaudeRawResponse = {
+  stopReason: string | null
+  outputText: string
+  usage: {
+    inputTokens: number | null
+    outputTokens: number | null
+    totalTokens: number | null
+  }
+  metrics: {
+    latencyMs: number | null
+  }
+}
+
+type ReferenceDocument = {
+  filename: string
+  documentName: string
+}
+
+const REFERENCE_DOCUMENTS: ReferenceDocument[] = [
+  {
+    filename: '26MPI_Rules.pdf',
+    documentName: 'Official Rules',
+  },
+  {
+    filename: '26MPI_Judging.pdf',
+    documentName: 'Judging Rubric',
+  },
+  {
+    filename: '26MPI_BestPractices.pdf',
+    documentName: 'Best Practices',
+  },
+]
+
 function extractJson(text: string): string {
   const trimmed = text.trim()
 
@@ -85,9 +121,7 @@ function validateScore(
     )
   }
 
-  const quarterSteps = score * 4
-
-  if (!Number.isInteger(quarterSteps)) {
+  if (!Number.isInteger(score * 4)) {
     throw new Error(
       `${String(fieldName)} must use increments of 0.25.`
     )
@@ -99,7 +133,9 @@ function validateTextField(
   fieldName: keyof ClaudeJudgeResult
 ) {
   if (typeof value !== 'string' || !value.trim()) {
-    throw new Error(`${String(fieldName)} must be a non-empty string.`)
+    throw new Error(
+      `${String(fieldName)} must be a non-empty string.`
+    )
   }
 }
 
@@ -114,10 +150,7 @@ function validateJudgeResult(result: ClaudeJudgeResult) {
   ]
 
   for (const fieldName of scoreFields) {
-    validateScore(
-      result[fieldName] as number,
-      fieldName
-    )
+    validateScore(result[fieldName] as number, fieldName)
   }
 
   const calculatedTotal =
@@ -132,10 +165,19 @@ function validateJudgeResult(result: ClaudeJudgeResult) {
     throw new Error('totalScore must be a valid number.')
   }
 
-  if (
-    Math.abs(result.totalScore - calculatedTotal) >
-    0.001
-  ) {
+  if (result.totalScore < 0 || result.totalScore > 18) {
+    throw new Error(
+      'totalScore must be between 0.00 and 18.00.'
+    )
+  }
+
+  if (!Number.isInteger(result.totalScore * 4)) {
+    throw new Error(
+      'totalScore must use increments of 0.25.'
+    )
+  }
+
+  if (Math.abs(result.totalScore - calculatedTotal) > 0.001) {
     throw new Error(
       `Claude totalScore does not match the criterion total. ` +
         `Expected ${calculatedTotal.toFixed(2)}, ` +
@@ -183,6 +225,75 @@ function validateJudgeResult(result: ClaudeJudgeResult) {
   }
 }
 
+async function loadReferenceDocuments(): Promise<ContentBlock[]> {
+  const documentsDirectory = path.join(
+    process.cwd(),
+    'public',
+    'documents'
+  )
+
+  return Promise.all(
+    REFERENCE_DOCUMENTS.map(
+      async ({ filename, documentName }): Promise<ContentBlock> => {
+        const documentPath = path.join(
+          documentsDirectory,
+          filename
+        )
+
+        let bytes: Uint8Array
+
+        try {
+          bytes = await readFile(documentPath)
+        } catch (error) {
+          throw new Error(
+            `Unable to read Claude reference document ` +
+              `${documentPath}: ${
+                error instanceof Error
+                  ? error.message
+                  : String(error)
+              }`
+          )
+        }
+
+        if (bytes.length === 0) {
+          throw new Error(
+            `Claude reference document is empty: ${documentPath}`
+          )
+        }
+
+        return {
+          document: {
+            format: 'pdf',
+            name: documentName,
+            source: {
+              bytes,
+            },
+          },
+        }
+      }
+    )
+  )
+}
+
+function getClaudeOutputText(
+  content: ContentBlock[] | undefined
+): string {
+  if (!content) {
+    return ''
+  }
+
+  return content
+    .map((block) => {
+      if ('text' in block && typeof block.text === 'string') {
+        return block.text
+      }
+
+      return ''
+    })
+    .join('')
+    .trim()
+}
+
 export async function runClaudeJudge({
   pegasusOutput,
 }: RunClaudeJudgeParams) {
@@ -197,60 +308,59 @@ export async function runClaudeJudge({
     throw new Error('Pegasus output is empty.')
   }
 
-  const client = new BedrockRuntimeClient({ region })
+  const referenceDocuments =
+    await loadReferenceDocuments()
+
+  const client = new BedrockRuntimeClient({
+    region,
+  })
 
   const prompt = `
 You are serving as an official contest judge evaluating a submitted vehicle inspection video.
 
-Review the submission using only the information provided in the video storyboard and video transcript.
+The following reference documents are attached to this request:
 
-Evaluate the submission from the perspective of a Subject Matter Expert.
+1. Official Rules
+2. Judging Rubric
+3. Best Practices
 
-Do not assume the existence of information, actions, measurements, visual evidence, tools, explanations, or recommendations that are not explicitly present in the submission.
+Treat those documents as the authoritative basis for the evaluation.
 
-If the submission description states that a visual element is shown, you may consider it present.
+Apply the Official Rules and Judging Rubric exactly as written. Use the Best Practices document to help distinguish average submissions from stronger and more competitive submissions.
 
-If a recommendation is made without supporting evidence being shown or described, reflect that appropriately in the score.
+Do not replace the requirements in the attached documents with your own generalized judging standards.
+
+Do not deduct points merely because an optional enhancement, coaching opportunity, or best practice was absent unless the Official Rules or Judging Rubric support that deduction.
+
+You may still identify optional enhancements in the strengths and improvement fields, but scoring must remain grounded in the attached Official Rules and Judging Rubric.
+
+Evaluate the submission using only:
+
+- The attached reference documents
+- The supplied video storyboard
+- The supplied video transcript
+
+Do not assume the existence of information, actions, measurements, tools, visual evidence, explanations, recommendations, or guest interactions that are not explicitly present.
+
+If the storyboard states that something is visibly shown, you may consider that evidence present.
+
+If a recommendation is made without supporting visual evidence or explanation, score it according to the attached rubric.
 
 Maintain a professional, objective contest-judging tone.
 
-Return only the raw JSON object.
+SCORING REQUIREMENTS
 
-Do not include Markdown.
-Do not include JSON code fences.
-Do not include commentary before or after the JSON.
-The first character of your response must be {
-The final character of your response must be }
-
-Scoring requirements:
-
-- Score each criterion between 0.00 and 3.00.
+- Score each criterion from 0.00 through 3.00.
 - Use increments of 0.25 only.
-- Every score must be supported by specific evidence from the submission.
-- Avoid score inflation.
-- Judge consistently as though this were a competitive contest entry.
-- Explain both what the submission did well and what prevented it from receiving a higher score.
-- Do not award a perfect score unless the submission fully satisfies the criterion with no meaningful weakness.
+- Apply the scoring levels and standards from the attached Judging Rubric.
+- Support every score with specific evidence from the storyboard or transcript.
+- Avoid both score inflation and unsupported deductions.
+- Judge the submission as a competitive contest entry.
 - The total score must exactly equal the sum of all six criterion scores.
+- A coaching opportunity does not automatically justify a score deduction.
+- Explain what earned the score and, when applicable, what rubric-supported weakness prevented a higher score.
 
-For each criterion, return all of the following:
-
-1. Numeric score.
-2. Detailed explanation of why the score was assigned.
-3. Specific supporting evidence from the storyboard or transcript.
-4. Strengths demonstrated within that criterion.
-5. Practical opportunities for improvement that would increase the score.
-
-Keep each field distinct:
-
-- Explanation explains why the score was assigned.
-- Evidence identifies concrete facts, dialogue, measurements, visuals, or actions from the submission.
-- Strengths summarizes what was done effectively.
-- Improvements gives specific actions that would raise the score.
-
-Do not repeat identical sentences across these fields.
-
-Criteria:
+CRITERIA
 
 1. Introduction & Guest Context
 2. Explanation of Inspection Findings
@@ -259,36 +369,52 @@ Criteria:
 5. Organization & Video Flow
 6. Accuracy of Recommendations
 
-Criterion guidance:
+FOR EACH CRITERION, RETURN
 
-Criterion 1 – Introduction & Guest Context
-Evaluate whether the technician identifies themselves, establishes the vehicle or guest context, explains the purpose of the video, and helps the guest understand why the inspection matters.
+1. Numeric score
+2. Detailed explanation of why that score was assigned
+3. Specific supporting evidence
+4. Strengths demonstrated
+5. Practical opportunities for improvement
 
-Criterion 2 – Explanation of Inspection Findings
-Evaluate the clarity, completeness, and guest usefulness of the inspection findings. Consider whether measurements, test results, tools, vehicle components, and visible evidence are explained in understandable language.
+Keep these fields distinct:
 
-Criterion 3 – Service Recommendation & Urgency
-Evaluate whether recommendations are clearly stated, justified, prioritized, and categorized appropriately as immediate, preventative, future, required, or optional. Consider whether the guest would understand what action is needed and why.
+- Explanation: why the score was assigned under the rubric
+- Evidence: concrete dialogue, measurements, visuals, or actions
+- Strengths: what was done effectively
+- Improvements: specific ways the submission could become stronger
 
-Criterion 4 – Communication Clarity & Professionalism
-Evaluate tone, confidence, clarity, pacing, organization of speech, guest focus, professionalism, and the technician's ability to simplify technical information.
+Do not repeat identical sentences across these fields.
 
-Criterion 5 – Organization & Video Flow
-Evaluate the logical progression of the video, transitions between inspection areas, sequencing of information, ease of following the inspection, and effectiveness of the opening and closing.
+OVERALL COMMENT
 
-Criterion 6 – Accuracy of Recommendations
-Evaluate whether findings and recommendations are supported by the storyboard and transcript. Consider whether measurements, thresholds, visible evidence, inspection results, and service recommendations are logically connected.
+Provide a detailed Overall Judge Comment written from the perspective of an experienced contest judge.
 
-After evaluating all criteria:
+The comment should summarize:
 
-- Calculate the total score out of 18.00.
-- Provide a detailed Overall Judge Comment written from the perspective of an experienced contest judge.
-- The Overall Judge Comment should summarize the effectiveness of the submission, the guest experience it creates, how well it demonstrates the value of the inspection process, and how effectively it builds trust and understanding for the guest.
-- Provide a separate Opportunities for Improvement section in improvementNotes.
-- improvementNotes should focus on practical, specific changes the technician could make to increase competitiveness in future judging rounds.
-- Do not simply repeat the six criterion improvement fields. Synthesize the most important improvements into a cohesive overall development plan.
+- The overall effectiveness of the submission
+- The guest experience it creates
+- How well it demonstrates the value of the inspection process
+- How effectively it builds guest trust and understanding
+- Its overall competitiveness
 
-Return ONLY valid JSON matching this exact structure:
+OPPORTUNITIES FOR IMPROVEMENT
+
+Provide a separate improvementNotes field containing a cohesive development plan.
+
+Do not merely repeat all six criterion improvement fields. Prioritize the most meaningful practical changes that would improve future contest performance.
+
+OUTPUT RULES
+
+Return only one raw JSON object.
+
+Do not include Markdown.
+Do not include JSON code fences.
+Do not include commentary before or after the JSON.
+The first character must be {
+The final character must be }
+
+Return JSON matching this exact structure:
 
 {
   "criterion1Score": 0,
@@ -333,65 +459,39 @@ Return ONLY valid JSON matching this exact structure:
   "improvementNotes": ""
 }
 
-Vehicle inspection submission:
+VIDEO STORYBOARD AND TRANSCRIPT
 
 ${pegasusOutput}
 `.trim()
 
-  const body = {
-    anthropic_version: 'bedrock-2023-05-31',
-    max_tokens: 8192,
-    temperature: 0.2,
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: prompt,
-          },
-        ],
-      },
-    ],
-  }
-
   const response = await client.send(
-    new InvokeModelCommand({
+    new ConverseCommand({
       modelId,
-      contentType: 'application/json',
-      accept: 'application/json',
-      body: JSON.stringify(body),
+      messages: [
+        {
+          role: 'user',
+          content: [
+            ...referenceDocuments,
+            {
+              text: prompt,
+            },
+          ],
+        },
+      ],
+      inferenceConfig: {
+        maxTokens: 8192,
+        temperature: 0.2,
+      },
     })
   )
 
-  const responseText = Buffer.from(response.body).toString('utf8')
+  const responseContent =
+    response.output?.message?.content
 
-  let parsed: {
-    content?: Array<{
-      type?: string
-      text?: string
-    }>
-  }
-
-  try {
-    parsed = JSON.parse(responseText)
-  } catch {
-    throw new Error(
-      `Claude returned an invalid Bedrock response: ${responseText.slice(
-        0,
-        500
-      )}`
-    )
-  }
-
-  const text = parsed.content
-    ?.filter((item) => item.type === 'text')
-    .map((item) => item.text || '')
-    .join('')
-    .trim()
+  const text = getClaudeOutputText(responseContent)
 
   if (!text) {
-    throw new Error('Claude returned no response.')
+    throw new Error('Claude returned no text response.')
   }
 
   const cleanedText = extractJson(text)
@@ -399,23 +499,47 @@ ${pegasusOutput}
   let result: ClaudeJudgeResult
 
   try {
-    result = JSON.parse(cleanedText) as ClaudeJudgeResult
+    result = JSON.parse(
+      cleanedText
+    ) as ClaudeJudgeResult
   } catch (error) {
     console.error('Claude raw response text:', text)
-    console.error('Claude cleaned response text:', cleanedText)
+    console.error(
+      'Claude cleaned response text:',
+      cleanedText
+    )
 
     throw new Error(
       `Claude returned invalid JSON: ${
-        error instanceof Error ? error.message : String(error)
+        error instanceof Error
+          ? error.message
+          : String(error)
       }`
     )
   }
 
   validateJudgeResult(result)
 
+  const rawResponse: ClaudeRawResponse = {
+    stopReason: response.stopReason ?? null,
+    outputText: text,
+    usage: {
+      inputTokens:
+        response.usage?.inputTokens ?? null,
+      outputTokens:
+        response.usage?.outputTokens ?? null,
+      totalTokens:
+        response.usage?.totalTokens ?? null,
+    },
+    metrics: {
+      latencyMs:
+        response.metrics?.latencyMs ?? null,
+    },
+  }
+
   return {
     result,
-    rawResponse: parsed,
+    rawResponse,
     modelId,
   }
 }
