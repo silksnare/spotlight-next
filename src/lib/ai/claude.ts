@@ -7,6 +7,47 @@ type RunClaudeJudgeParams = {
   pegasusOutput: string
 }
 
+type ClaudeJudgeResult = {
+  criterion1Score: number
+  criterion2Score: number
+  criterion3Score: number
+  criterion4Score: number
+  criterion5Score: number
+  criterion6Score: number
+  totalScore: number
+
+  criterion1Explanation: string
+  criterion2Explanation: string
+  criterion3Explanation: string
+  criterion4Explanation: string
+  criterion5Explanation: string
+  criterion6Explanation: string
+
+  overallComment: string
+  improvementNotes: string
+}
+
+function extractJson(text: string): string {
+  const trimmed = text.trim()
+
+  const fencedMatch = trimmed.match(
+    /^```(?:json)?\s*([\s\S]*?)\s*```$/i
+  )
+
+  if (fencedMatch?.[1]) {
+    return fencedMatch[1].trim()
+  }
+
+  const firstBrace = trimmed.indexOf('{')
+  const lastBrace = trimmed.lastIndexOf('}')
+
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    return trimmed.slice(firstBrace, lastBrace + 1)
+  }
+
+  return trimmed
+}
+
 export async function runClaudeJudge({
   pegasusOutput,
 }: RunClaudeJudgeParams) {
@@ -31,6 +72,14 @@ Do not assume the existence of information, actions, measurements, visual eviden
 If the submission description states that a visual element is shown, you may consider it present.
 
 If a recommendation is made without supporting evidence being shown or described, reflect that appropriately in the score.
+
+Return only the raw JSON object.
+
+Do not include Markdown.
+Do not include JSON code fences.
+Do not include commentary before or after the JSON.
+The first character of your response must be {
+The final character of your response must be }
 
 When assigning scores:
 
@@ -63,7 +112,7 @@ After evaluating all criteria:
 • Provide an Overall Judge Comment.
 • Provide Opportunities for Improvement.
 
-Return ONLY valid JSON.
+Return ONLY valid JSON matching this exact structure:
 
 {
   "criterion1Score": 0,
@@ -73,14 +122,12 @@ Return ONLY valid JSON.
   "criterion5Score": 0,
   "criterion6Score": 0,
   "totalScore": 0,
-
   "criterion1Explanation": "",
   "criterion2Explanation": "",
   "criterion3Explanation": "",
   "criterion4Explanation": "",
   "criterion5Explanation": "",
   "criterion6Explanation": "",
-
   "overallComment": "",
   "improvementNotes": ""
 }
@@ -121,12 +168,29 @@ ${pegasusOutput}
 
   const text = parsed.content?.[0]?.text
 
-  if (!text) {
+  if (!text || typeof text !== 'string') {
     throw new Error('Claude returned no response.')
   }
 
+  const cleanedText = extractJson(text)
+
+  let result: ClaudeJudgeResult
+
+  try {
+    result = JSON.parse(cleanedText) as ClaudeJudgeResult
+  } catch (error) {
+    console.error('Claude raw response text:', text)
+    console.error('Claude cleaned response text:', cleanedText)
+
+    throw new Error(
+      `Claude returned invalid JSON: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    )
+  }
+
   return {
-    result: JSON.parse(text),
+    result,
     rawResponse: parsed,
     modelId,
   }
