@@ -10,15 +10,15 @@ type RunPegasusParams = {
 export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
   const region = process.env.AWS_REGION || 'us-east-1'
   const configuredModelId = process.env.AWS_BEDROCK_PEGASUS_MODEL_ID
-  const bucketOwner = process.env.AWS_ACCOUNT_ID
+  // const bucketOwner = process.env.AWS_ACCOUNT_ID
 
   if (!configuredModelId) {
     throw new Error('Missing AWS_BEDROCK_PEGASUS_MODEL_ID')
   }
 
-  if (!bucketOwner) {
-    throw new Error('Missing AWS_ACCOUNT_ID')
-  }
+  // if (!bucketOwner) {
+  //   throw new Error('Missing AWS_ACCOUNT_ID')
+  // }
 
   /*
    * Normalize either of these:
@@ -41,7 +41,7 @@ export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
     mediaSource: {
       s3Location: {
         uri: videoS3Uri,
-        bucketOwner,
+        // bucketOwner,
       },
     },
     temperature: 0.2,
@@ -52,8 +52,11 @@ export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
   console.log('Configured Pegasus model ID:', configuredModelId)
   console.log('Effective Pegasus model ID:', modelId)
   console.log('Pegasus video URI:', videoS3Uri)
-  console.log('Pegasus bucket owner:', bucketOwner)
+  // console.log('Pegasus bucket owner:', bucketOwner)
   console.log('Pegasus media mode: s3Location')
+
+  console.log('PEGASUS REQUEST BODY:')
+  console.log(JSON.stringify(body, null, 2))
 
   const response = await client.send(
     new InvokeModelCommand({
