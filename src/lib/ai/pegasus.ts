@@ -10,15 +10,15 @@ type RunPegasusParams = {
 export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
   const region = process.env.AWS_REGION || 'us-east-1'
   const configuredModelId = process.env.AWS_BEDROCK_PEGASUS_MODEL_ID
-  // const bucketOwner = process.env.AWS_ACCOUNT_ID
+  const bucketOwner = process.env.AWS_ACCOUNT_ID
 
   if (!configuredModelId) {
     throw new Error('Missing AWS_BEDROCK_PEGASUS_MODEL_ID')
   }
 
-  // if (!bucketOwner) {
-  //   throw new Error('Missing AWS_ACCOUNT_ID')
-  // }
+  if (!bucketOwner) {
+    throw new Error('Missing AWS_ACCOUNT_ID')
+  }
 
   /*
    * Normalize either of these:
@@ -41,7 +41,7 @@ export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
     mediaSource: {
       s3Location: {
         uri: videoS3Uri,
-        // bucketOwner,
+        bucketOwner,
       },
     },
     temperature: 0.2,
