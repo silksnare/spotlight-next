@@ -7,9 +7,75 @@ type RunPegasusParams = {
   videoS3Uri: string
 }
 
-export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
+type PegasusResponse = {
+  message?: unknown
+  stopReason?: unknown
+}
+
+function normalizeModelId(configuredModelId: string) {
+  const foundationModelMarker = 'foundation-model/'
+
+  if (configuredModelId.includes(foundationModelMarker)) {
+    const [, modelId] = configuredModelId.split(foundationModelMarker)
+
+    if (!modelId) {
+      throw new Error(
+        `Unable to extract Pegasus model ID from: ${configuredModelId}`
+      )
+    }
+
+    return modelId
+  }
+
+  return configuredModelId
+}
+
+function validatePegasusOutput(message: string) {
+  const normalizedMessage = message.trim().toLowerCase()
+
+  if (!normalizedMessage) {
+    throw new Error('Pegasus returned an empty response.')
+  }
+
+  const unavailablePatterns = [
+    'video is not available',
+    'video was not available',
+    'please provide the video',
+    'please provide a video',
+    'provide the video or a link',
+    'cannot provide a detailed storyboard',
+    'cannot provide the requested storyboard',
+    'unable to access the video',
+    'could not access the video',
+  ]
+
+  const videoWasUnavailable = unavailablePatterns.some((pattern) =>
+    normalizedMessage.includes(pattern)
+  )
+
+  if (videoWasUnavailable) {
+    throw new Error(
+      'Pegasus could not access or analyze the supplied video.'
+    )
+  }
+
+  /*
+   * A real Pegasus analysis should contain substantially more than
+   * a short refusal, acknowledgement, or generic response.
+   */
+  if (message.trim().length < 100) {
+    throw new Error(
+      `Pegasus returned an unexpectedly short response: ${message.trim()}`
+    )
+  }
+}
+
+export async function runPegasus({
+  videoS3Uri,
+}: RunPegasusParams) {
   const region = process.env.AWS_REGION || 'us-east-1'
-  const configuredModelId = process.env.AWS_BEDROCK_PEGASUS_MODEL_ID
+  const configuredModelId =
+    process.env.AWS_BEDROCK_PEGASUS_MODEL_ID
   const bucketOwner = process.env.AWS_ACCOUNT_ID
 
   if (!configuredModelId) {
@@ -20,19 +86,11 @@ export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
     throw new Error('Missing AWS_ACCOUNT_ID')
   }
 
-  /*
-   * Normalize either of these:
-   *
-   * arn:aws:bedrock:us-east-1::foundation-model/twelvelabs.pegasus-1-2-v1:0
-   *
-   * twelvelabs.pegasus-1-2-v1:0
-   *
-   * into the short Bedrock model ID.
-   */
-  const modelId = configuredModelId.includes('foundation-model/')
-    ? configuredModelId.split('foundation-model/')[1]
-    : configuredModelId
+  if (!videoS3Uri.startsWith('s3://')) {
+    throw new Error(`Invalid S3 video URI: ${videoS3Uri}`)
+  }
 
+  const modelId = normalizeModelId(configuredModelId)
   const client = new BedrockRuntimeClient({ region })
 
   const body = {
@@ -48,16 +106,6 @@ export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
     maxOutputTokens: 4096,
   }
 
-  console.log('Pegasus region:', region)
-  console.log('Configured Pegasus model ID:', configuredModelId)
-  console.log('Effective Pegasus model ID:', modelId)
-  console.log('Pegasus video URI:', videoS3Uri)
-  // console.log('Pegasus bucket owner:', bucketOwner)
-  console.log('Pegasus media mode: s3Location')
-
-  console.log('PEGASUS REQUEST BODY:')
-  console.log(JSON.stringify(body, null, 2))
-
   const response = await client.send(
     new InvokeModelCommand({
       modelId,
@@ -69,19 +117,31 @@ export async function runPegasus({ videoS3Uri }: RunPegasusParams) {
 
   const responseText = Buffer.from(response.body).toString('utf8')
 
-  console.log('RAW PEGASUS RESPONSE:')
-  console.log(responseText)
+  let parsed: PegasusResponse
 
-  const parsed = JSON.parse(responseText)
-
-  if (typeof parsed.message !== 'string') {
+  try {
+    parsed = JSON.parse(responseText) as PegasusResponse
+  } catch {
     throw new Error(
-      `Pegasus response did not contain a message: ${responseText}`
+      `Pegasus returned invalid JSON: ${responseText.slice(0, 500)}`
     )
   }
 
+  if (typeof parsed.message !== 'string') {
+    throw new Error(
+      `Pegasus response did not contain a valid message: ${responseText.slice(
+        0,
+        500
+      )}`
+    )
+  }
+
+  const storyboard = parsed.message.trim()
+
+  validatePegasusOutput(storyboard)
+
   return {
-    storyboard: parsed.message,
+    storyboard,
     rawResponse: parsed,
     modelId,
   }

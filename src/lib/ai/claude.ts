@@ -17,11 +17,34 @@ type ClaudeJudgeResult = {
   totalScore: number
 
   criterion1Explanation: string
+  criterion1Evidence: string
+  criterion1Strengths: string
+  criterion1Improvements: string
+
   criterion2Explanation: string
+  criterion2Evidence: string
+  criterion2Strengths: string
+  criterion2Improvements: string
+
   criterion3Explanation: string
+  criterion3Evidence: string
+  criterion3Strengths: string
+  criterion3Improvements: string
+
   criterion4Explanation: string
+  criterion4Evidence: string
+  criterion4Strengths: string
+  criterion4Improvements: string
+
   criterion5Explanation: string
+  criterion5Evidence: string
+  criterion5Strengths: string
+  criterion5Improvements: string
+
   criterion6Explanation: string
+  criterion6Evidence: string
+  criterion6Strengths: string
+  criterion6Improvements: string
 
   overallComment: string
   improvementNotes: string
@@ -48,6 +71,118 @@ function extractJson(text: string): string {
   return trimmed
 }
 
+function validateScore(
+  score: number,
+  fieldName: keyof ClaudeJudgeResult
+) {
+  if (!Number.isFinite(score)) {
+    throw new Error(`${String(fieldName)} must be a valid number.`)
+  }
+
+  if (score < 0 || score > 3) {
+    throw new Error(
+      `${String(fieldName)} must be between 0.00 and 3.00.`
+    )
+  }
+
+  const quarterSteps = score * 4
+
+  if (!Number.isInteger(quarterSteps)) {
+    throw new Error(
+      `${String(fieldName)} must use increments of 0.25.`
+    )
+  }
+}
+
+function validateTextField(
+  value: unknown,
+  fieldName: keyof ClaudeJudgeResult
+) {
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new Error(`${String(fieldName)} must be a non-empty string.`)
+  }
+}
+
+function validateJudgeResult(result: ClaudeJudgeResult) {
+  const scoreFields: Array<keyof ClaudeJudgeResult> = [
+    'criterion1Score',
+    'criterion2Score',
+    'criterion3Score',
+    'criterion4Score',
+    'criterion5Score',
+    'criterion6Score',
+  ]
+
+  for (const fieldName of scoreFields) {
+    validateScore(
+      result[fieldName] as number,
+      fieldName
+    )
+  }
+
+  const calculatedTotal =
+    result.criterion1Score +
+    result.criterion2Score +
+    result.criterion3Score +
+    result.criterion4Score +
+    result.criterion5Score +
+    result.criterion6Score
+
+  if (!Number.isFinite(result.totalScore)) {
+    throw new Error('totalScore must be a valid number.')
+  }
+
+  if (
+    Math.abs(result.totalScore - calculatedTotal) >
+    0.001
+  ) {
+    throw new Error(
+      `Claude totalScore does not match the criterion total. ` +
+        `Expected ${calculatedTotal.toFixed(2)}, ` +
+        `received ${result.totalScore}.`
+    )
+  }
+
+  const textFields: Array<keyof ClaudeJudgeResult> = [
+    'criterion1Explanation',
+    'criterion1Evidence',
+    'criterion1Strengths',
+    'criterion1Improvements',
+
+    'criterion2Explanation',
+    'criterion2Evidence',
+    'criterion2Strengths',
+    'criterion2Improvements',
+
+    'criterion3Explanation',
+    'criterion3Evidence',
+    'criterion3Strengths',
+    'criterion3Improvements',
+
+    'criterion4Explanation',
+    'criterion4Evidence',
+    'criterion4Strengths',
+    'criterion4Improvements',
+
+    'criterion5Explanation',
+    'criterion5Evidence',
+    'criterion5Strengths',
+    'criterion5Improvements',
+
+    'criterion6Explanation',
+    'criterion6Evidence',
+    'criterion6Strengths',
+    'criterion6Improvements',
+
+    'overallComment',
+    'improvementNotes',
+  ]
+
+  for (const fieldName of textFields) {
+    validateTextField(result[fieldName], fieldName)
+  }
+}
+
 export async function runClaudeJudge({
   pegasusOutput,
 }: RunClaudeJudgeParams) {
@@ -56,6 +191,10 @@ export async function runClaudeJudge({
 
   if (!modelId) {
     throw new Error('Missing AWS_BEDROCK_CLAUDE_MODEL_ID')
+  }
+
+  if (!pegasusOutput.trim()) {
+    throw new Error('Pegasus output is empty.')
   }
 
   const client = new BedrockRuntimeClient({ region })
@@ -73,6 +212,8 @@ If the submission description states that a visual element is shown, you may con
 
 If a recommendation is made without supporting evidence being shown or described, reflect that appropriately in the score.
 
+Maintain a professional, objective contest-judging tone.
+
 Return only the raw JSON object.
 
 Do not include Markdown.
@@ -81,21 +222,33 @@ Do not include commentary before or after the JSON.
 The first character of your response must be {
 The final character of your response must be }
 
-When assigning scores:
+Scoring requirements:
 
-• Score each criterion between 0.00 and 3.00
-• Use increments of 0.25 only
-• Every score must be supported by evidence from the submission
-• Avoid score inflation
-• Judge consistently as though this were a competitive contest
+- Score each criterion between 0.00 and 3.00.
+- Use increments of 0.25 only.
+- Every score must be supported by specific evidence from the submission.
+- Avoid score inflation.
+- Judge consistently as though this were a competitive contest entry.
+- Explain both what the submission did well and what prevented it from receiving a higher score.
+- Do not award a perfect score unless the submission fully satisfies the criterion with no meaningful weakness.
+- The total score must exactly equal the sum of all six criterion scores.
 
-For each criterion provide:
+For each criterion, return all of the following:
 
-• Score
-• Detailed explanation
-• Supporting evidence
-• Strengths
-• Opportunities for improvement
+1. Numeric score.
+2. Detailed explanation of why the score was assigned.
+3. Specific supporting evidence from the storyboard or transcript.
+4. Strengths demonstrated within that criterion.
+5. Practical opportunities for improvement that would increase the score.
+
+Keep each field distinct:
+
+- Explanation explains why the score was assigned.
+- Evidence identifies concrete facts, dialogue, measurements, visuals, or actions from the submission.
+- Strengths summarizes what was done effectively.
+- Improvements gives specific actions that would raise the score.
+
+Do not repeat identical sentences across these fields.
 
 Criteria:
 
@@ -106,11 +259,34 @@ Criteria:
 5. Organization & Video Flow
 6. Accuracy of Recommendations
 
+Criterion guidance:
+
+Criterion 1 – Introduction & Guest Context
+Evaluate whether the technician identifies themselves, establishes the vehicle or guest context, explains the purpose of the video, and helps the guest understand why the inspection matters.
+
+Criterion 2 – Explanation of Inspection Findings
+Evaluate the clarity, completeness, and guest usefulness of the inspection findings. Consider whether measurements, test results, tools, vehicle components, and visible evidence are explained in understandable language.
+
+Criterion 3 – Service Recommendation & Urgency
+Evaluate whether recommendations are clearly stated, justified, prioritized, and categorized appropriately as immediate, preventative, future, required, or optional. Consider whether the guest would understand what action is needed and why.
+
+Criterion 4 – Communication Clarity & Professionalism
+Evaluate tone, confidence, clarity, pacing, organization of speech, guest focus, professionalism, and the technician's ability to simplify technical information.
+
+Criterion 5 – Organization & Video Flow
+Evaluate the logical progression of the video, transitions between inspection areas, sequencing of information, ease of following the inspection, and effectiveness of the opening and closing.
+
+Criterion 6 – Accuracy of Recommendations
+Evaluate whether findings and recommendations are supported by the storyboard and transcript. Consider whether measurements, thresholds, visible evidence, inspection results, and service recommendations are logically connected.
+
 After evaluating all criteria:
 
-• Calculate the total score out of 18.00.
-• Provide an Overall Judge Comment.
-• Provide Opportunities for Improvement.
+- Calculate the total score out of 18.00.
+- Provide a detailed Overall Judge Comment written from the perspective of an experienced contest judge.
+- The Overall Judge Comment should summarize the effectiveness of the submission, the guest experience it creates, how well it demonstrates the value of the inspection process, and how effectively it builds trust and understanding for the guest.
+- Provide a separate Opportunities for Improvement section in improvementNotes.
+- improvementNotes should focus on practical, specific changes the technician could make to increase competitiveness in future judging rounds.
+- Do not simply repeat the six criterion improvement fields. Synthesize the most important improvements into a cohesive overall development plan.
 
 Return ONLY valid JSON matching this exact structure:
 
@@ -122,12 +298,37 @@ Return ONLY valid JSON matching this exact structure:
   "criterion5Score": 0,
   "criterion6Score": 0,
   "totalScore": 0,
+
   "criterion1Explanation": "",
+  "criterion1Evidence": "",
+  "criterion1Strengths": "",
+  "criterion1Improvements": "",
+
   "criterion2Explanation": "",
+  "criterion2Evidence": "",
+  "criterion2Strengths": "",
+  "criterion2Improvements": "",
+
   "criterion3Explanation": "",
+  "criterion3Evidence": "",
+  "criterion3Strengths": "",
+  "criterion3Improvements": "",
+
   "criterion4Explanation": "",
+  "criterion4Evidence": "",
+  "criterion4Strengths": "",
+  "criterion4Improvements": "",
+
   "criterion5Explanation": "",
+  "criterion5Evidence": "",
+  "criterion5Strengths": "",
+  "criterion5Improvements": "",
+
   "criterion6Explanation": "",
+  "criterion6Evidence": "",
+  "criterion6Strengths": "",
+  "criterion6Improvements": "",
+
   "overallComment": "",
   "improvementNotes": ""
 }
@@ -139,7 +340,7 @@ ${pegasusOutput}
 
   const body = {
     anthropic_version: 'bedrock-2023-05-31',
-    max_tokens: 4096,
+    max_tokens: 8192,
     temperature: 0.2,
     messages: [
       {
@@ -164,11 +365,32 @@ ${pegasusOutput}
   )
 
   const responseText = Buffer.from(response.body).toString('utf8')
-  const parsed = JSON.parse(responseText)
 
-  const text = parsed.content?.[0]?.text
+  let parsed: {
+    content?: Array<{
+      type?: string
+      text?: string
+    }>
+  }
 
-  if (!text || typeof text !== 'string') {
+  try {
+    parsed = JSON.parse(responseText)
+  } catch {
+    throw new Error(
+      `Claude returned an invalid Bedrock response: ${responseText.slice(
+        0,
+        500
+      )}`
+    )
+  }
+
+  const text = parsed.content
+    ?.filter((item) => item.type === 'text')
+    .map((item) => item.text || '')
+    .join('')
+    .trim()
+
+  if (!text) {
     throw new Error('Claude returned no response.')
   }
 
@@ -188,6 +410,8 @@ ${pegasusOutput}
       }`
     )
   }
+
+  validateJudgeResult(result)
 
   return {
     result,
