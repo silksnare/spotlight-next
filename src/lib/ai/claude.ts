@@ -491,6 +491,10 @@ Only recommend changes that are supported by the reliable evidence and attached 
 
 Do not recommend that the contestant correct something when the supposed problem is reasonably attributable to automated transcription, OCR, or visual analysis.
 
+When identifying an apparent transcription artifact, do not replace the uncertain word or phrase with your own inferred wording. State only that the extracted wording appears uncertain and do not use it as the basis for a deduction.
+
+Do not introduce external technical thresholds, specifications, service intervals, measurement benchmarks, or automotive standards unless they are explicitly contained in the attached reference documents or supplied submission evidence.
+
 OUTPUT RULES
 
 Return only one raw JSON object.
