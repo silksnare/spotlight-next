@@ -78,7 +78,7 @@ function toDateKey(value: Date): string {
 }
 
 function areaLabel(value: number | null | undefined): string {
-  if (typeof value === 'number') return `Area ${value}`;
+  if (typeof value === 'number') return `${value}`;
   return 'Unknown';
 }
 
@@ -212,7 +212,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
             Key: video.processedS3Key,
           });
 
-          videoUrl = await getSignedUrl(s3, command, { expiresIn: 900 });
+          videoUrl = await getSignedUrl(s3, command, { expiresIn: 604800 });
         } catch (error) {
           console.error('Error signing admin video URL:', {
             videoId: video.id,

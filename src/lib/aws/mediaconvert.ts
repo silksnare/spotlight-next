@@ -46,8 +46,7 @@ export async function createVideoTranscodeJob({
     },
   });
 
-  const outputPrefix = process.env.AWS_VIDEO_OUTPUT_PREFIX ?? 'videos';
-  const destination = `s3://${outputBucket}/${outputPrefix}/`;
+  const destination = `s3://${outputBucket}/videos/`;
 
   const command = new CreateJobCommand({
     Role: jobRoleArn,

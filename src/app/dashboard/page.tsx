@@ -27,24 +27,34 @@ import {
 
 const keyDates = [
   {
-    title: 'VIDEO SUBMISSIONS BEGIN',
-    month: 'MAY',
-    day: '04',
-  },
-  {
-    title: 'VIDEO SUBMISSION DEADLINE',
+    line1: 'Video Submission',
+    line2: 'Begins',
     month: 'JUNE',
-    day: '01',
+    day: '18',
   },
   {
-    title: 'WINNERS ANNOUNCEMENT',
+    line1: 'Video Submission',
+    line2: 'Deadline',
     month: 'JULY',
-    day: '06',
+    day: '13',
   },
   {
-    title: 'NATIONAL WINNER ANNOUNCEMENT',
+    line1: 'Judging',
+    line2: 'Complete',
+    month: 'JULY',
+    day: '30',
+  },
+  {
+    line1: 'Peer Vote',
+    line2: 'Phase',
+    month: 'JULY',
+    day: '27-31',
+  },
+  {
+    line1: 'Winners',
+    line2: 'Announced',
     month: 'AUG',
-    day: '11',
+    day: '3',
   },
 ]
 
@@ -62,7 +72,7 @@ export default async function DashboardPage() {
 
   return (
     <PageShell>
-      <SessionDebugDrawer
+      {/*<SessionDebugDrawer
         sessionUser={{
           id: session.user.id,
           name: session.user.name,
@@ -71,531 +81,500 @@ export default async function DashboardPage() {
           role: session.user.role ?? null,
           homeArea: session.user.homeArea,
         }}
-      />
+      />*/}
 
       <div className="space-y-0 bg-white">
-        <section className="overflow-hidden bg-white">
-          <div className="relative overflow-hidden border-b border-[#ececf4] bg-white">
-            <div className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full bg-[#ff8f5c]/20 blur-3xl" />
-            <div className="pointer-events-none absolute -right-20 bottom-8 h-80 w-80 rounded-full bg-[#7f56ff]/20 blur-3xl" />
+        <section className="relative h-[560px] overflow-hidden bg-[#1f1b20] sm:h-[620px] lg:h-[640px]">
+          <div
+            className="absolute inset-0 bg-center bg-no-repeat"
+            style={{
+              backgroundImage: "url('/images/background.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+            }}
+          />
 
-            <div className="pointer-events-none absolute bottom-0 right-0 h-full w-[55%] bg-gradient-to-tr from-[#ff6a13]/20 via-[#d14fc7]/20 to-[#7f56ff]/25 [clip-path:polygon(28%_100%,100%_12%,100%_100%)]" />
+          <div className="absolute inset-0 bg-black/20" />
 
-            <div className="pointer-events-none absolute bottom-0 left-[45%] h-[260px] w-[420px] bg-gradient-to-tr from-[#7f56ff]/25 via-[#d14fc7]/15 to-transparent [clip-path:polygon(0_100%,100%_28%,72%_100%)]" />
+          <img
+            src="/images/logo.png"
+            alt="Cadillac"
+            className="absolute left-1/2 top-10 h-auto w-[120px] -translate-x-1/2 sm:w-[150px] lg:w-[170px]"
+          />
 
-            <div className="pointer-events-none absolute right-16 top-1/2 hidden -translate-y-1/2 grid-cols-4 gap-3 opacity-45 lg:grid">
-              {Array.from({ length: 32 }).map((_, index) => (
-                <span
-                  key={index}
-                  className="h-1.5 w-1.5 rounded-full bg-[#d14fc7]"
-                />
-              ))}
-            </div>
+          <div className="absolute bottom-10 left-1/2 w-full max-w-5xl -translate-x-1/2 px-6 text-center text-white sm:bottom-12 lg:bottom-14">
+            <h1 className="font-[family:var(--font-cadillac)] text-[18px] font-normal uppercase leading-[1.35] tracking-[0.35em] sm:text-[20px] md:text-[30px] lg:text-[40px]">
+              Lead the Shift to
+              <span className="block">Electric Luxury</span>
+            </h1>
 
-            <div className="page-container relative grid min-h-[520px] items-center gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr]">
-              <div>
-                <p className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
-                  Spotlight Platform
-                </p>
-
-                <h1 className="max-w-2xl text-5xl font-extrabold leading-[1.05] tracking-tight text-[#111322] md:text-7xl">
-                  Spotlight Next
-                  <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text pb-2 text-transparent">
-                    Inspiring participation.
-                  </span>
-                  <span className="block bg-gradient-to-r from-[#ff6a13] via-[#d14fc7] to-[#7f56ff] bg-clip-text pb-2 text-transparent">
-                    Delivering results.
-                  </span>
-                </h1>
-
-                <p className="mt-6 max-w-xl text-base leading-7 text-[#55586b] md:text-lg">
-                  A phase-based video competition platform designed to engage
-                  participants, streamline judging, and deliver measurable business
-                  impact.
-                </p>
-
-                <div className="mt-8">
-                  <a
-                    href="#contest-details"
-                    className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
-                  >
-                    View Contest Details
-                    <span className="ml-3 text-lg leading-none">→</span>
-                  </a>
-                </div>
-              </div>
-
-              <div className="relative hidden lg:block">
-                <div className="ml-auto grid w-full max-w-[320px] gap-5">
-                  <div className="rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#7f56ff]/12 text-[#7f56ff]">
-                        👥
-                      </div>
-
-                      <div>
-                        <div className="text-2xl font-extrabold leading-none text-[#111322]">
-                          1,248
-                        </div>
-
-                        <div className="mt-1 text-xs font-medium text-[#676b80]">
-                          Total Submissions
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="translate-x-8 rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ff6a13]/12 text-[#ff6a13]">
-                        ▶
-                      </div>
-
-                      <div>
-                        <div className="text-2xl font-extrabold leading-none text-[#111322]">
-                          86%
-                        </div>
-
-                        <div className="mt-1 text-xs font-medium text-[#676b80]">
-                          Judge Completion
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-[#ececf4] bg-white/85 p-5 shadow-[0_18px_50px_rgba(78,57,154,0.14)] backdrop-blur-md">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d14fc7]/12 text-[#d14fc7]">
-                        ↗
-                      </div>
-
-                      <div>
-                        <div className="text-2xl font-extrabold leading-none text-[#111322]">
-                          312
-                        </div>
-
-                        <div className="mt-1 text-xs font-medium text-[#676b80]">
-                          Active Participants
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <p className="mx-auto mt-4 max-w-4xl text-[13px] leading-6 sm:text-[15px] md:text-[17px] text-white">
+              Select your Cadillac EV, highlight its advantages and inspire what comes next.
+            </p>
           </div>
         </section>
 
         <section className="bg-white">
-          <div className="page-container">
-            <div className="mx-auto max-w-[1600px]">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
-                Program Timeline
+          <div className="h-[22px] w-full bg-[linear-gradient(90deg,#3d4ec7_0%,#241f7f_100%)]" />
+
+          <div className="mx-auto max-w-[1200px] py-16 lg:py-20 px-6">
+            <h2 className="font-[family:var(--font-cadillac)] text-[16px] font-bold uppercase tracking-[0.28em] text-[#231f24] sm:text-[18px] lg:text-[20px]">
+              The Conquest Challenge
+            </h2>
+
+            <h3 className="mt-10 font-[family:var(--font-cadillac)] text-[18px] font-bold uppercase tracking-[0.24em] text-[#231f24] sm:text-[20px] lg:text-[30px]">
+              EXPRESS THE CADILLAC DIFFERENCE
+            </h3>
+
+            <div className="mt-8 max-w-[1040px] space-y-8 text-[18px] leading-[1.7] text-[#231f24]">
+              <p>
+                Cadillac is shaping the future of All-Electric Luxury, and customers look to you for clarity as they consider what comes next—especially those transitioning from competitive EVs.
               </p>
 
-              <div className="page-title">Key Dates</div>
+              <p>
+                <span className="font-bold">Your challenge:</span>{' '}
+                 Deliver a compelling, customer-ready walkaround video that expresses the Cadillac difference and earn a trip to the U.S. Open Tennis Tournament.
+              </p>
+            </div>
+          </div>
+        </section>
 
-              <div className="relative mt-12 mb-10">
-                <div className="absolute left-0 right-0 top-7 hidden h-px bg-[#dfe1ea] lg:block" />
+        <section className="bg-[#e7e7e7]">
+          <div className="mx-auto max-w-[1200px] px-6 py-16 lg:py-24">
+            <div className="font-[family:var(--font-cadillac)] text-[18px] font-bold uppercase tracking-[0.24em] text-[#231f24] sm:text-[20px] lg:text-[30px]">
+              Key Dates
+            </div>
 
-                <div className="grid gap-8 lg:grid-cols-4">
-                  {keyDates.map((item, index) => {
-                    const icons = [Upload, Clock, Users, Trophy]
-                    const Icon = icons[index]
+            <div className="mt-16 space-y-4">
+              <div className="mx-auto grid max-w-[860px] gap-4 sm:grid-cols-2">
+                {keyDates.slice(0, 2).map((date) => (
+                  <div
+                    key={`${date.line1}-${date.line2}`}
+                    className="flex min-h-[185px] flex-col items-center justify-center bg-white px-6 py-8 text-center text-[#231f24]"
+                  >
+                    <div className="font-[family:var(--font-cadillac)] text-[14px] uppercase leading-[1.3] tracking-[0.26em]">
+                      <div>{date.line1}</div>
+                      <div>{date.line2}</div>
+                    </div>
 
-                    const accents = [
-                      { bg: 'bg-[#ff6a13]/10', border: 'border-[#ff6a13]', text: 'text-[#ff6a13]' },
-                      { bg: 'bg-[#7f56ff]/10', border: 'border-[#7f56ff]', text: 'text-[#7f56ff]' },
-                      { bg: 'bg-[#d14fc7]/10', border: 'border-[#d14fc7]', text: 'text-[#d14fc7]' },
-                      { bg: 'bg-[#ff6a13]/10', border: 'border-[#ff6a13]', text: 'text-[#ff6a13]' },
-                    ]
+                    <div className="mt-5 font-[family:var(--font-cadillac)] text-[24px] font-bold uppercase tracking-[0.18em]">
+                      {date.month}
+                    </div>
 
-                    const accent = accents[index]
+                    <div className="mt-1 font-[family:var(--font-cadillac)] text-[52px] font-bold leading-none">
+                      {date.day}
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-                    return (
-                      <div
-                        key={item.title}
-                        className="relative rounded-2xl border border-[#ececf4] bg-white p-6 text-center shadow-[0_18px_50px_rgba(78,57,154,0.08)] lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
-                      >
-                        {index < keyDates.length - 1 ? (
-                          <div className="absolute left-1/2 top-full h-8 w-px -translate-x-1/2 bg-[#e4e5ef] lg:hidden" />
-                        ) : null}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {keyDates.slice(2).map((date) => (
+                  <div
+                    key={`${date.line1}-${date.line2}`}
+                    className="flex min-h-[185px] flex-col items-center justify-center bg-white px-6 py-8 text-center text-[#231f24]"
+                  >
+                    <div className="font-[family:var(--font-cadillac)] text-[14px] uppercase leading-[1.3] tracking-[0.26em]">
+                      <div>{date.line1}</div>
+                      <div>{date.line2}</div>
+                    </div>
 
-                        <div
-                          className={`relative z-10 mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 ${accent.border} ${accent.bg} ${accent.text} shadow-[0_10px_30px_rgba(78,57,154,0.12)]`}
-                        >
-                          <Icon className="h-7 w-7" strokeWidth={2.4} />
-                        </div>
+                    <div className="mt-5 font-[family:var(--font-cadillac)] text-[24px] font-bold uppercase tracking-[0.18em]">
+                      {date.month}
+                    </div>
 
-                        <div className="mt-5 text-[12px] font-bold uppercase leading-[1.4] tracking-[0.12em] text-[#171327]">
-                          {item.title}
-                        </div>
-
-                        <div className={`mt-5 text-[18px] font-extrabold uppercase tracking-[0.08em] ${accent.text}`}>
-                          {item.month}
-                        </div>
-
-                        <div className={`text-[54px] font-extrabold leading-none tracking-tight ${accent.text}`}>
-                          {item.day}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
+                    <div className="mt-1 font-[family:var(--font-cadillac)] text-[52px] font-bold leading-none">
+                      {date.day}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        <section id="award" className="relative overflow-hidden bg-[#f8f8fc] py-20">
-          <div className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full bg-[#ff8f5c]/20 blur-3xl" />
-          <div className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#7f56ff]/20 blur-3xl" />
+        <section id="contest-details" className="scroll-mt-[120px] bg-white">
+          <div className="mx-auto max-w-[1200px] px-6 py-16 lg:py-20">
 
-          <div className="page-container relative">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
-              Awards Experience
-            </p>
+            <h2 className="mt-3 font-[family:var(--font-cadillac)] text-[20px] font-bold uppercase tracking-[0.24em] text-[#231f24]">
+              PROGRAM DETAILS
+            </h2>
+            <h4 className="mt-3 font-[family:var(--font-cadillac)] text-[26px] font-bold uppercase tracking-[0.26em] text-[#231f24] sm:text-[20px] lg:text-[30px]">
+              HOW TO PARTICIPATE
+            </h4>
 
-            <div className="page-title">Awards</div>
+            <div className="mt-10">
+              <p className="font-[family:var(--font-cadillac)] text-[13px] uppercase tracking-[0.35em] text-[#231f24]">
+                Step 1:
+              </p>
 
-            <div className="mt-10 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-              <div className="rounded-[2rem] border border-[#ececf4] bg-white p-8 shadow-[0_24px_70px_rgba(78,57,154,0.10)]">
-                <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] text-white shadow-[0_14px_34px_rgba(255,140,32,0.35)]">
-                  <Trophy className="h-7 w-7" strokeWidth={2.4} />
-                </div>
+              <h4 className="mt-3 font-[family:var(--font-cadillac)] text-[26px] font-bold uppercase tracking-[0.26em] text-[#231f24] sm:text-[20px] lg:text-[30px]">
+                Select Your Customer
+              </h4>
 
-                <h3 className="max-w-xl text-3xl font-extrabold leading-tight text-[#111322] md:text-4xl">
-                  More than rewards, this is a celebration like no other.
-                </h3>
+              <p className="mt-4 max-w-[1120px] text-[15px] leading-6 text-[#111111]">
+                Begin by selecting one of four different customer profiles. Each represents a distinct mindset and drives a competitive EV, and each is interested in a different Cadillac EV to meet their priorities and needs.
+              </p>
 
-                <p className="mt-5 text-base leading-7 text-[#55586b]">
-                  Contest winners don’t just earn recognition — they gain access to a
-                  high-energy reward experience where performance pays off in real time.
-                </p>
+              <p className="mt-4 max-w-[1120px] text-[15px] leading-6 text-[#111111]">
+                See the <a href="/documents/26Cadillac_ChooseYourEV_ProgBroch.pdf" target="_blank" className="">Program Brochure</a> for more details on each customer persona.
+              </p>
 
-                <p className="mt-5 text-base leading-7 text-[#55586b]">
-                  Winners race through the Windfall Warehouse, grabbing as many rewards
-                  as they can before time runs out.
-                </p>
-
-                <div className="mt-8">
-                  <a
-                    href="#"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
-                  >
-                    View Award Details
-                    <span className="ml-3 text-lg leading-none">→</span>
-                  </a>
-                </div>
-              </div>
-
-              <div className="grid gap-5">
+              <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
                 {[
                   {
-                    title: 'District Winners',
-                    time: '60 seconds',
-                    detail: 'One winner from each district earns a fast-paced warehouse run.',
-                    icon: Medal,
-                    color: 'text-[#7f56ff]',
-                    bg: 'bg-[#7f56ff]/10',
+                    name: 'Maya',
+                    image: '/images/maya.png',
+                    description: (
+                      <>
+                        Drives a Tesla Model Y. Prioritizes premium design and intuitive tech.
+                        Interested in <span className="font-bold">Cadillac LYRIQ.</span>
+                      </>
+                    ),
                   },
                   {
-                    title: 'Area Winners',
-                    time: '75 seconds',
-                    detail: 'Selected from district-level winners for an extended reward run.',
-                    icon: Award,
-                    color: 'text-[#d14fc7]',
-                    bg: 'bg-[#d14fc7]/10',
+                    name: 'Jordan',
+                    image: '/images/jordan.png',
+                    description: (
+                      <>
+                        Drives a Tesla Model Y. Values sustainability and smart technology.
+                        Interested in <span className="font-bold">Cadillac OPTIQ.</span>
+                      </>
+                    ),
                   },
                   {
-                    title: 'National Winner',
-                    time: '90 seconds',
-                    detail: 'The top finalist earns the longest uninterrupted warehouse experience.',
-                    icon: Sparkles,
-                    color: 'text-[#ff6a13]',
-                    bg: 'bg-[#ff6a13]/10',
+                    name: 'Olivia',
+                    image: '/images/olivia.png',
+                    description: (
+                      <>
+                        Drives a Rivian R1S. Wants commanding presence and a premium
+                        experience. Interested in{' '}
+                        <span className="font-bold">Cadillac Escalade IQ/IQL.</span>
+                      </>
+                    ),
                   },
-                ].map((award) => {
-                  const Icon = award.icon
-
-                  return (
-                    <div
-                      key={award.title}
-                      className="group relative overflow-hidden rounded-[1.5rem] border border-[#ececf4] bg-white p-6 shadow-[0_18px_50px_rgba(78,57,154,0.08)] transition hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(78,57,154,0.14)]"
-                    >
-                      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-[#ff6a13]/10 via-[#d14fc7]/10 to-[#7f56ff]/10 blur-2xl" />
-
-                      <div className="relative flex items-start gap-5">
-                        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${award.bg} ${award.color}`}>
-                          <Icon className="h-8 w-8" strokeWidth={2.2} />
-                        </div>
-
-                        <div>
-                          <div className="text-sm font-bold uppercase tracking-[0.14em] text-[#8b8fa3]">
-                            {award.title}
-                          </div>
-
-                          <div className={`mt-2 text-4xl font-extrabold leading-none ${award.color}`}>
-                            {award.time}
-                          </div>
-
-                          <p className="mt-3 text-base leading-7 text-[#55586b]">
-                            {award.detail}
-                          </p>
-                        </div>
-                      </div>
+                  {
+                    name: 'Daniel',
+                    image: '/images/daniel.png',
+                    description: (
+                      <>
+                        Drives a Tesla Model X. Looking for space, capability and practical
+                        luxury. Interested in <span className="font-bold">Cadillac VISTIQ.</span>
+                      </>
+                    ),
+                  },
+                ].map((customer) => (
+                  <div key={customer.name}>
+                    <div className="flex h-[120px] items-end justify-center">
+                      <img
+                        src={customer.image}
+                        alt=""
+                        className="max-h-[115px] w-full object-contain"
+                      />
                     </div>
-                  )
-                })}
+
+                    <h5 className="mt-6 font-[family:var(--font-cadillac)] text-[20px] font-bold uppercase tracking-[0.28em] text-[#231f24] text-center">
+                      {customer.name}
+                    </h5>
+
+                    <p className="mt-3 text-[13px] font-medium leading-5 text-black">
+                      {customer.description}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+            <div className="mt-14 space-y-8">
+              {[
+                {
+                  step: 'Step 2:',
+                  title: 'Craft a Narrative',
+                  body: 'With your chosen persona in mind, craft a compelling story that reflects your customer’s priorities and how Cadillac design and technology brings them to life.',
+                },
+                {
+                  step: 'Step 3:',
+                  title: 'Present the Advantage',
+                  body: 'Record a polished walkaround video that highlights the innovation, craftsmanship and performance of the selected Cadillac EV over its competition.',
+                },
+                {
+                  step: 'Step 4:',
+                  title: 'Submit Your Entry',
+                  body: (
+                    <>
+                      Submit your video for judging. Before uploading, review and agree to the <a href="/documents/participant-opt-in.pdf" className="font-bold">Participant Opt-In Agreement</a>. 
+                      You may upload multiple times, but only your latest submission will be evaluated.
+                    </>
+                    ),
+                },
+              ].map((item) => (
+                <div key={item.title}>
+                  <p className="font-[family:var(--font-cadillac)] text-[13px] uppercase tracking-[0.35em] text-[#231f24]">
+                    {item.step}
+                  </p>
 
-        <section id="contest-details" className="relative overflow-hidden bg-white py-20">
-          <div className="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-[#7f56ff]/10 blur-3xl" />
-          <div className="pointer-events-none absolute -left-24 bottom-24 h-72 w-72 rounded-full bg-[#ff6a13]/10 blur-3xl" />
+                  <h4 className="mt-3 font-[family:var(--font-cadillac)] text-[18px] font-bold uppercase tracking-[0.26em] text-[#231f24] sm:text-[20px] lg:text-[30px]">
+                    {item.title}
+                  </h4>
 
-          <div className="page-container relative">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
-              Contest Details
-            </p>
-            <div className="page-title">Program Details</div>
-
-            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-              <div>
-                <h2 className="max-w-xl text-4xl font-extrabold leading-tight tracking-tight text-[#111322] md:text-5xl">
-                  Demonstrate your MPI expertise.
-                </h2>
-
-                <p className="mt-6 text-base leading-7 text-[#55586b] md:text-lg">
-                  Multipoint inspections are more than a walkthrough — they’re one of the
-                  most effective ways to build guest trust. Submit a MPI video that
-                  reflects your inspection process, communication style, and guest-first
-                  mindset.
-                </p>
-
-                <p className="mt-5 text-base leading-7 text-[#55586b] md:text-lg">
-                  Your video should represent a complete, real-world MPI experience
-                  with clear explanations, accurate findings, and helpful next steps.
-                </p>
-
-                <div className="mt-8">
-                  <a
-                    href="#"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0c1021_0%,#131b3f_100%)] px-7 text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(9,13,29,0.24)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(9,13,29,0.32)]"
-                  >
-                    View Video MPI Best Practices
-                    <span className="ml-3 text-lg leading-none">→</span>
-                  </a>
+                  <p className="mt-4 max-w-[1120px] text-[15px] leading-6 text-[#111111]">
+                    {item.body}
+                  </p>
                 </div>
-              </div>
-
-              <div className="grid gap-5 sm:grid-cols-2">
-                {[
-                  {
-                    title: 'Brake Pad Wear Inspection',
-                    text: 'Help guests clearly understand their brake pad condition and future needs.',
-                    icon: Disc3,
-                    color: 'text-[#7f56ff]',
-                    bg: 'bg-[#7f56ff]/10',
-                  },
-                  {
-                    title: 'Tire Wear Inspection',
-                    text: 'Use visual evidence to explain condition, specifications, and next steps.',
-                    icon: CircleGauge,
-                    color: 'text-[#d14fc7]',
-                    bg: 'bg-[#d14fc7]/10',
-                  },
-                  {
-                    title: 'Battery Health Test',
-                    text: 'Share test results and explain how proactive testing prevents unexpected issues.',
-                    icon: BatteryCharging,
-                    color: 'text-[#ff6a13]',
-                    bg: 'bg-[#ff6a13]/10',
-                  },
-                  {
-                    title: 'Filters & Wiper Blade Inspection',
-                    text: 'Highlight guest comfort and safety through quick, clear inspections.',
-                    icon: Wind,
-                    color: 'text-[#7f56ff]',
-                    bg: 'bg-[#7f56ff]/10',
-                  },
-                ].map((item) => {
-                  const Icon = item.icon
-
-                  return (
-                    <div
-                      key={item.title}
-                      className="rounded-[1.5rem] border border-[#ececf4] bg-white p-6 shadow-[0_18px_50px_rgba(78,57,154,0.08)]"
-                    >
-                      <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg} ${item.color}`}>
-                        <Icon className="h-8 w-8" strokeWidth={2.3} />
-                      </div>
-
-                      <h3 className="text-xl font-extrabold leading-tight text-[#111322]">
-                        {item.title}
-                      </h3>
-
-                      <p className="mt-3 text-base leading-7 text-[#55586b]">
-                        {item.text}
-                      </p>
-                    </div>
-                  )
-                })}
-              </div>
+              ))}
             </div>
 
-            <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_1fr]">
-              <div className="rounded-[1.5rem] border border-[#ececf4] bg-[#f8f8fc] p-8">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7f56ff]/10 text-[#7f56ff]">
-                  <FileCheck2 className="h-7 w-7" strokeWidth={2.3} />
-                </div>
 
-                <h3 className="text-2xl font-extrabold text-[#111322]">
-                  Video Requirements
-                </h3>
+            <h4 className="mt-14 font-[family:var(--font-cadillac)] text-[18px] font-bold uppercase tracking-[0.26em] text-[#231f24] sm:text-[20px] lg:text-[30px]">
+              Criteria & Guidelines
+            </h4>
 
-                <ul className="mt-5 space-y-3 text-base leading-7 text-[#55586b]">
-                  <li><strong>Length:</strong> Up to 2 minutes</li>
-                  <li><strong>File formats:</strong> .mp4 or .mov</li>
-                  <li><strong>Maximum file size:</strong> 500 MB</li>
-                  <li><strong>Language:</strong> English</li>
-                </ul>
-              </div>
-
-              <div className="rounded-[1.5rem] border border-[#ececf4] bg-[#f8f8fc] p-8">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ff6a13]/10 text-[#ff6a13]">
-                  <CheckCircle2 className="h-7 w-7" strokeWidth={2.3} />
-                </div>
-
-                <h3 className="text-2xl font-extrabold text-[#111322]">
+            <div className="mt-14 grid gap-12 lg:grid-cols-2 lg:gap-20">
+              
+              {/* Judging Criteria */}
+              <div className="border border-[#d9d6df] p-8 lg:p-10">
+                <h3 className="font-[family:var(--font-cadillac)] text-[18px] font-bold uppercase tracking-[0.16em] text-[#231f24] sm:text-[20px] lg:text-[24px]">
                   Judging Criteria
                 </h3>
 
-                <ol className="mt-5 grid gap-3 text-base leading-7 text-[#55586b] sm:grid-cols-2">
-                  <li>1. Guest context</li>
-                  <li>2. Inspection findings</li>
-                  <li>3. Recommendations</li>
-                  <li>4. Communication clarity</li>
-                  <li>5. Video organization</li>
-                  <li>6. Accuracy</li>
-                </ol>
+                <p className="mt-4 text-[15px] leading-8 text-[#111111]">
+                  The strongest video submissions will blend deep product knowledge with
+                  clear, confident storytelling, and connect Cadillac EV benefits to
+                  customer needs with authenticity and impact.
+                </p>
+
+                <p className="mt-4 text-[15px] font-bold leading-8 text-[#111111]">
+                  Evaluation Criteria
+                </p>
+
+                <ul className="mt-2 list-disc space-y-2 pl-7 text-[15px] leading-8 text-[#111111]">
+                  <li>Friendly, professional approach</li>
+                  <li>
+                    Match Cadillac EV product knowledge with customer needs/priorities
+                  </li>
+                  <li>Competitive positioning/advantages</li>
+                  <li>Communication and delivery</li>
+                  <li>Overall creativity and presentation</li>
+                </ul>
+              </div>
+
+              {/* Video Submission Guidelines */}
+              <div className="border border-[#d9d6df] p-8 lg:p-10">
+                <h3 className="font-[family:var(--font-cadillac)] text-[18px] font-bold uppercase tracking-[0.16em] text-[#231f24] sm:text-[20px] lg:text-[24px]">
+                  Video Submission Guidelines
+                </h3>
+
+                <p className="mt-4 text-[15px] leading-8 text-[#111111]">
+                  Before uploading your video submission, ensure it meets these
+                  guidelines:
+                </p>
+
+                <ul className="mt-2 list-disc space-y-2 pl-7 text-[15px] leading-8 text-[#111111]">
+                  <li>
+                    Maximum <strong>6 minutes</strong> long
+                  </li>
+                  <li>
+                    <strong>.mp4</strong> or <strong>.mov</strong> format
+                  </li>
+                  <li>
+                    File size under <strong>500MB</strong>
+                  </li>
+                  <li>One presenter only (no group submissions)</li>
+                  <li>English presentation or English subtitles required</li>
+                  <li>No copyrighted material permitted</li>
+                </ul>
+
+                <p className="mt-4 text-[15px] leading-8 text-[#111111]">
+                  <strong>NOTE:</strong> You may submit multiple videos—but only your
+                  latest submission will be judged.
+                </p>
               </div>
             </div>
 
-            <div className="mt-8 rounded-[1.5rem] border border-[#ececf4] bg-white p-6 shadow-[0_18px_50px_rgba(78,57,154,0.08)] md:flex md:items-center md:justify-between md:gap-8">
-              <div>
-                <h3 className="text-xl font-extrabold text-[#111322]">
-                  Attention Diagnostic Specialists
-                </h3>
-                <p className="mt-2 text-base leading-7 text-[#55586b]">
-                  Support early Technician Video MPI submissions for a chance to win
-                  Fast Start Incentive rewards.
-                </p>
-              </div>
-
+            <div className="mt-16 flex justify-center">
               <a
-                href="#"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-xl border border-[#7f56ff]/30 px-6 text-[13px] font-bold uppercase tracking-[0.08em] text-[#7f56ff] transition hover:bg-[#7f56ff]/5 md:mt-0"
+                href="/documents/26Cadillac_ChooseYourEV_ProgBroch.pdf"
+                target="_blank" 
+                className="inline-flex min-h-[46px] items-center justify-center bg-[#231f24] px-7 text-center font-[family:var(--font-cadillac)] text-[13px] font-bold uppercase tracking-[0.24em] text-white transition hover:bg-black"
               >
-                View Official Rules
+                For More Details, Download the Program Brochure
               </a>
             </div>
           </div>
         </section>
 
         <section
-          id="resources"
-          className="relative overflow-hidden bg-[#f8f8fc] py-20"
+          id="award"
+          className="scroll-mt-[120px] relative overflow-hidden bg-[#e7e7e7]"
         >
-          <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#ff6a13]/10 blur-3xl" />
-          <div className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#7f56ff]/10 blur-3xl" />
 
-          <div className="page-container relative">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[#7f56ff]">
-              Downloads & Guides
+          <div className="mx-auto max-w-[1200px] px-6 py-16 lg:py-20">
+
+            <h2 className="mt-3 font-[family:var(--font-cadillac)] text-[20px] font-bold uppercase tracking-[0.24em] text-[#231f24]">
+              AWARDS
+            </h2>
+
+            <h4 className="mt-3 font-[family:var(--font-cadillac)] text-[26px] font-bold uppercase tracking-[0.26em] text-[#231f24] sm:text-[20px] lg:text-[30px]">
+              BE RECOGNIZED AT THE HIGHEST LEVEL
+            </h4>
+
+            <p className="mt-14 max-w-[1120px] text-[15px] leading-6 text-[#111111]">
+              Video submissions will advance through regional and national judging, earning recognition across the Cadillac network and the opportunity to claim premium rewards.
             </p>
 
-            <h2 className="page-title mb-14">Resources</h2>
+            <p className="mt-4 max-w-[1120px] text-[15px] leading-6 text-[#111111] font-bold">
+              Awards
+            </p>
+            <ul className="mt-2 max-w-[1120px] list-disc space-y-1 pl-6 text-[15px] leading-6 text-[#111111]">
+              <li>
+                <strong>Five Regional Finalists: </strong>
+                Five finalists selected by Cadillac from each of the 5 Regions (25 Finalists total).
 
-            <div className="grid gap-8 lg:grid-cols-3">
+                <ul className="mt-1 list-[circle] pl-6">
+                  <li>
+                    <strong>Regional Finalist Prize: </strong>
+                    3575 XFuel Miles that are redeemable on the XFuel Marketplace for travel, hotel stays, entertainment and more.
+                  </li>
+                </ul>
+              </li>
+
+              <li>
+                <strong>Five National Winners: </strong>
+                One winner selected by Cadillac from each group of Regional Finalists (5 Winners total).
+
+                <ul className="mt-1 list-[circle] pl-6">
+                  <li>
+                    <strong>Grand Prize: </strong>
+                    An exclusive 2026 U.S. Tennis Open experience for Grand Prize winners and their guests.
+                  </li>
+                </ul>
+              </li>
+
+              <li>
+                <strong>Peer Choice Award: </strong>
+                Voted by dealership personnel across the network.
+              </li>
+            </ul>
+
+          </div>
+        </section>
+
+        <section id="resources" className="scroll-mt-[120px] bg-white">
+          <div className="mx-auto max-w-[1200px] px-6 py-16 lg:py-20">
+            <h2 className="mt-3 font-[family:var(--font-cadillac)] text-[20px] font-bold uppercase tracking-[0.24em] text-[#231f24]">
+              Resources
+            </h2>
+
+            <p className="mt-8 max-w-[900px] text-[15px] leading-7 text-[#111111]">
+              Access tools and guides crafted to help you plan, create and deliver a
+              standout Conquest Challenge walkaround.
+            </p>
+
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
               {[
                 {
-                  title: 'Contest Rules',
-                  description:
-                    'Complete contest details including eligibility requirements, submission guidelines, key dates, and award information.',
-                  icon: FileText,
-                  iconColor: 'text-[#7f56ff]',
-                  iconBg: 'bg-[#7f56ff]/10',
-                  href: '#',
+                  title: 'Program Brochure',
+                  body: (
+                    <>
+                      Detailed profiles of the customers to whom you will present a Cadillac EV. <br></br>
+                      <p>Also, details on Awards, Judging Criteria, Contest Rules, Video Submission Guidelines, and more.</p>
+
+                    </>
+                  ),
+                  href: '/documents/26Cadillac_ChooseYourEV_ProgBroch.pdf',
+                  className: 'lg:col-span-2',
                 },
                 {
                   title: 'Video Best Practices',
-                  description:
-                    'Practical guidance for recording strong MPI videos, improving presentation quality, and avoiding common submission issues.',
-                  icon: ClipboardList,
-                  iconColor: 'text-[#ff6a13]',
-                  iconBg: 'bg-[#ff6a13]/10',
-                  href: '#',
+                  body: (
+                    <>
+                      Guidance for creating and submitting a standout video—from presentation tips to what technically makes a good recording, and more.
+                    </>
+                  ),
+                  href: '/documents/26Cadillac_ChooseYourEV_BestPractices.pdf',
+                  className: 'lg:col-span-2',
                 },
                 {
-                  title: 'Release Agreement',
-                  description:
-                    'Required participant and guest release agreements for anyone appearing or contributing to submitted videos.',
-                  icon: PencilLine,
-                  iconColor: 'text-[#d14fc7]',
-                  iconBg: 'bg-[#d14fc7]/10',
-                  href: '#',
+                  title: 'EV Selling Points Guide',
+                  body: (
+                    <>
+                      A competitor- focused product overview that highlights how Cadillac’s EV lineup out- performs key rivals.
+                    </>
+                  ),
+                  href: '/documents/26Cadillac_ChooseYourEV_SellingPoints.pdf',
+                  className: 'lg:col-span-2',
                 },
-              ].map((resource) => {
-                const Icon = resource.icon
+                {
+                  title: 'Contest Rules',
+                  body: (
+                    <>
+                      Your source for Conquest Challenge details, including eligibility, video guidelines, key dates, award information, and more.
+                    </>
+                  ),
+                  href: '/documents/26Cadillac_ChooseYourEV_Rules.pdf',
+                  className: 'lg:col-span-2 lg:col-start-2',
+                },
+                {
+                  title: 'Participant Opt-In Agreement',
+                  body: (
+                    <>
+                      Before uploading your video, review and agree to the terms of the{' '}
+                      <strong>Participant Opt-In Agreement.</strong>
+                    </>
+                  ),
+                  href: '/documents/26Cadillac_ChooseYourEV_OptIn.pdf',
+                  className: 'lg:col-span-2',
+                },
+              ].map((resource) => (
+                <a
+                  key={resource.title}
+                  href={resource.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`flex min-h-[330px] flex-col border border-[#d9d6df] bg-white px-5 py-7 text-[#231f24] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.12)] ${resource.className}`}
+                >
+                  <h3 className="font-[family:var(--font-cadillac)] text-[21px] font-bold uppercase leading-[1.2] tracking-[0.08em]">
+                    {resource.title}
+                  </h3>
 
-                return (
-                  <a
-                    key={resource.title}
-                    href={resource.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group relative overflow-hidden rounded-[2rem] border border-[#ececf4] bg-white p-8 shadow-[0_18px_50px_rgba(78,57,154,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(78,57,154,0.14)]"
-                  >
-                    <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-[#ff6a13]/10 via-[#d14fc7]/10 to-[#7f56ff]/10 blur-2xl transition duration-500 group-hover:scale-125" />
+                  <p className="mt-6 flex-1 text-[14px] font-medium leading-5 text-black">
+                    {resource.body}
+                  </p>
 
-                    <div
-                      className={`relative mb-8 flex h-16 w-16 items-center justify-center rounded-2xl ${resource.iconBg} ${resource.iconColor}`}
-                    >
-                      <Icon className="h-9 w-9" strokeWidth={2.2} />
-                    </div>
-
-                    <div className="relative">
-                      <h3 className="text-[28px] font-extrabold leading-tight text-[#111322]">
-                        {resource.title}
-                      </h3>
-
-                      <p className="mt-5 text-[17px] leading-8 text-[#55586b]">
-                        {resource.description}
-                      </p>
-                    </div>
-
-                    <div className="relative mt-10 flex items-center justify-between">
-                      <div className="inline-flex items-center rounded-full border border-[#ececf4] px-4 py-2 text-[12px] font-bold uppercase tracking-[0.12em] text-[#8b8fa3]">
-                        PDF Download
-                      </div>
-
-                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#111322] text-white transition duration-300 group-hover:translate-y-[2px] group-hover:bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)]">
-                        <Download className="h-6 w-6" strokeWidth={2.4} />
-                      </div>
-                    </div>
-                  </a>
-                )
-              })}
+                  <div className="mt-8 inline-flex min-h-[42px] items-center justify-center bg-[#231f24] px-5 text-center font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.22em] text-white">
+                    PDF Download
+                  </div>
+                </a>
+              ))}
             </div>
+          </div>
+        </section>
+
+
+        <section id="featured-submissions" className="scroll-mt-[120px] bg-[#e7e7e7]">
+          <div className="mx-auto max-w-[1200px] px-6 py-16 lg:py-20">
+
+            <h2 className="mt-3 font-[family:var(--font-cadillac)] text-[20px] font-bold uppercase tracking-[0.18em] text-[#231f24]">
+              EXPLORE FEATURED SUBMISSIONS 
+            </h2>
+
+            <h3 className="mt-10 font-[family:var(--font-cadillac)] text-[20px] font-bold uppercase tracking-[0.08em] text-[#231f24] sm:text-[30px]">
+              Watch. Vote. Recognize Excellence.
+            </h3>
+
+            <div className="mt-14 max-w-[760px] space-y-3 text-[15px] leading-7 text-[#111111]">
+              <p>
+                View leading submissions and cast your vote for the video that best expresses the Cadillac EV experience.
+              </p>
+
+              <p>
+                By participating, you could be selected for exclusive Cadillac merchandise, while the top entry will be honored with the <strong>Peer Choice Award.</strong>
+              </p>
+
+              <p>
+                See the <strong>Program Brochure</strong> or <strong>Contest Rules</strong> for full details.
+              </p>
+            </div>
+
           </div>
         </section>
 

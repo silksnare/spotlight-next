@@ -30,6 +30,7 @@ export default function UploadSubmitClient() {
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [isCheckingSubmission, setIsCheckingSubmission] = useState(true)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showOverwriteModal, setShowOverwriteModal] = useState(false)
   const [existingSubmission, setExistingSubmission] =
     useState<UploadStatusResponse['submission']>(null)
 
@@ -43,15 +44,11 @@ export default function UploadSubmitClient() {
           cache: 'no-store',
         })
 
-        if (!response.ok) {
-          throw new Error('Failed to verify upload phase')
-        }
+        if (!response.ok) throw new Error('Failed to verify upload phase')
 
         const data: { isActive: boolean } = await response.json()
 
-        if (!data.isActive) {
-          router.push('/dashboard')
-        }
+        if (!data.isActive) router.push('/dashboard')
       } catch (error) {
         console.error(error)
         router.push('/dashboard')
@@ -77,9 +74,7 @@ export default function UploadSubmitClient() {
           cache: 'no-store',
         })
 
-        if (!response.ok) {
-          throw new Error('Failed to load upload status')
-        }
+        if (!response.ok) throw new Error('Failed to load upload status')
 
         const data: UploadStatusResponse = await response.json()
 
@@ -96,7 +91,7 @@ export default function UploadSubmitClient() {
     loadUploadStatus()
   }, [])
 
-  const isLocked = hasSubmitted || isCheckingSubmission || isUploading
+  const isLocked = isCheckingSubmission || isUploading
 
   const handleChooseFile = () => {
     if (isLocked) return
@@ -116,10 +111,8 @@ export default function UploadSubmitClient() {
 
     if (videoUrl) URL.revokeObjectURL(videoUrl)
 
-    const objectUrl = URL.createObjectURL(file)
-
     setSelectedFile(file)
-    setVideoUrl(objectUrl)
+    setVideoUrl(URL.createObjectURL(file))
     setUploadProgress(0)
     setIsUploading(false)
     setIsUploaded(false)
@@ -157,8 +150,7 @@ export default function UploadSubmitClient() {
 
       xhr.upload.onprogress = (event) => {
         if (!event.lengthComputable) return
-        const percent = Math.round((event.loaded / event.total) * 100)
-        setUploadProgress(percent)
+        setUploadProgress(Math.round((event.loaded / event.total) * 100))
       }
 
       xhr.onload = () => {
@@ -185,16 +177,10 @@ export default function UploadSubmitClient() {
     })
   }
 
-  const canSubmit =
-    !!selectedFile &&
-    !isUploading &&
-    !hasSubmitted &&
-    !isCheckingSubmission
+  const canSubmit = !!selectedFile && !isUploading && !isCheckingSubmission
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!canSubmit || !selectedFile) return
+  const submitSelectedFile = async () => {
+    if (!selectedFile) return
 
     try {
       const key = await uploadFileToS3(selectedFile)
@@ -205,9 +191,7 @@ export default function UploadSubmitClient() {
         body: JSON.stringify({ key }),
       })
 
-      if (!response.ok) {
-        throw new Error('Submit failed')
-      }
+      if (!response.ok) throw new Error('Submit failed')
 
       setHasSubmitted(true)
       setExistingSubmission({
@@ -224,6 +208,19 @@ export default function UploadSubmitClient() {
     }
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!canSubmit || !selectedFile) return
+
+    if (hasSubmitted) {
+      setShowOverwriteModal(true)
+      return
+    }
+
+    await submitSelectedFile()
+  }
+
   const handleSuccessConfirm = () => {
     setShowSuccessModal(false)
     router.push('/dashboard')
@@ -231,269 +228,307 @@ export default function UploadSubmitClient() {
 
   return (
     <>
-      <div className="page-container">
-        {/*<h1 className="page-title">Video Upload</h1>*/}
+      <main className="bg-[#f4f4f4]">
+        <div className="mx-auto max-w-[1200px] px-6 py-16 lg:py-20">
+          {hasSubmitted && !showSuccessModal ? (
+            <div className="mb-8 border border-[#d6d6d6] bg-white px-6 py-5 text-[#231f24]">
+              <p className="font-bold">You have already uploaded a video.</p>
+              <p className="mt-2 text-[15px] leading-6">
+                You may submit a replacement during the upload period. Only your
+                latest uploaded video will be judged.
+                {existingSubmission?.originalFileName
+                  ? ` Current file: ${existingSubmission.originalFileName}.`
+                  : ''}
+              </p>
+            </div>
+          ) : null}
 
-        {hasSubmitted && !showSuccessModal && (
-          <div className="mb-8 rounded border border-amber-300 bg-amber-50 px-6 py-5 text-amber-900">
-            <p className="font-semibold">You have already uploaded your video.</p>
-            <p className="mt-2">
-              Per program rules, only one submission is allowed for each user.
-              {existingSubmission?.originalFileName
-                ? ` Submitted file: ${existingSubmission.originalFileName}.`
-                : ''}
-            </p>
-          </div>
-        )}
+          {isCheckingSubmission ? (
+            <div className="mb-8 border border-[#d6d6d6] bg-white px-6 py-5 text-[#231f24]">
+              Checking your submission status...
+            </div>
+          ) : null}
 
-        {isCheckingSubmission && (
-          <div className="mb-8 rounded border border-gray-200 bg-gray-50 px-6 py-5">
-            Checking your submission status...
-          </div>
-        )}
-
-        {/*<p className="mb-12 text-[16px] leading-[1.8] text-[#161624]">
-          Don’t forget to download the <strong> <a href="https://actdevpprd.biworldwide.com/lexus/26MPI_Release.pdf" target="_blank" className="underline">Lexus Release Agreement</a></strong>. Any person who appears in the video submission either visually or by voice, or has aided in the recording, developing, or creating the video submission, must read, agree to, and sign it.
-        </p>*/}
-
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-            {/* LEFT PANEL */}
-            <section className="overflow-hidden rounded-[28px] border border-[#ece8f4] bg-white shadow-[0_18px_60px_rgba(17,19,34,0.06)]">
-              <div className="border-b border-[#ece8f4] px-8 py-6">
-                <div className="text-[12px] font-bold uppercase tracking-[0.28em] text-[#8f5cff]">
-                  Submission Instructions
-                </div>
-
-                <h2 className="mt-2 text-[28px] font-extrabold tracking-[-0.03em] text-[#111322]">
-                  Upload Your Video
-                </h2>
-              </div>
-
-              <div className="space-y-8 px-8 py-8">
-                <div className="rounded-2xl border border-[#ece8f4] bg-[#faf9ff] p-6">
-                  <p className="text-[15px] leading-[1.8] text-[#4f5565]">
-                    Don’t forget to download the{' '}
-                    <a
-                      href="https://actdevpprd.biworldwide.com/lexus/26MPI_Release.pdf"
-                      target="_blank"
-                      className="font-bold text-[#7f56ff] underline underline-offset-4"
-                    >
-                      Participant Release Agreement
-                    </a>
-                    . Any individual appearing in the submission, visually or by voice,
-                    should review and sign the agreement prior to submission.
+          <form onSubmit={handleSubmit} className="w-full">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+              <section className="border border-[#d6d6d6] bg-white">
+                <div className="border-b border-[#d6d6d6] px-6 py-6 sm:px-8">
+                  <p className="font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.45em] text-[#231f24]">
+                    Submission Instructions
                   </p>
+
+                  <h1 className="mt-3 font-[family:var(--font-cadillac)] text-[26px] font-bold uppercase tracking-[0.16em] text-[#231f24] sm:text-[34px]">
+                    Upload Your Video
+                  </h1>
                 </div>
 
-                <ol className="space-y-5">
-                  {[
-                    'Record or select your finalized video file and ensure it is available on your device.',
-                    'Select “Choose File” and pick your video submission.',
-                    'Preview your video before selecting Submit. Upload times may vary depending on file size and internet speed.',
-                  ].map((step, index) => (
-                    <li key={index} className="flex gap-4">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] text-[15px] font-extrabold text-white shadow-lg">
-                        {index + 1}
-                      </div>
-
-                      <div className="pt-1 text-[16px] leading-[1.75] text-[#161624]">
-                        {step}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-6 py-5">
-                  <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.2em] text-amber-700">
-                    Important Notice
+                <div className="space-y-8 px-6 py-8 sm:px-8">
+                  <div className="border border-[#d6d6d6] bg-[#f4f4f4] p-5">
+                    <p className="text-[15px] leading-7 text-[#111111]">
+                      Eligible video submissions can only feature one individual
+                      Sales Consultant. You may submit a video as many times as you
+                      wish, but only your latest version will be judged.
+                    </p>
                   </div>
 
-                  <p className="text-[15px] leading-[1.75] text-amber-900">
-                    Videos containing copyrighted materials, including music,
-                    may be disqualified.
-                  </p>
-                </div>
+                  <ol className="space-y-5">
+                    {[
+                      <>
+                        Record your Conquest Challenge video and confirm the final video file is saved and available on your device.
+                      </>,
+                      <>
+                        Select <strong>Choose File</strong> and then select your video. The file name will appear in the selection bar, and a Preview will appear in the video window. Preview the video to ensure it is the correct file and that it plays all the way through.
+                      </>,
+                      <>
+                        Once you have previewed your video, select the <strong>Submit</strong> button. You will receive a confirmation message once your video has uploaded successfully. Upload times may vary, depending on the size of your video, the speed of your internet connection, etc.
+                      </>,
+                    ].map((step, index) => (
+                      <li key={index} className="flex gap-4">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center self-center bg-[#231f24] font-[family:var(--font-cadillac)] text-[14px] font-bold text-white">
+                          {index + 1}
+                        </div>
 
-                {/* FILE PICKER */}
-                <div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="video/*"
-                    onChange={handleFileSelect}
-                    disabled={isLocked}
-                    className="hidden"
-                  />
+                        <p className="pt-1 text-[15px] leading-7 text-[#111111]">
+                          {step}
+                        </p>
+                      </li>
+                    ))}
+                  </ol>
 
-                  <div className="flex flex-col gap-4 md:flex-row">
-                    <button
-                      type="button"
-                      onClick={handleChooseFile}
+                  <div className="border border-[#231f24] bg-white px-5 py-4">
+                    <p className="font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.28em] text-[#231f24]">
+                      Important Notice
+                    </p>
+
+                    <p className="mt-3 text-[15px] leading-7 text-[#111111]">
+                      Videos containing copyrighted materials (including music) will be disqualified.
+                    </p>
+                  </div>
+
+                  <div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="video/*"
+                      onChange={handleFileSelect}
                       disabled={isLocked}
-                      className={`inline-flex h-[58px] items-center justify-center rounded-2xl px-8 text-[14px] font-extrabold uppercase tracking-[0.12em] transition ${
-                        isLocked
-                          ? 'cursor-not-allowed bg-[#d7dbe4] text-[#7f8595]'
-                          : 'bg-[linear-gradient(135deg,#111322_0%,#27293a_100%)] text-white shadow-[0_16px_36px_rgba(17,19,34,0.25)] hover:translate-y-[-1px]'
-                      }`}
-                    >
-                      Choose File
-                    </button>
+                      className="hidden"
+                    />
 
-                    <div className="flex min-h-[58px] flex-1 items-center rounded-2xl border border-[#d9dcea] bg-[#fafbff] px-5 text-[15px] text-[#5f6475]">
-                      {selectedFile ? selectedFile.name : 'No file selected'}
+                    <div className="flex flex-col gap-4 md:flex-row">
+                      <button
+                        type="button"
+                        onClick={handleChooseFile}
+                        disabled={isLocked}
+                        className={`inline-flex h-[54px] items-center justify-center px-8 font-[family:var(--font-cadillac)] text-[13px] font-bold uppercase tracking-[0.2em] transition ${
+                          isLocked
+                            ? 'cursor-not-allowed bg-[#c9c9c9] text-white'
+                            : 'bg-[#231f24] text-white hover:bg-black'
+                        }`}
+                      >
+                        Choose File
+                      </button>
+
+                      <div className="flex min-h-[54px] flex-1 items-center border border-[#d6d6d6] bg-white px-5 text-[15px] text-[#111111]">
+                        {selectedFile ? selectedFile.name : 'No file selected'}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* PROGRESS */}
-                <div>
-                  <div className="mb-3 flex items-center justify-between">
-                    <label className="text-[14px] font-bold uppercase tracking-[0.12em] text-[#161624]">
-                      Upload Status
-                    </label>
+                  <div>
+                    <div className="mb-3 flex items-center justify-between">
+                      <label className="font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.24em] text-[#231f24]">
+                        Upload Status
+                      </label>
 
-                    <span className="text-[14px] font-semibold text-[#7f56ff]">
-                      {uploadProgress}%
-                    </span>
-                  </div>
+                      <span className="text-[14px] font-bold text-[#231f24]">
+                        {uploadProgress}%
+                      </span>
+                    </div>
 
-                  <div className="h-3 overflow-hidden rounded-full bg-[#e8eaf2]">
-                    <div
-                      className="h-full rounded-full bg-[linear-gradient(90deg,#7f56ff_0%,#ff6a13_100%)] transition-all duration-300"
-                      style={{ width: `${uploadProgress}%` }}
-                    />
-                  </div>
+                    <div className="h-2 bg-[#d6d6d6]">
+                      <div
+                        className="h-full bg-[#231f24] transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
 
-                  <div className="mt-4 text-[15px] text-[#5f6475]">
-                    {!selectedFile && !hasSubmitted && <span>No upload started.</span>}
+                    <div className="mt-4 text-[15px] text-[#111111]">
+                      {!selectedFile && !hasSubmitted ? (
+                        <span>No upload started.</span>
+                      ) : null}
 
-                    {selectedFile &&
+                      {!selectedFile && hasSubmitted ? (
+                        <span className="font-bold">
+                          Existing submission received. Choose a new file to replace it.
+                        </span>
+                      ) : null}
+
+                      {selectedFile &&
                       !isUploading &&
                       !isUploaded &&
-                      !errorMessage &&
-                      !hasSubmitted && <span>Ready to upload.</span>}
+                      !errorMessage ? (
+                        <span>
+                          {hasSubmitted
+                            ? 'Ready to replace your existing submission.'
+                            : 'Ready to upload.'}
+                        </span>
+                      ) : null}
 
-                    {isUploading && (
-                      <span className="font-semibold text-[#7f56ff]">
-                        Uploading... {uploadProgress}%
-                      </span>
-                    )}
+                      {isUploading ? (
+                        <span className="font-bold">Uploading... {uploadProgress}%</span>
+                      ) : null}
 
-                    {!isUploading && isUploaded && !hasSubmitted && (
-                      <span className="font-semibold text-green-600">
-                        Upload complete.
-                      </span>
-                    )}
+                      {!isUploading && isUploaded ? (
+                        <span className="font-bold">Upload complete.</span>
+                      ) : null}
 
-                    {hasSubmitted && (
-                      <span className="font-semibold text-[#111322]">
-                        Submission already received.
-                      </span>
-                    )}
-
-                    {!isUploading && errorMessage && (
-                      <span className="font-semibold text-red-600">
-                        {errorMessage}
-                      </span>
-                    )}
+                      {!isUploading && errorMessage ? (
+                        <span className="font-bold text-red-700">{errorMessage}</span>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* RIGHT PANEL */}
-            <section className="flex flex-col overflow-hidden rounded-[28px] border border-[#ece8f4] bg-white shadow-[0_18px_60px_rgba(17,19,34,0.06)]">
-              <div className="border-b border-[#ece8f4] px-8 py-6">
-                <div className="text-[12px] font-bold uppercase tracking-[0.28em] text-[#ff6a13]">
-                  Preview
+              <section className="flex flex-col border border-[#d6d6d6] bg-white">
+                <div className="border-b border-[#d6d6d6] px-6 py-6 sm:px-8">
+                  <p className="font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.45em] text-[#231f24]">
+                    Preview
+                  </p>
+
+                  <h2 className="mt-3 font-[family:var(--font-cadillac)] text-[26px] font-bold uppercase tracking-[0.16em] text-[#231f24] sm:text-[34px]">
+                    Video Preview
+                  </h2>
                 </div>
 
-                <h2 className="mt-2 text-[28px] font-extrabold tracking-[-0.03em] text-[#111322]">
-                  Video Preview
-                </h2>
-              </div>
+                <div className="flex flex-1 flex-col px-6 py-8 sm:px-8">
+                  <div className="aspect-video overflow-hidden border border-[#d6d6d6] bg-[#f4f4f4]">
+                    {videoUrl ? (
+                      <video
+                        src={videoUrl}
+                        controls
+                        className="h-full w-full bg-black object-contain"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <div className="flex h-full flex-col items-center justify-center text-center">
+                        <div className="mb-4 text-[48px] text-[#b4b4b4]">▶</div>
 
-              <div className="flex flex-1 flex-col px-8 py-8">
-                <div className="aspect-video overflow-hidden rounded-[24px] border border-[#ece8f4] bg-[#f5f6fb] shadow-inner">
-                  {videoUrl ? (
-                    <video
-                      src={videoUrl}
-                      controls
-                      className="h-full w-full bg-black object-contain"
+                        <div className="font-[family:var(--font-cadillac)] text-[18px] font-bold uppercase tracking-[0.12em] text-[#231f24]">
+                          No Video Selected
+                        </div>
+
+                        <p className="mt-3 max-w-[280px] text-[14px] leading-6 text-[#555555]">
+                          Choose a video file to preview your submission before uploading.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-8 flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={!canSubmit}
+                      className={`inline-flex h-[54px] items-center justify-center px-9 font-[family:var(--font-cadillac)] text-[13px] font-bold uppercase tracking-[0.2em] transition ${
+                        canSubmit
+                          ? 'bg-[#231f24] text-white hover:bg-black'
+                          : 'cursor-not-allowed bg-[#c9c9c9] text-white'
+                      }`}
                     >
-                      Your browser does not support the video tag.
-                    </video>
-                  ) : (
-                    <div className="flex h-full flex-col items-center justify-center text-center">
-                      <div className="mb-4 text-[54px] opacity-20">▶</div>
-
-                      <div className="text-[18px] font-bold text-[#7a8091]">
-                        {hasSubmitted
-                          ? 'Uploads Locked'
-                          : 'No Video Selected'}
-                      </div>
-
-                      <div className="mt-2 max-w-[280px] text-[14px] leading-[1.7] text-[#9aa0af]">
-                        Choose a video file to preview your submission before uploading.
-                      </div>
-                    </div>
-                  )}
+                      {isUploading
+                        ? 'Uploading...'
+                        : hasSubmitted
+                          ? 'Replace Video'
+                          : 'Submit Video'}
+                    </button>
+                  </div>
                 </div>
-
-                <div className="mt-8 flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={!canSubmit}
-                    className={`inline-flex h-[64px] items-center justify-center rounded-2xl px-10 text-[15px] font-extrabold uppercase tracking-[0.16em] transition ${
-                      canSubmit
-                        ? 'bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] text-white shadow-[0_18px_40px_rgba(255,140,32,0.35)] hover:translate-y-[-1px]'
-                        : 'cursor-not-allowed bg-[#c9ced6] text-white'
-                    }`}
-                  >
-                    {isUploading ? 'Uploading...' : 'Submit Video'}
-                  </button>
-                </div>
-              </div>
-            </section>
-          </div>
-        </form>
-      </div>
-
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md bg-white p-8 shadow-2xl">
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Upload Successful
-              </h2>
+              </section>
             </div>
+          </form>
+        </div>
+      </main>
 
-            <p className="text-[16px] leading-[1.8] text-[#161624]">
-              Your video has been uploaded successfully. Thank you for participating. 
+      {showOverwriteModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md bg-white p-8">
+            <h2 className="font-[family:var(--font-cadillac)] text-[24px] font-bold uppercase tracking-[0.16em] text-[#231f24]">
+              Replace Submission?
+            </h2>
+
+            <p className="mt-5 text-[15px] leading-7 text-[#111111]">
+              You already have a video submission on file. Continuing will
+              overwrite your current submission, and only your latest upload will
+              be evaluated.
             </p>
 
-            {existingSubmission?.originalFileName && (
-              <p className="mt-4 rounded-lg bg-gray-50 px-4 py-3 text-[16px] text-gray-700">
-                Submitted file:{' '}
-                <span className="font-semibold">
+            {existingSubmission?.originalFileName ? (
+              <p className="mt-5 bg-[#f4f4f4] px-4 py-3 text-[14px] text-[#111111]">
+                Current file:{' '}
+                <span className="font-bold">
                   {existingSubmission.originalFileName}
                 </span>
               </p>
-            )}
+            ) : null}
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowOverwriteModal(false)}
+                className="border border-[#231f24] px-6 py-3 font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.18em] text-[#231f24]"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  setShowOverwriteModal(false)
+                  await submitSelectedFile()
+                }}
+                className="bg-[#231f24] px-6 py-3 font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.18em] text-white hover:bg-black"
+              >
+                Replace Video
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {showSuccessModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md bg-white p-8">
+            <h2 className="font-[family:var(--font-cadillac)] text-[24px] font-bold uppercase tracking-[0.16em] text-[#231f24]">
+              Upload Successful
+            </h2>
+
+            <p className="mt-5 text-[15px] leading-7 text-[#111111]">
+              Your video has been uploaded successfully. Thank you for participating.
+            </p>
+
+            {existingSubmission?.originalFileName ? (
+              <p className="mt-5 bg-[#f4f4f4] px-4 py-3 text-[14px] text-[#111111]">
+                Submitted file:{' '}
+                <span className="font-bold">
+                  {existingSubmission.originalFileName}
+                </span>
+              </p>
+            ) : null}
 
             <div className="mt-8 flex justify-end">
               <button
                 type="button"
                 onClick={handleSuccessConfirm}
-                className="bg-black px-6 py-3 font-semibold text-white hover:bg-black-600"
+                className="bg-[#231f24] px-6 py-3 font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.18em] text-white hover:bg-black"
               >
-                Return home
+                Return Home
               </button>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </>
   )
 }

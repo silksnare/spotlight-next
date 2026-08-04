@@ -18,8 +18,8 @@ type HeaderNavClientProps = {
 }
 
 const dashboardAnchorLinks: VisibleLink[] = [
+  { href: '/dashboard#contest-details', label: 'Program Details' },
   { href: '/dashboard#award', label: 'Awards' },
-  { href: '/dashboard#contest-details', label: 'Contest Details' },
   { href: '/dashboard#resources', label: 'Resources' },
 ]
 
@@ -43,15 +43,15 @@ export function HeaderNavClient({
 
   return (
     <>
-      {/* Mobile */}
-      <div className="flex items-center gap-4 min-[1200px]:hidden">
+      {/* Mobile / Tablet */}
+      <div className="flex items-center gap-4 min-[1500px]:hidden">
         {countdownTargetDate && countdownMessage ? (
-          <div className="flex flex-col items-end gap-[2px] leading-none">
-            <div className="text-right text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
+          <div className="hidden flex-col items-end gap-[2px] leading-none sm:flex">
+            <div className="text-right text-[10px] font-semibold uppercase tracking-[0.22em] text-[#b5b0ba]">
               {countdownMessage}
             </div>
 
-            <div className="shrink-0 text-[16px] font-bold text-[#171327]">
+            <div className="shrink-0 text-[18px] font-bold leading-none tracking-[0.05em] text-white">
               <PhaseCountdown message="" targetDate={countdownTargetDate} />
             </div>
           </div>
@@ -63,7 +63,7 @@ export function HeaderNavClient({
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((prev) => !prev)}
-            className="inline-flex h-[48px] w-[48px] items-center justify-center rounded-xl border border-[#d8dbe7] bg-white text-[#161624] transition hover:bg-[#f8f8fc]"
+            className="inline-flex h-[48px] w-[48px] items-center justify-center bg-white text-[#1f1b20] transition hover:bg-[#f1f1f1]"
           >
             <span className="sr-only">Menu</span>
 
@@ -74,8 +74,8 @@ export function HeaderNavClient({
             </span>
           </button>
 
-          {menuOpen ? (
-            <div className="absolute right-0 top-[calc(100%+12px)] z-50 w-[320px] max-w-[calc(100vw-32px)] overflow-hidden rounded-2xl border border-[#ece8f4] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
+          {menuOpen && menuLinks.length > 0 ? (
+            <div className="absolute right-0 top-[calc(100%+12px)] z-50 w-[320px] max-w-[calc(100vw-32px)] overflow-hidden border border-[#2d2730] bg-[#151116] shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
               <nav className="flex flex-col">
                 {menuLinks.map((link) => {
                   const isPrimaryAction = visibleLinks.some(
@@ -89,8 +89,8 @@ export function HeaderNavClient({
                       onClick={() => setMenuOpen(false)}
                       className={
                         isPrimaryAction
-                          ? 'border-b border-[#ece8f4] bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-5 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-white transition hover:opacity-90'
-                          : 'border-b border-[#ece8f4] px-5 py-4 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#171327] transition hover:bg-[#f8f8fc]'
+                          ? 'border-b border-[#2d2730] bg-white px-5 py-4 text-[14px] font-bold uppercase tracking-[0.18em] text-[#1b171c] transition hover:bg-[#f5f5f5]'
+                          : 'border-b border-[#2d2730] px-5 py-4 text-[13px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#211b22]'
                       }
                     >
                       {link.label}
@@ -103,47 +103,46 @@ export function HeaderNavClient({
         </div>
       </div>
 
-      {/* Desktop */}
-      <div className="hidden min-[1200px]:contents">
-        {isDashboard ? (
-          <nav className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-8">
-            {dashboardAnchorLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.14em] text-[#8b8fa3] transition hover:text-[#7f56ff]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+      {/* Desktop centered anchor links */}
+      {isDashboard ? (
+        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-10 min-[1500px]:flex">
+          {dashboardAnchorLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.2em] text-[#b5b0ba] transition hover:text-white"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      ) : null}
+
+      {/* Desktop right-side countdown/actions */}
+      <div className="ml-auto hidden items-center justify-end gap-8 min-[1500px]:flex">
+        {countdownTargetDate && countdownMessage ? (
+          <div className="flex flex-col items-start gap-[4px] leading-none">
+            <div className="text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[#b5b0ba]">
+              {countdownMessage}
+            </div>
+
+            <div className="shrink-0 text-[26px] font-bold leading-none tracking-[0.05em] text-white">
+              <PhaseCountdown message="" targetDate={countdownTargetDate} />
+            </div>
+          </div>
         ) : null}
 
-        <div className="ml-auto flex items-center justify-end gap-8">
-          {countdownTargetDate && countdownMessage ? (
-            <div className="flex flex-col items-start gap-[2px] leading-none">
-              <div className="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8b8fa3]">
-                {countdownMessage}
-              </div>
-
-              <div className="shrink-0 text-[34px] font-bold leading-none tracking-tight text-[#171327]">
-                <PhaseCountdown message="" targetDate={countdownTargetDate} />
-              </div>
-            </div>
-          ) : null}
-
-          <nav className="flex items-center gap-3">
-            {visibleLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="inline-flex h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] px-7 text-center text-[14px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(255,140,32,0.32)] transition hover:translate-y-[-1px] hover:shadow-[0_16px_36px_rgba(255,140,32,0.4)]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
+        <nav className="flex items-center gap-3">
+          {visibleLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="inline-flex h-[54px] items-center justify-center whitespace-nowrap bg-white px-8 text-center text-[14px] font-bold uppercase tracking-[0.18em] text-[#1b171c] transition hover:bg-[#ececec]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </>
   )

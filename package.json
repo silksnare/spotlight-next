@@ -11,14 +11,10 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:seed": "tsx prisma/seed.ts",
-    "phase": "tsx scripts/phase.ts",
-    "deploy": "npm run build && pm2 restart spotlightnext --update-env",
-    "ai:test-pegasus": "tsx scripts/test-pegasus.mjs"
+    "phase": "tsx scripts/phase.ts"
   },
   "dependencies": {
     "@authenio/samlify-node-xmllint": "^2.0.0",
-    "@aws-sdk/client-bedrock": "^3.1075.0",
-    "@aws-sdk/client-bedrock-runtime": "^3.1075.0",
     "@aws-sdk/client-mediaconvert": "^3.1019.0",
     "@aws-sdk/client-s3": "^3.1045.0",
     "@aws-sdk/client-sts": "^3.1045.0",
@@ -32,7 +28,9 @@
     "samlify": "^2.10.1",
     "validator": "^13.15.35",
     "ws": "^8.19.0",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "@aws-sdk/client-s3": "^3.1019.0",
+    "@aws-sdk/s3-request-presigner": "^3.1019.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
@@ -45,7 +43,7 @@
     "postcss": "^8.4.49",
     "prisma": "^6.0.0",
     "tailwindcss": "^3.4.17",
-    "tsx": "^4.22.4",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
   "prisma": {

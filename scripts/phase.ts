@@ -6,7 +6,7 @@ async function main() {
   const phaseArg = process.argv[2]
 
   if (!phaseArg) {
-    console.error('Usage: npm run phase <upload|judge1|judge2>')
+    console.error('Usage: npm run phase <upload|judge1|judge2|vote>')
     process.exit(1)
   }
 
@@ -19,17 +19,18 @@ async function main() {
     upload: 'upload',
     judge1: 'judge_round_1',
     judge2: 'judge_round_2',
+    vote: 'vote',
   }
 
   const activePhase = phaseMap[phaseArg]
 
   if (!activePhase) {
     console.error(`Invalid phase: ${phaseArg}`)
-    console.error('Usage: npm run phase <upload|judge1|judge2>')
+    console.error('Usage: npm run phase <upload|judge1|judge2|vote>')
     process.exit(1)
   }
 
-  const allPhases = ['upload', 'judge_round_1', 'judge_round_2']
+  const allPhases = ['upload', 'judge_round_1', 'judge_round_2', 'vote']
 
   for (const key of allPhases) {
     await prisma.phase.update({

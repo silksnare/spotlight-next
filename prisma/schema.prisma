@@ -8,45 +8,73 @@ datasource db {
 }
 
 model User {
-  id          String       @id @default(cuid())
-  employeeId  String       @unique
-  email       String
-  firstName   String
-  lastName    String
-  displayName String
-  homeArea    Int?
-  district    Int?
-  active      Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  loginEvents LoginEvent[]
-  videoSubmissions VideoSubmission[]
-  judgeRound1Scores JudgeRound1Score[] @relation("JudgeRound1Scores")
-  judgeRound2Scores JudgeRound2Score[] @relation("JudgeRound2Scores")
+  id                  String               @id @default(cuid())
+  employeeId          String               @unique
+  email               String
+  firstName           String
+  lastName            String
+  displayName         String
+  homeArea            Int?
+  district            Int?
+  active              Boolean              @default(true)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  loginEvents         LoginEvent[]
+  videoSubmissions    VideoSubmission[]
+  judgeRound1Scores   JudgeRound1Score[]   @relation("JudgeRound1Scores")
+  judgeRound2Scores   JudgeRound2Score[]   @relation("JudgeRound2Scores")
   localAuthCredential LocalAuthCredential?
-  userRoles UserRole[]
+  userRoles           UserRole[]
+  peerChoiceVotes     PeerChoiceVote[]     @relation("PeerChoiceVotesByVoter")
 }
 
 model LocalAuthCredential {
-  id                          String   @id @default(cuid())
-  userId                      String   @unique
-  user                        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  email                       String   @unique
-  passwordHash                String
-  emailVerified               Boolean  @default(false)
-  emailVerifiedAt             DateTime?
-  verificationCodeHash        String?
-  verificationCodeExpiresAt   DateTime?
-  verificationCodeSentAt      DateTime?
-  passwordResetCodeHash       String?
-  passwordResetCodeExpiresAt  DateTime?
-  passwordResetCodeSentAt     DateTime?
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @updatedAt
+  id                         String    @id @default(cuid())
+  userId                     String    @unique
+  user                       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email                      String    @unique
+  passwordHash               String
+  emailVerified              Boolean   @default(false)
+  emailVerifiedAt            DateTime?
+  verificationCodeHash       String?
+  verificationCodeExpiresAt  DateTime?
+  verificationCodeSentAt     DateTime?
+  passwordResetCodeHash      String?
+  passwordResetCodeExpiresAt DateTime?
+  passwordResetCodeSentAt    DateTime?
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
 
   @@index([email])
 }
 
+model SeededLoginUser {
+  id String @id @default(cuid())
+
+  firstName String?
+  lastName  String?
+
+  bac   String
+  gmin  String @unique
+  email String
+
+  district String?
+  zone     String?
+  region   String?
+  jobRole  String?
+  dealer   String?
+
+  role   String  @default("uploader")
+  active Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bac])
+  @@index([district])
+  @@index([zone])
+  @@index([region])
+}
 
 model LoginEvent {
   id         String   @id @default(cuid())
@@ -60,38 +88,39 @@ model LoginEvent {
 }
 
 model Phase {
-  id       String   @id @default(cuid())
-  key      String   @unique
+  id       String    @id @default(cuid())
+  key      String    @unique
   label    String
   startsAt DateTime?
   endsAt   DateTime?
-  isActive Boolean  @default(false)
+  isActive Boolean   @default(false)
 }
 
 model VideoSubmission {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  originalFileName  String
-  storedFileName    String
-  rawS3Key          String   @unique
-  processedS3Key    String?
-  uploadStatus      String
-  processingStatus  String
-  mediaConvertJobId String?
-  isQualified       Boolean?
-  qualifiedAt       DateTime?
-  qualifiedBy       String?
-  homeArea          Int?
-  district          Int?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  judgeRound1Scores JudgeRound1Score[]
-  judgeRound2Scores JudgeRound2Score[]
-  disqualificationReasons String[] @default([])
+  id                      String             @id @default(cuid())
+  userId                  String             @unique
+  originalFileName        String
+  storedFileName          String
+  rawS3Key                String             @unique
+  processedS3Key          String?
+  uploadStatus            String
+  processingStatus        String
+  mediaConvertJobId       String?
+  isQualified             Boolean?
+  qualifiedAt             DateTime?
+  qualifiedBy             String?
+  homeArea                Int?
+  district                Int?
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+  judgeRound1Scores       JudgeRound1Score[]
+  judgeRound2Scores       JudgeRound2Score[]
+  disqualificationReasons String[]           @default([])
   disqualificationOther   String?
   disqualifiedAt          DateTime?
   disqualifiedBy          String?
-  aiJudgeScores AiJudgeScore[]
+  peerChoiceVotes         PeerChoiceVote[]
+  aiJudgeScores           AiJudgeScore[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -103,46 +132,7 @@ model VideoSubmission {
 }
 
 model JudgeRound1Score {
-  id                String          @id @default(cuid())
-  videoSubmissionId String
-  judgeUserId       String
-
-  introductionGuestContext         Decimal @db.Decimal(4, 2)
-  explanationOfInspectionFindings  Decimal @db.Decimal(4, 2)
-  serviceRecommendationUrgency     Decimal @db.Decimal(4, 2)
-  communicationClarityProfessionalism Decimal @db.Decimal(4, 2)
-  organizationVideoFlow            Decimal @db.Decimal(4, 2)
-  accuracyOfRecommendations        Decimal @db.Decimal(4, 2)
-
-  totalScore         Decimal        @db.Decimal(5, 2)
-
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
-
-  videoSubmission    VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
-  judgeUser          User            @relation("JudgeRound1Scores", fields: [judgeUserId], references: [id], onDelete: Cascade)
-
-  @@unique([videoSubmissionId, judgeUserId])
-  @@index([judgeUserId])
-  @@index([videoSubmissionId])
-}
-
-model UserDistrictLookup {
-  email      String   @id
-  district   Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model JudgeRound2RegionAssignment {
-  judgeRegion  Int      @id
-  targetRegion Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model JudgeRound2Score {
-  id                String   @id @default(cuid())
+  id                String @id @default(cuid())
   videoSubmissionId String
   judgeUserId       String
 
@@ -153,19 +143,72 @@ model JudgeRound2Score {
   organizationVideoFlow               Decimal @db.Decimal(4, 2)
   accuracyOfRecommendations           Decimal @db.Decimal(4, 2)
 
-  totalScore         Decimal  @db.Decimal(5, 2)
+  totalScore Decimal @db.Decimal(5, 2)
+  comments   String?
 
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  videoSubmission    VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
-  judgeUser          User            @relation("JudgeRound2Scores", fields: [judgeUserId], references: [id], onDelete: Cascade)
+  videoSubmission VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
+  judgeUser       User            @relation("JudgeRound1Scores", fields: [judgeUserId], references: [id], onDelete: Cascade)
 
   @@unique([videoSubmissionId, judgeUserId])
   @@index([judgeUserId])
   @@index([videoSubmissionId])
 }
 
+model UserDistrictLookup {
+  email     String   @id
+  district  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JudgeRound2RegionAssignment {
+  judgeRegion  Int      @id
+  targetRegion Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model JudgeRound2Score {
+  id                String @id @default(cuid())
+  videoSubmissionId String
+  judgeUserId       String
+
+  introductionGuestContext            Decimal @db.Decimal(4, 2)
+  explanationOfInspectionFindings     Decimal @db.Decimal(4, 2)
+  serviceRecommendationUrgency        Decimal @db.Decimal(4, 2)
+  communicationClarityProfessionalism Decimal @db.Decimal(4, 2)
+  organizationVideoFlow               Decimal @db.Decimal(4, 2)
+  accuracyOfRecommendations           Decimal @db.Decimal(4, 2)
+
+  totalScore Decimal @db.Decimal(5, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  videoSubmission VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
+  judgeUser       User            @relation("JudgeRound2Scores", fields: [judgeUserId], references: [id], onDelete: Cascade)
+
+  @@unique([videoSubmissionId, judgeUserId])
+  @@index([judgeUserId])
+  @@index([videoSubmissionId])
+}
+
+model PeerChoiceVote {
+  id                String   @id @default(cuid())
+  voterUserId       String
+  videoSubmissionId String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  voter           User            @relation("PeerChoiceVotesByVoter", fields: [voterUserId], references: [id], onDelete: Cascade)
+  videoSubmission VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
+
+  @@unique([voterUserId])
+  @@index([videoSubmissionId])
+}
 
 model UserRole {
   id        String   @id @default(cuid())
@@ -181,34 +224,33 @@ model UserRole {
   @@index([role])
 }
 
-
 model AiJudgeScore {
-  id                String   @id @default(cuid())
+  id String @id @default(cuid())
 
   videoSubmissionId String
   videoSubmission   VideoSubmission @relation(fields: [videoSubmissionId], references: [id], onDelete: Cascade)
 
-  status            String   @default("pending")
-  errorMessage      String?
+  status       String  @default("pending")
+  errorMessage String?
 
-  storyboard        String?
-  transcript        String?
+  storyboard String?
+  transcript String?
 
-  criterion1Score   Decimal? @db.Decimal(4, 2)
-  criterion2Score   Decimal? @db.Decimal(4, 2)
-  criterion3Score   Decimal? @db.Decimal(4, 2)
-  criterion4Score   Decimal? @db.Decimal(4, 2)
-  criterion5Score   Decimal? @db.Decimal(4, 2)
-  criterion6Score   Decimal? @db.Decimal(4, 2)
-  totalScore        Decimal? @db.Decimal(5, 2)
+  criterion1Score Decimal? @db.Decimal(4, 2)
+  criterion2Score Decimal? @db.Decimal(4, 2)
+  criterion3Score Decimal? @db.Decimal(4, 2)
+  criterion4Score Decimal? @db.Decimal(4, 2)
+  criterion5Score Decimal? @db.Decimal(4, 2)
+  criterion6Score Decimal? @db.Decimal(4, 2)
+  totalScore      Decimal? @db.Decimal(5, 2)
 
-  overallComment    String?
-  improvementNotes  String?
+  overallComment   String?
+  improvementNotes String?
 
-  rawResponse        Json?
+  rawResponse Json?
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([videoSubmissionId])
 }

@@ -51,6 +51,22 @@ async function main() {
     },
   });
 
+  await prisma.phase.upsert({
+    where: { key: 'vote' },
+    update: {
+      label: 'Vote',
+      startsAt: new Date('2026-07-01T00:00:00-05:00'),
+      endsAt: new Date('2026-07-15T23:59:59-05:00'),
+    },
+    create: {
+      key: 'vote',
+      label: 'Vote',
+      startsAt: new Date('2026-07-01T00:00:00-05:00'),
+      endsAt: new Date('2026-07-15T23:59:59-05:00'),
+      isActive: false,
+    },
+  });
+
   console.log('Phase dates updated.');
 }
 

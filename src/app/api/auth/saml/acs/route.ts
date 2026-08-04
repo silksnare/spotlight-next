@@ -143,7 +143,8 @@ export async function POST(request: NextRequest) {
         homeArea: identity.homeArea,
         district: resolvedDistrict,
       },
-      samlSessionIndex: extract.sessionIndex,
+      samlSessionIndex:
+        typeof extract.sessionIndex === 'string' ? extract.sessionIndex : undefined,
     });
 
     return response;

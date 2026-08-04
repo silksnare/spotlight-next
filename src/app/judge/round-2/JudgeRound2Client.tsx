@@ -21,12 +21,12 @@ type JudgeRound2ClientProps = {
 }
 
 const criteria = [
-  'Introduction & Guest Context',
-  'Explanation of Inspection Findings',
-  'Service Recommendation & Urgency',
-  'Communication Clarity & Professionalism',
-  'Organization & Video Flow',
-  'Accuracy of Recommendations',
+  { label: 'Customer Profile Incorporated', max: 15 },
+  { label: 'Introducing Your Cadillac EV', max: 10 },
+  { label: 'High-Level Positioning', max: 10 },
+  { label: 'Importance to Cadillac', max: 15 },
+  { label: 'Reasons for Purchase', max: 25 },
+  { label: 'Conquest Selling / Competitive Positioning', max: 25 },
 ] as const
 
 type CriterionKey =
@@ -58,8 +58,8 @@ export default function JudgeRound2Client({
   const [scoresByVideo, setScoresByVideo] = useState<Record<string, ScoreState>>(
     () =>
       Object.fromEntries(
-        initialVideos.map((video) => [video.id, { ...defaultScores }])
-      )
+        initialVideos.map((video) => [video.id, { ...defaultScores }]),
+      ),
   )
   const [submittingVideoId, setSubmittingVideoId] = useState<string | null>(null)
   const [confirmingVideoId, setConfirmingVideoId] = useState<string | null>(null)
@@ -68,7 +68,7 @@ export default function JudgeRound2Client({
   function updateScore(
     videoId: string,
     criterion: CriterionKey,
-    value: number
+    value: number,
   ) {
     setScoresByVideo((prev) => ({
       ...prev,
@@ -130,7 +130,7 @@ export default function JudgeRound2Client({
       setConfirmingVideoId(null)
     } catch (error) {
       setLocalErrorMessage(
-        error instanceof Error ? error.message : 'Failed to save score.'
+        error instanceof Error ? error.message : 'Failed to save score.',
       )
     } finally {
       setSubmittingVideoId(null)
@@ -145,38 +145,78 @@ export default function JudgeRound2Client({
       <div className="space-y-8">
         <div>
           <h1 className="page-title">JUDGE ROUND 2</h1>
+
           <p className="mb-2">
             Videos to be judged:{' '}
             <span className="font-bold">{videos.length}</span>
           </p>
 
-          <p className="mb-2">Score each category from 0.00 to 3:00. Select the link for detailed <strong><a href="https://actdevpprd.biworldwide.com/lexus/26MPI_Judging.pdf" target="_blank" className="underline">Judging Criteria</a></strong>.</p>
+          <p className="mb-2">
+            Score each category in whole-number increments. Total possible score
+            is <strong>100 points</strong>. Select the link for detailed{' '}
+            <strong>
+              <a
+                href="/documents/EV-Walkaround-Rubric.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                Judging Criteria
+              </a>
+            </strong>
+            .
+          </p>
         </div>
 
-        {(errorMessage || localErrorMessage) && (
+        {(errorMessage || localErrorMessage) ? (
           <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {errorMessage || localErrorMessage}
           </div>
-        )}
+        ) : null}
 
         <div className="space-y-10">
           {videos.map((video) => {
             const scoreSet = scoresByVideo[video.id] ?? defaultScores
             const totalScore = Object.values(scoreSet).reduce(
               (sum, value) => sum + value,
-              0
+              0,
             )
 
             const scoreEntries: Array<{
               key: CriterionKey
-              label: (typeof criteria)[number]
+              label: string
+              max: number
             }> = [
-              { key: 'criterion1', label: criteria[0] },
-              { key: 'criterion2', label: criteria[1] },
-              { key: 'criterion3', label: criteria[2] },
-              { key: 'criterion4', label: criteria[3] },
-              { key: 'criterion5', label: criteria[4] },
-              { key: 'criterion6', label: criteria[5] },
+              {
+                key: 'criterion1',
+                label: criteria[0].label,
+                max: criteria[0].max,
+              },
+              {
+                key: 'criterion2',
+                label: criteria[1].label,
+                max: criteria[1].max,
+              },
+              {
+                key: 'criterion3',
+                label: criteria[2].label,
+                max: criteria[2].max,
+              },
+              {
+                key: 'criterion4',
+                label: criteria[3].label,
+                max: criteria[3].max,
+              },
+              {
+                key: 'criterion5',
+                label: criteria[4].label,
+                max: criteria[4].max,
+              },
+              {
+                key: 'criterion6',
+                label: criteria[5].label,
+                max: criteria[5].max,
+              },
             ]
 
             const isSubmitting = submittingVideoId === video.id
@@ -198,12 +238,9 @@ export default function JudgeRound2Client({
                   <div className="text-sm text-neutral-600">
                     Uploaded by:{' '}
                     <span className="font-medium">{video.user?.email}</span>
-                    {video.user?.homeArea !== null && (
-                      <>
-                        {' '}
-                        | Region: {video.user.homeArea}
-                      </>
-                    )}
+                    {video.user?.homeArea !== null ? (
+                      <> | Region: {video.user.homeArea}</>
+                    ) : null}
                   </div>
                 </div>
 
@@ -214,16 +251,16 @@ export default function JudgeRound2Client({
                         Score Submission
                       </h2>
                       <p className="mt-1 text-sm text-neutral-600">
-                        Score each category from 0.00 to 3.00.
+                        Score each category in whole-number increments.
                       </p>
                     </div>
 
-                    <div className="bg-white px-4 py-3 text-right shadow-sm ring-1 ring-neutral-200">
+                    <div className="min-w-[120px] bg-white px-4 py-3 text-center shadow-sm ring-1 ring-neutral-200">
                       <div className="text-xs uppercase tracking-[0.2em] text-neutral-500">
                         Total
                       </div>
-                      <div className="text-2xl font-bold leading-none">
-                        {totalScore.toFixed(2)}
+                      <div className="whitespace-nowrap text-[18px] font-bold leading-none">
+                        {totalScore} / 100
                       </div>
                     </div>
                   </div>
@@ -235,22 +272,23 @@ export default function JudgeRound2Client({
                           <label className="text-sm font-medium text-neutral-900">
                             {item.label}
                           </label>
-                          <span className="min-w-12 text-right text-sm font-semibold text-neutral-700">
-                            {scoreSet[item.key].toFixed(2)}
+
+                          <span className="min-w-16 text-right text-sm font-semibold text-neutral-700">
+                            {scoreSet[item.key]} / {item.max}
                           </span>
                         </div>
 
                         <input
                           type="range"
                           min="0"
-                          max="3"
-                          step="0.25"
+                          max={item.max}
+                          step="1"
                           value={scoreSet[item.key]}
                           onChange={(event) =>
                             updateScore(
                               video.id,
                               item.key,
-                              Number(event.target.value)
+                              Number(event.target.value),
                             )
                           }
                           className="w-full slider"
@@ -277,7 +315,7 @@ export default function JudgeRound2Client({
         </div>
       </div>
 
-      {confirmingVideo && (
+      {confirmingVideo ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6">
           <div className="w-full max-w-md bg-white p-6 shadow-xl">
             <h2 className="text-xl font-semibold text-neutral-900">
@@ -312,7 +350,7 @@ export default function JudgeRound2Client({
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

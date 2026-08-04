@@ -18,8 +18,7 @@ export async function POST(req: NextRequest) {
     }
 
     const uniqueName = `${Date.now()}-${crypto.randomUUID()}-${fileName}`
-    const inputPrefix = process.env.AWS_VIDEO_INPUT_PREFIX ?? 'incoming'
-    const key = `${inputPrefix}/${uniqueName}`
+    const key = `incoming/${uniqueName}`
 
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_VIDEO_INPUT_BUCKET!,

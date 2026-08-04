@@ -15,15 +15,11 @@ export default function UploadAgreementClient() {
           cache: 'no-store',
         })
 
-        if (!response.ok) {
-          throw new Error('Failed to verify upload phase')
-        }
+        if (!response.ok) throw new Error('Failed to verify upload phase')
 
         const data: { isActive: boolean } = await response.json()
 
-        if (!data.isActive) {
-          router.push('/dashboard')
-        }
+        if (!data.isActive) router.push('/dashboard')
       } catch (error) {
         console.error(error)
         router.push('/dashboard')
@@ -39,118 +35,103 @@ export default function UploadAgreementClient() {
   }
 
   return (
-    <div className="page-container">
-      <section className="relative overflow-hidden rounded-[32px] border border-[#ece8f4] bg-white px-8 py-10 shadow-[0_24px_80px_rgba(17,19,34,0.08)] md:px-12 md:py-14">
-        <div className="pointer-events-none absolute right-[-120px] top-[-140px] h-[320px] w-[320px] rounded-full bg-[#8f5cff]/20 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-[-160px] left-[-120px] h-[320px] w-[320px] rounded-full bg-[#ff6a13]/15 blur-3xl" />
-
-        <div className="relative">
-          <div className="mb-3 text-[12px] font-bold uppercase tracking-[0.35em] text-[#8f5cff]">
+    <main className="bg-[#f4f4f4]">
+      <div className="mx-auto max-w-[1200px] px-6 py-16 lg:py-20">
+        <section className="bg-white px-6 py-10 sm:px-10 lg:px-12">
+          <p className="font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.45em] text-[#231f24]">
             Video Submission
-          </div>
+          </p>
 
-          <h1 className="mb-6 text-[42px] font-extrabold leading-[1.05] tracking-[-0.04em] text-[#111322] md:text-[64px]">
+          <h1 className="mt-3 font-[family:var(--font-cadillac)] text-[30px] font-bold uppercase tracking-[0.18em] text-[#231f24] sm:text-[42px]">
             Review &amp; Agree
           </h1>
 
-          <p className="max-w-[980px] text-[17px] leading-[1.8] text-[#5f6475]">
-            Before submitting your video, please review and agree to the Participant Opt-In Agreement below. We also recommend carefully reviewing the{' '}
-            <strong className="font-extrabold text-[#111322]">Official Contest Rules</strong> to ensure your submission meets all requirements.
+          <p className="mt-6 max-w-[980px] text-[15px] leading-7 text-[#111111]">
+            Before submitting your video, please review and agree to the
+            PARTICIPANT OPT-IN AGREEMENT below. We also recommend carefully
+            reviewing the <strong><a href="/documents/26Cadillac_ChooseYourEV_Rules.pdf">Official Contest Rules</a></strong> to ensure your
+            submission meets all requirements.
           </p>
-        </div>
-      </section>
+        </section>
 
-      <section className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-        <div className="overflow-hidden rounded-[28px] border border-[#ece8f4] bg-white shadow-[0_18px_60px_rgba(17,19,34,0.06)]">
-          <div className="border-b border-[#ece8f4] px-8 py-6">
-            <div className="text-[12px] font-bold uppercase tracking-[0.28em] text-[#ff6a13]">
-              Required Agreement
+        <section className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
+          <div className="border border-[#d6d6d6] bg-white">
+            <div className="border-b border-[#d6d6d6] px-6 py-6 sm:px-8">
+              <p className="font-[family:var(--font-cadillac)] text-[12px] font-bold uppercase tracking-[0.35em] text-[#231f24]">
+                Required Agreement
+              </p>
+
+              <h2 className="mt-3 font-[family:var(--font-cadillac)] text-[22px] font-bold uppercase tracking-[0.12em] text-[#231f24]">
+                Participant Opt-In Agreement
+              </h2>
             </div>
 
-            <h2 className="mt-2 text-[26px] font-extrabold tracking-[-0.03em] text-[#111322]">
-              Participant Opt-In Agreement
-            </h2>
+            <div className="max-h-[460px] overflow-y-auto px-6 py-7 sm:px-8">
+              {[
+                'By clicking below, I acknowledge that I have read the Walkaround Competition Rules and agree to abide by the Walkaround Competition Rules and the following terms:',
+                'I hereby attest that I am a certified Sales Consultant employed by an authorized Cadillac dealership (the “Dealership”) and that I have obtained the consent of the Dealership to participate in the 2026 Cadillac Choose Your EV Conquest Challenge: Individual Walkaround Competition (the “Walkaround Competition”) on the terms set forth in this agreement and the Walkaround Competition Rules.',
+                'Cadillac reserves the right at any time during the Walkaround Competition to disqualify any entry that it believes in its sole discretion does not meet the requirements of the competition and/or the Walkaround Competition Rules. In addition, I acknowledge that I will be disqualified from participation in the Walkaround Competition if and when the Dealership objects to any part of my video and/or my participation in the Walkaround Competition and/or any of the terms of this agreement or the Walkaround Competition Rules.',
+                'I hereby represent and warrant that I am the sole owner of the video and all content included in the video that has been submitted to Cadillac, that I have used no trademarks, music, art, photos, characters/personalities, or content that belong to any third party (“Third Party Materials”) in the video and that, to the extent, if any, that the Dealership has any rights to the video, the Dealership has authorized me to grant the following rights to Cadillac on its behalf. If a third party sues Cadillac or Cadillac suffers any liabilities or damages because the video includes Third Party Materials or otherwise violates a third party’s rights, both the Dealership and I will be responsible for indemnifying Cadillac for any damages that it has to pay to the third party. I hereby release, discharge and agree to hold harmless Cadillac from any and all rights, claims, demands, damages and actions which I, my heirs, executors or assigns may have in connection with the use of my name, image, video, likeness, quotations and/or biographical information in all such materials and media including, but not limited to, any blurring, distortion, alteration, optical illusion, and use in composite or edited form.',
+                'By submitting a video to Cadillac, I understand and agree that I am irrevocably transferring and assigning all right, title and interest in the video and any parts of the video (for example, sound bites, still photos) to Cadillac, including any copyrights, trademarks, “moral rights,” and other intellectual and industrial property rights that I may have in the video, including, but not limited to, the right to copyright said materials and the right to renew said copyright anywhere in the world, in any such materials utilizing my name, likeness, quotations and/or biographical information. This means that Cadillac can do whatever it wants with the video and any parts of the video now and forever, including but not limited to editing the video, making and distributing copies of the video and performing, displaying and/or publishing the video in any medium that exists now or in the future (for example, in all forms of social media). I also authorize Cadillac to use my name, likeness, recorded voice, and statements in connection with the distribution or publication of the video, including but not limited to use in Cadillac sales training programs and promotion of Cadillac training programs and competitions via internal online communications, social media, printed publications and all other media. I also understand that once I submit the video, no one, including me, can use it for any purpose without Cadillac’s written permission.',
+                'If I submit a qualifying video to Cadillac, I have the opportunity to receive prizes as described in the Walkaround Competition Rules. I acknowledge and agree that receipt of such prizes in accordance with the Walkaround Competition Rules constitutes the entire compensation I will receive for the video.',
+                'I further agree that my participation in any publication and website produced by Cadillac confers upon me no rights of ownership whatsoever.',
+                'Submission of the video pursuant to this Agreement constitutes a release by me and the Dealership (which has granted me the authority to agree to this release on its behalf) of Cadillac and its parent, affiliates, contractors and employees from liability for any claims by me or the Dealership in connection with my participation in the Walkaround Competition.',
+                'Furthermore, I confirm that I have read the Walkaround Competition Rules and this statement. I represent and warrant to Cadillac that I am eligible and qualified to enter into the Walkaround Competition. I hereby warrant that I am of legal age and have every right to contract in my own name without violating any other commitments.',
+                'I have read this document in its entirety. I am fully familiar with its contents. I fully understand its contents. I am uploading my video and agreeing to this document voluntarily.',
+              ].map((paragraph) => (
+                <p
+                  key={paragraph}
+                  className="mb-7 text-[15px] leading-7 text-[#111111]"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
 
-          <div className="max-h-[460px] overflow-y-auto px-8 py-8 scrollbar-thin">
-            <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              By clicking below, I acknowledge that I have read the Official Contest Rules (the “CONTEST RULES”) and agree to abide by the CONTEST RULES and the following terms:
+          <aside className="border border-[#d6d6d6] bg-white p-6 sm:p-7">
+            <h3 className="font-[family:var(--font-cadillac)] text-[22px] font-bold uppercase tracking-[0.12em] text-[#231f24]">
+              One Last Step
+            </h3>
+
+            <p className="mt-4 text-[14px] leading-6 text-[#111111]">
+              Only videos that meet all Contest requirements are eligible for
+              judging and recognition.
             </p>
 
-            <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              I hereby attest that I am authorized to participate in this contest and that I have obtained any necessary permissions or approvals required by my employer, organization, or affiliated entity to participate in the CONTEST on the terms set forth in this agreement and the CONTEST RULES.
-            </p>
+            <label
+              htmlFor="upload-agreement"
+              className="mt-8 flex cursor-pointer items-start gap-4 border border-[#d6d6d6] bg-[#f4f4f4] p-5"
+            >
+              <input
+                id="upload-agreement"
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-1 h-5 w-5 shrink-0 accent-[#231f24]"
+              />
 
-            <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              The contest organizers reserve the right at any time during the CONTEST to disqualify any entry that they believe, in their sole discretion, does not meet the requirements of the CONTEST and/or the CONTEST RULES.
-            </p>
+              <span className="text-[13px] font-bold leading-5 text-[#111111]">
+                I agree to the Choose Your EV Conquest Official Rules and terms
+                of this Participant Opt-In Agreement.
+              </span>
+            </label>
 
-            <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              I hereby represent and warrant that I am the sole owner of the video and all content included in the video submission; that I have not used any trademarks, music, artwork, photographs, characters, personalities, or other content belonging to any third party without proper authorization; and that my submission does not violate the rights of any third party.
-            </p>
-
-            <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              By submitting a video for the CONTEST, I understand and agree that I retain ownership of my video while granting the contest organizers and their affiliates a non-exclusive, royalty-free, worldwide, perpetual license to use, reproduce, distribute, display, publish, and promote the video and portions of the video in any media format now known or later developed.
-            </p>
-
-            <p className="mb-8 text-[16px] leading-[1.85] text-[#161624]">
-              I confirm that I have read the CONTEST RULES and this agreement. I represent and warrant that I am eligible and qualified to participate in the CONTEST and that I have the legal authority to agree to these terms.
-            </p>
-
-            <p className="text-[16px] leading-[1.85] text-[#161624]">
-              I have read this document in its entirety. I fully understand its contents and acknowledge that I am submitting my video and agreeing to these terms voluntarily.
-            </p>
-          </div>
-        </div>
-
-        <aside className="rounded-[28px] border border-[#ece8f4] bg-[#f8f7ff] p-7 shadow-[0_18px_60px_rgba(17,19,34,0.06)]">
-          <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[26px] shadow-sm">
-            ✓
-          </div>
-
-          <h3 className="mb-3 text-[24px] font-extrabold tracking-[-0.03em] text-[#111322]">
-            One last step
-          </h3>
-
-          <p className="mb-8 text-[15px] leading-[1.7] text-[#5f6475]">
-            Only videos that meet all Contest requirements are eligible for judging and recognition.
-          </p>
-
-          <label
-            htmlFor="upload-agreement"
-            className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition ${
-              agreed
-                ? 'border-[#8f5cff] bg-white shadow-[0_12px_40px_rgba(143,92,255,0.16)]'
-                : 'border-[#ddd8ef] bg-white/70 hover:bg-white'
-            }`}
-          >
-            <input
-              id="upload-agreement"
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-1 h-6 w-6 shrink-0 rounded border-[#161624] accent-[#8f5cff]"
-            />
-
-            <span className="text-[14px] font-semibold leading-[1.6] text-[#161624]">
-              I agree to the Lexus Under The Hood Heroes Video MPI Contest Official Rules and terms of this Participant Opt-In Agreement.
-            </span>
-          </label>
-
-          <button
-            type="button"
-            onClick={handleContinue}
-            disabled={!agreed}
-            className={`mt-8 inline-flex h-[58px] w-full items-center justify-center rounded-2xl text-[14px] font-extrabold uppercase tracking-[0.16em] transition ${
-              agreed
-                ? 'bg-[linear-gradient(135deg,#ff6a13_0%,#f7c948_100%)] text-white shadow-[0_16px_36px_rgba(255,140,32,0.35)] hover:translate-y-[-1px]'
-                : 'cursor-not-allowed bg-[#c9ced6] text-white'
-            }`}
-          >
-            Continue
-          </button>
-        </aside>
-      </section>
-    </div>
+            <button
+              type="button"
+              onClick={handleContinue}
+              disabled={!agreed}
+              className={`mt-8 inline-flex h-[50px] w-full items-center justify-center font-[family:var(--font-cadillac)] text-[13px] font-bold uppercase tracking-[0.2em] transition ${
+                agreed
+                  ? 'bg-[#231f24] text-white hover:bg-black'
+                  : 'cursor-not-allowed bg-[#c9c9c9] text-white'
+              }`}
+            >
+              Continue
+            </button>
+          </aside>
+        </section>
+      </div>
+    </main>
   )
 }

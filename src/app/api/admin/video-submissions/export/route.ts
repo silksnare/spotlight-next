@@ -1,36 +1,38 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 
-import { getCurrentSession } from '@/lib/auth/session';
-import { prisma } from '@/lib/prisma';
+import { getCurrentSession } from '@/lib/auth/session'
+import { prisma } from '@/lib/prisma'
 
-type CsvValue = string | number | boolean | Date | null | undefined;
+type CsvValue = string | number | boolean | Date | null | undefined
 
 function formatDateForFilename(value: Date) {
-  return value.toISOString().slice(0, 10);
+  return value.toISOString().slice(0, 10)
 }
 
 function stringifyCsvValue(value: CsvValue): string {
-  if (value === null || value === undefined) return '';
-  if (value instanceof Date) return value.toISOString();
-  if (typeof value === 'boolean') return value ? 'true' : 'false';
-  return String(value);
+  if (value === null || value === undefined) return ''
+  if (value instanceof Date) return value.toISOString()
+  if (typeof value === 'boolean') return value ? 'true' : 'false'
+  return String(value)
 }
 
 function escapeCsvCell(value: CsvValue): string {
-  const serialized = stringifyCsvValue(value);
-  return `"${serialized.replace(/"/g, '""')}"`;
+  const serialized = stringifyCsvValue(value)
+  return `"${serialized.replace(/"/g, '""')}"`
 }
 
 export async function GET() {
-  try {
-    const session = await getCurrentSession();
+    try {
+      const session = await getCurrentSession()
 
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    if (session.user.role !== 'admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    const role = session.user.role
+
+    if (role !== 'client' && role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const submissions = await prisma.videoSubmission.findMany({
@@ -38,11 +40,6 @@ export async function GET() {
       select: {
         id: true,
         userId: true,
-        originalFileName: true,
-        storedFileName: true,
-        uploadStatus: true,
-        processingStatus: true,
-        mediaConvertJobId: true,
         isQualified: true,
         qualifiedAt: true,
         qualifiedBy: true,
@@ -51,7 +48,6 @@ export async function GET() {
         disqualificationReasons: true,
         disqualificationOther: true,
         disqualifiedAt: true,
-        disqualifiedBy: true,
         createdAt: true,
         updatedAt: true,
         user: {
@@ -61,8 +57,6 @@ export async function GET() {
             firstName: true,
             lastName: true,
             email: true,
-            district: true,
-            homeArea: true,
           },
         },
         judgeRound1Scores: {
@@ -120,41 +114,71 @@ export async function GET() {
           },
         },
       },
-    });
+    })
+
+    const userEmails = [
+      ...new Set(
+        submissions
+          .map((submission) => submission.user.email?.trim().toLowerCase())
+          .filter((email): email is string => Boolean(email))
+      ),
+    ]
+
+    const seededUsers = await prisma.seededLoginUser.findMany({
+      where: {
+        email: {
+          in: userEmails,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        email: true,
+        bac: true,
+        dealer: true,
+      },
+    })
+
+    const seededUserByEmail = new Map(
+      seededUsers.map((user) => [
+        user.email.trim().toLowerCase(),
+        {
+          bac: user.bac,
+          dealer: user.dealer,
+        },
+      ])
+    )
 
     const headers = [
       'submissionId',
       'userId',
-      'employeeId',
+      'gmin',
       'userDisplayName',
-      'userFirstName',
-      'userLastName',
-      'userEmail',
+      'firstName',
+      'lastName',
+      'email',
+      'bac',
+      'dealer',
       'district',
-      'homeArea',
-      'userDistrict',
-      'userHomeArea',
-      'originalFileName',
-      'storedFileName',
-      'uploadStatus',
-      'processingStatus',
-      'mediaConvertJobId',
+      'region',
       'isQualified',
       'qualifiedAt',
       'qualifiedBy',
       'disqualificationReasons',
       'disqualificationOther',
       'disqualifiedAt',
-      'disqualifiedBy',
       'judgeRound1ScoreCount',
       'judgeRound1Scores',
       'judgeRound2ScoreCount',
       'judgeRound2Scores',
       'createdAt',
       'updatedAt',
-    ];
+    ]
 
     const rows = submissions.map((submission) => {
+      const seededUser = seededUserByEmail.get(
+        submission.user.email?.trim().toLowerCase() ?? ''
+      )
+
       const round1Scores = submission.judgeRound1Scores.map((score) =>
         JSON.stringify({
           id: score.id,
@@ -167,16 +191,19 @@ export async function GET() {
           judgeHomeArea: score.judgeUser.homeArea,
           judgeDistrict: score.judgeUser.district,
           introductionGuestContext: score.introductionGuestContext.toString(),
-          explanationOfInspectionFindings: score.explanationOfInspectionFindings.toString(),
-          serviceRecommendationUrgency: score.serviceRecommendationUrgency.toString(),
-          communicationClarityProfessionalism: score.communicationClarityProfessionalism.toString(),
+          explanationOfInspectionFindings:
+            score.explanationOfInspectionFindings.toString(),
+          serviceRecommendationUrgency:
+            score.serviceRecommendationUrgency.toString(),
+          communicationClarityProfessionalism:
+            score.communicationClarityProfessionalism.toString(),
           organizationVideoFlow: score.organizationVideoFlow.toString(),
           accuracyOfRecommendations: score.accuracyOfRecommendations.toString(),
           totalScore: score.totalScore.toString(),
           createdAt: score.createdAt.toISOString(),
           updatedAt: score.updatedAt.toISOString(),
         })
-      );
+      )
 
       const round2Scores = submission.judgeRound2Scores.map((score) =>
         JSON.stringify({
@@ -190,16 +217,19 @@ export async function GET() {
           judgeHomeArea: score.judgeUser.homeArea,
           judgeDistrict: score.judgeUser.district,
           introductionGuestContext: score.introductionGuestContext.toString(),
-          explanationOfInspectionFindings: score.explanationOfInspectionFindings.toString(),
-          serviceRecommendationUrgency: score.serviceRecommendationUrgency.toString(),
-          communicationClarityProfessionalism: score.communicationClarityProfessionalism.toString(),
+          explanationOfInspectionFindings:
+            score.explanationOfInspectionFindings.toString(),
+          serviceRecommendationUrgency:
+            score.serviceRecommendationUrgency.toString(),
+          communicationClarityProfessionalism:
+            score.communicationClarityProfessionalism.toString(),
           organizationVideoFlow: score.organizationVideoFlow.toString(),
           accuracyOfRecommendations: score.accuracyOfRecommendations.toString(),
           totalScore: score.totalScore.toString(),
           createdAt: score.createdAt.toISOString(),
           updatedAt: score.updatedAt.toISOString(),
         })
-      );
+      )
 
       return [
         submission.id,
@@ -209,37 +239,31 @@ export async function GET() {
         submission.user.firstName,
         submission.user.lastName,
         submission.user.email,
+        seededUser?.bac,
+        seededUser?.dealer,
         submission.district,
         submission.homeArea,
-        submission.user.district,
-        submission.user.homeArea,
-        submission.originalFileName,
-        submission.storedFileName,
-        submission.uploadStatus,
-        submission.processingStatus,
-        submission.mediaConvertJobId,
         submission.isQualified,
         submission.qualifiedAt,
         submission.qualifiedBy,
         submission.disqualificationReasons.join(' | '),
         submission.disqualificationOther,
         submission.disqualifiedAt,
-        submission.disqualifiedBy,
         submission.judgeRound1Scores.length,
         round1Scores.join(' | '),
         submission.judgeRound2Scores.length,
         round2Scores.join(' | '),
         submission.createdAt,
         submission.updatedAt,
-      ];
-    });
+      ]
+    })
 
     const csv = [
       headers.map((value) => escapeCsvCell(value)).join(','),
       ...rows.map((row) => row.map((value) => escapeCsvCell(value)).join(',')),
-    ].join('\n');
+    ].join('\n')
 
-    const filename = `video-submissions-${formatDateForFilename(new Date())}.csv`;
+    const filename = `video-submissions-${formatDateForFilename(new Date())}.csv`
 
     return new NextResponse(csv, {
       status: 200,
@@ -248,9 +272,12 @@ export async function GET() {
         'Content-Disposition': `attachment; filename="${filename}"`,
         'Cache-Control': 'no-store',
       },
-    });
+    })
   } catch (error) {
-    console.error('VIDEO_SUBMISSION_EXPORT_ERROR', error);
-    return NextResponse.json({ error: 'Failed to export video submissions' }, { status: 500 });
+    console.error('VIDEO_SUBMISSION_EXPORT_ERROR', error)
+    return NextResponse.json(
+      { error: 'Failed to export video submissions' },
+      { status: 500 }
+    )
   }
 }

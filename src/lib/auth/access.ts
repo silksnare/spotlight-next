@@ -3,15 +3,16 @@ import type { AppRole } from './roles';
 export const routeRoleRequirements: Array<{ prefix: string; roles: AppRole[] }> = [
   { prefix: '/upload', roles: ['uploader'] },
   { prefix: '/qualify', roles: ['qualifier'] },
-  { prefix: '/judge/round-1', roles: ['qualifier'] },
+  { prefix: '/judge/round-1', roles: ['judge1', 'qualifier'] },
   { prefix: '/judge/round-2', roles: ['judge2'] },
-  { prefix: '/vote', roles: ['__disabled__' as AppRole] },
+  { prefix: '/vote', roles: ['uploader', 'qualifier', 'judge1', 'judge2', 'admin', 'client'] },
   { prefix: '/platform-admin', roles: ['admin'] },
   { prefix: '/api/platform-admin', roles: ['admin'] },
   { prefix: '/admin', roles: ['client'] },
   { prefix: '/api/admin', roles: ['client'] },
   { prefix: '/api/qualify', roles: ['qualifier'] },
   { prefix: '/api/qualify/', roles: ['qualifier'] },
+  { prefix: '/api/vote', roles: ['uploader', 'qualifier', 'judge1', 'judge2', 'admin', 'client'] },
 ];
 
 export function requiredRolesForPath(pathname: string): AppRole[] {

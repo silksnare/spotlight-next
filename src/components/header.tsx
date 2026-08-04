@@ -1,9 +1,7 @@
 import { unstable_noStore as noStore } from 'next/cache'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import { getCurrentSession } from '@/lib/auth/session'
-import { getNextPhaseEventFromDb } from '@/lib/phases/get-next-phase-event-from-db'
 import { isPhaseActive } from '@/lib/phases/is-phase-active'
 import { prisma } from '@/lib/prisma'
 
@@ -16,9 +14,10 @@ type NavLink = {
   label: string
   roles: AppRole[]
   phaseKey?: string
+  phaseKeys?: string[]
 }
 
-const ENABLE_VOTING = false
+const ENABLE_VOTING = true
 
 const navLinks: NavLink[] = [
   {
@@ -31,7 +30,7 @@ const navLinks: NavLink[] = [
     href: '/qualify',
     label: 'Qualify',
     roles: ['qualifier'],
-    phaseKey: 'upload',
+    phaseKeys: ['upload', 'judge_round_1'],
   },
   {
     href: '/judge/round-1',
@@ -50,7 +49,7 @@ const navLinks: NavLink[] = [
         {
           href: '/vote',
           label: 'Vote',
-          roles: ['uploader', 'qualifier', 'judge1', 'judge2', 'admin'] as AppRole[],
+          roles: ['uploader', 'qualifier', 'judge1', 'judge2', 'admin', 'client'] as AppRole[],
           phaseKey: 'vote',
         },
       ]
@@ -62,7 +61,7 @@ const navLinks: NavLink[] = [
   },
   {
     href: '/platform-admin',
-    label: 'Platform Admin',
+    label: 'Admin',
     roles: ['admin'],
   },
 ]
@@ -72,14 +71,13 @@ export async function Header() {
 
   const session = await getCurrentSession()
   const role = session?.user?.role as AppRole | undefined
+
   const roles =
     session?.user && 'roles' in session.user && Array.isArray(session.user.roles)
       ? (session.user.roles as AppRole[])
       : role
         ? [role]
         : []
-
-  const nextPhaseEvent = await getNextPhaseEventFromDb()
 
   const phases = await prisma.phase.findMany({
     select: {
@@ -89,49 +87,63 @@ export async function Header() {
     },
   })
 
-  const phaseMap = Object.fromEntries(phases.map((phase) => [phase.key, phase]))
+  const phaseMap = Object.fromEntries(
+    phases.map((phase) => [phase.key, phase]),
+  )
+
+  const uploadPhase = phaseMap.upload
+  const judgeRound1Phase = phaseMap.judge_round_1
+  const now = new Date()
+
+  let countdownMessage: string | null = null
+  let countdownTargetDate: string | null = null
+
+  if (uploadPhase?.endsAt && isPhaseActive(uploadPhase)) {
+    countdownMessage = 'UPLOAD ENDS IN'
+    countdownTargetDate = uploadPhase.endsAt.toISOString()
+  } else if (
+    judgeRound1Phase?.startsAt &&
+    now < judgeRound1Phase.startsAt
+  ) {
+    countdownMessage = 'JUDGING ROUND 1 STARTS IN'
+    countdownTargetDate = judgeRound1Phase.startsAt.toISOString()
+  } else if (judgeRound1Phase?.endsAt && isPhaseActive(judgeRound1Phase)) {
+    countdownMessage = 'JUDGING ROUND 1 ENDS IN'
+    countdownTargetDate = judgeRound1Phase.endsAt.toISOString()
+  }
 
   const visibleLinks = navLinks.filter((link) => {
     if (!roles.length) return false
     if (!roles.some((r) => link.roles.includes(r))) return false
 
-    if (!link.phaseKey) return true
+    const phaseKeys = link.phaseKeys ?? (link.phaseKey ? [link.phaseKey] : [])
 
-    const phase = phaseMap[link.phaseKey]
-    return isPhaseActive(phase)
+    if (!phaseKeys.length) return true
+
+    return phaseKeys.some((phaseKey) => {
+      const phase = phaseMap[phaseKey]
+      return isPhaseActive(phase)
+    })
   })
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#ece8f4] bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-[#2d2730] bg-[#151116]/95 backdrop-blur-md">
       <div className="relative flex w-full items-center justify-between gap-6 px-6 py-5 lg:px-10">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-3"
-          aria-label="Spotlight Next home"
+          className="flex shrink-0 items-center"
+          aria-label="Choose Your EV Conquest home"
         >
-          <Image
-            src="/icons/icon-192x192-sharp.png"
-            alt=""
-            width={42}
-            height={42}
-            className="h-10 w-10 object-contain"
-            priority
-          />
-
-          <div>
-            <div className="text-2xl font-extrabold leading-none tracking-tight text-[#111322]">
-              Spotlight Next
-            </div>
-            <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.24em] text-[#8b8fa3]">
-              BI WORLDWIDE
-            </div>
+          <div className="text-[30px] font-semibold uppercase leading-[0.92] tracking-[0.08em] text-white lg:text-[34px]">
+            <div>Choose Your</div>
+            <div>EV Conquest</div>
           </div>
         </Link>
 
         <HeaderNavClient
           visibleLinks={visibleLinks}
-          countdownMessage={nextPhaseEvent?.message ?? null}
-          countdownTargetDate={nextPhaseEvent?.targetDate.toISOString() ?? null}
+          countdownMessage={countdownMessage}
+          countdownTargetDate={countdownTargetDate}
         />
       </div>
     </header>

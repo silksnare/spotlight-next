@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import localFont from 'next/font/local'
 
 import './globals.css'
 
@@ -7,10 +8,10 @@ import { Header } from '@/components/header'
 import { HeaderGate } from '@/components/HeaderGate'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://spotlightnext.io'),
+  metadataBase: new URL('https://chooseyourevconquest.com'),
 
-  title: 'Spotlight Next',
-  description: 'Video MPI Contest Platform',
+  title: 'Choose Your EV Conquest',
+  description: 'Video Contest Platform',
 
   icons: {
     icon: [
@@ -31,22 +32,39 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: 'Spotlight NEXT',
-    description: 'Video MPI Contest Platform Powered by BI WORLDWIDE',
+    title: 'Choose Your EV Conquest',
+    description: 'Video Contest Platform Powered by BI WORLDWIDE',
     url: '/',
-    siteName: 'Spotlight NEXT',
+    siteName: 'Choose Your EV Conquest',
     images: [
       {
         url: '/images/share-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Spotlight NEXT',
+        alt: 'Choose Your EV Conquest',
       },
     ],
     locale: 'en_US',
     type: 'website',
   },
 }
+
+const cadillacGothic = localFont({
+  src: [
+    {
+      path: '../fonts/CadillacGothic-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/CadillacGothic-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-cadillac',
+  display: 'swap',
+})
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 
@@ -57,8 +75,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-screen">
-        {/*{GA_ID && (
+      <body className={`${cadillacGothic.className} min-h-screen antialiased`}>
+        {GA_ID && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
@@ -73,7 +91,7 @@ export default function RootLayout({
               `}
             </Script>
           </>
-        )}*/}
+        )}
 
         <div className="flex min-h-screen w-full flex-col">
           <HeaderGate>

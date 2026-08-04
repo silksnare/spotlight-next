@@ -52,7 +52,7 @@ export default async function JudgeRound1Page() {
       })
 
       const videoUrl = await getSignedUrl(s3, command, {
-        expiresIn: 60 * 15,
+        expiresIn: 604800,
       })
 
       return {
