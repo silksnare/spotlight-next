@@ -13,15 +13,82 @@ type PegasusResponse = {
   [key: string]: unknown
 }
 
+type ParsedPegasusOutput = {
+  storyboard: string
+  transcript: string
+}
+
+function parsePegasusOutput(
+  message: string
+): ParsedPegasusOutput {
+  const trimmed = message.trim()
+
+  /*
+   * Expected Pegasus format:
+   *
+   * Storyboard:
+   *
+   * ...
+   *
+   * Transcript:
+   *
+   * ...
+   *
+   * Split on the Transcript heading so the two outputs
+   * can be stored independently in the database.
+   */
+  const transcriptMatch = trimmed.match(
+    /\n\s*Transcript:\s*\n?/i
+  )
+
+  if (!transcriptMatch || transcriptMatch.index === undefined) {
+    /*
+     * If Pegasus does not follow the requested format,
+     * preserve the full response as the storyboard rather
+     * than discarding any evidence.
+     */
+    return {
+      storyboard: trimmed
+        .replace(/^Storyboard:\s*/i, '')
+        .trim(),
+
+      transcript: '',
+    }
+  }
+
+  const transcriptHeadingStart =
+    transcriptMatch.index
+
+  const transcriptContentStart =
+    transcriptHeadingStart +
+    transcriptMatch[0].length
+
+  const storyboardSection = trimmed
+    .slice(0, transcriptHeadingStart)
+    .replace(/^Storyboard:\s*/i, '')
+    .trim()
+
+  const transcriptSection = trimmed
+    .slice(transcriptContentStart)
+    .trim()
+
+  return {
+    storyboard: storyboardSection,
+    transcript: transcriptSection,
+  }
+}
+
 export async function runPegasus({
   videoS3Uri,
 }: RunPegasusParams) {
-  const region = process.env.AWS_REGION || 'us-east-1'
+  const region =
+    process.env.AWS_REGION || 'us-east-1'
 
   const configuredModelId =
     process.env.AWS_BEDROCK_PEGASUS_MODEL_ID
 
-  const bucketOwner = process.env.AWS_ACCOUNT_ID
+  const bucketOwner =
+    process.env.AWS_ACCOUNT_ID
 
   if (!configuredModelId) {
     throw new Error(
@@ -30,7 +97,9 @@ export async function runPegasus({
   }
 
   if (!bucketOwner) {
-    throw new Error('Missing AWS_ACCOUNT_ID')
+    throw new Error(
+      'Missing AWS_ACCOUNT_ID'
+    )
   }
 
   /*
@@ -44,15 +113,19 @@ export async function runPegasus({
    *
    * into the short Bedrock model ID.
    */
-  const modelId = configuredModelId.includes(
-    'foundation-model/'
-  )
-    ? configuredModelId.split('foundation-model/')[1]
-    : configuredModelId
+  const modelId =
+    configuredModelId.includes(
+      'foundation-model/'
+    )
+      ? configuredModelId.split(
+          'foundation-model/'
+        )[1]
+      : configuredModelId
 
-  const client = new BedrockRuntimeClient({
-    region,
-  })
+  const client =
+    new BedrockRuntimeClient({
+      region,
+    })
 
   const inputPrompt = `
 Analyze the supplied video and produce two outputs:
@@ -150,17 +223,22 @@ Do not include scoring, analysis, strengths, weaknesses, coaching, recommendatio
 
   const body = {
     inputPrompt,
+
     mediaSource: {
       s3Location: {
         uri: videoS3Uri,
         bucketOwner,
       },
     },
+
     temperature: 0.2,
     maxOutputTokens: 4096,
   }
 
-  console.log('Pegasus region:', region)
+  console.log(
+    'Pegasus region:',
+    region
+  )
 
   console.log(
     'Configured Pegasus model ID:',
@@ -181,48 +259,67 @@ Do not include scoring, analysis, strengths, weaknesses, coaching, recommendatio
     'Pegasus media mode: s3Location'
   )
 
-  console.log('PEGASUS REQUEST BODY:')
   console.log(
-    JSON.stringify(body, null, 2)
+    'PEGASUS REQUEST BODY:'
   )
 
-  const response = await client.send(
-    new InvokeModelCommand({
-      modelId,
-      contentType: 'application/json',
-      accept: 'application/json',
-      body: JSON.stringify(body),
-    })
+  console.log(
+    JSON.stringify(
+      body,
+      null,
+      2
+    )
   )
 
-  const responseText = Buffer.from(
-    response.body
-  ).toString('utf8')
+  const response =
+    await client.send(
+      new InvokeModelCommand({
+        modelId,
+        contentType:
+          'application/json',
+        accept:
+          'application/json',
+        body:
+          JSON.stringify(body),
+      })
+    )
 
-  console.log('RAW PEGASUS RESPONSE:')
-  console.log(responseText)
+  const responseText =
+    Buffer.from(
+      response.body
+    ).toString('utf8')
 
-  const parsed = JSON.parse(
+  console.log(
+    'RAW PEGASUS RESPONSE:'
+  )
+
+  console.log(
     responseText
-  ) as PegasusResponse
+  )
 
-  if (typeof parsed.message !== 'string') {
+  const parsed =
+    JSON.parse(
+      responseText
+    ) as PegasusResponse
+
+  if (
+    typeof parsed.message !==
+    'string'
+  ) {
     throw new Error(
       `Pegasus response did not contain a message: ${responseText}`
     )
   }
 
-  const storyboard = parsed.message.trim()
+  const fullOutput =
+    parsed.message.trim()
 
   /*
-   * Pegasus sometimes returns a normal HTTP/model response
-   * even though it was unable to access the supplied video.
-   *
-   * Do not allow that refusal message to continue into Claude
-   * and become a completed zero-score judgment.
+   * Pegasus sometimes returns a successful Bedrock response
+   * but reports that it could not actually access the video.
    */
-  const normalizedStoryboard =
-    storyboard.toLowerCase()
+  const normalizedOutput =
+    fullOutput.toLowerCase()
 
   const unavailablePatterns = [
     'video is not available',
@@ -234,8 +331,11 @@ Do not include scoring, analysis, strengths, weaknesses, coaching, recommendatio
   ]
 
   if (
-    unavailablePatterns.some((pattern) =>
-      normalizedStoryboard.includes(pattern)
+    unavailablePatterns.some(
+      (pattern) =>
+        normalizedOutput.includes(
+          pattern
+        )
     )
   ) {
     throw new Error(
@@ -243,8 +343,44 @@ Do not include scoring, analysis, strengths, weaknesses, coaching, recommendatio
     )
   }
 
+  const {
+    storyboard,
+    transcript,
+  } = parsePegasusOutput(
+    fullOutput
+  )
+
+  if (!storyboard.trim()) {
+    throw new Error(
+      'Pegasus returned an empty storyboard.'
+    )
+  }
+
+  /*
+   * A missing transcript should not destroy an otherwise
+   * usable visual analysis, but make the problem obvious
+   * in logs and in the stored database value.
+   */
+  if (!transcript.trim()) {
+    console.warn(
+      'Pegasus returned no separately parseable transcript.'
+    )
+  }
+
+  console.log(
+    'PARSED PEGASUS STORYBOARD LENGTH:',
+    storyboard.length
+  )
+
+  console.log(
+    'PARSED PEGASUS TRANSCRIPT LENGTH:',
+    transcript.length
+  )
+
   return {
     storyboard,
+    transcript,
+    fullOutput,
     rawResponse: parsed,
     modelId,
   }
